@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-User.create(
+new_users = [
 	{name: 'BillyBob', user_name: 'bob'},
 	{name: 'John Ceh', user_name: 'John'},
 	{name: 'Miguel Ocana', user_name: 'smegal'},
@@ -19,4 +19,7 @@ User.create(
 	{name: 'Rene Martinez', user_name: 'Rene'},
 	{name: 'Carol Cordova', user_name: 'Carol'},
 	{name: 'Cameron Hicks', user_name: 'Cameron'}
-	)
+	]
+new_users.each do |user|
+	User.create(name: user[:name], user_name: user[:user_name])
+end
