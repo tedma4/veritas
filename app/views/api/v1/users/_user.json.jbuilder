@@ -1,4 +1,4 @@
 json.cache! user do
-	json.name user.name
-	json.user_name user.user_name
+	json.name user.try(:name)
+	json.user_name user.try(:user_name)
 end
