@@ -1,0 +1,47 @@
+2016-06-25T13:01:38.818851000 0.242980s notice: Recursively removing directory /Users/tedmartinez/veritas/rethinkdb_data/tmp
+2016-06-25T13:01:38.820046000 0.244178s notice: Initializing directory /Users/tedmartinez/veritas/rethinkdb_data
+2016-06-25T13:01:38.820134000 0.244262s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Users/tedmartinez/veritas/rethinkdb_data' did not already exist or is empty.)
+2016-06-25T13:01:38.820156000 0.244284s notice: Running rethinkdb 2.3.4 (CLANG 7.3.0 (clang-703.0.31))...
+2016-06-25T13:01:38.824324000 0.248453s notice: Running on Darwin 15.5.0 x86_64
+2016-06-25T13:01:38.824385000 0.248512s notice: Loading data from directory /Users/tedmartinez/veritas/rethinkdb_data
+2016-06-25T13:01:38.943369000 0.367497s info: Automatically using cache size of 326 MB
+2016-06-25T13:01:38.944208000 0.368336s notice: Listening for intracluster connections on port 29015
+2016-06-25T13:01:38.945323000 0.369450s notice: Listening for client driver connections on port 28015
+2016-06-25T13:01:38.945435000 0.369562s notice: Listening for administrative HTTP connections on port 8080
+2016-06-25T13:01:38.945445000 0.369572s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2016-06-25T13:01:38.945449000 0.369576s notice: Listening on driver addresses: 127.0.0.1, ::1
+2016-06-25T13:01:38.945451000 0.369578s notice: Listening on http addresses: 127.0.0.1, ::1
+2016-06-25T13:01:38.945454000 0.369581s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-06-25T13:01:38.945457000 0.369584s notice: Server ready, "ted_local_a2e" a3799cc2-b4e4-4da7-8155-c13bf3eff544
+2016-06-25T13:02:06.333467000 27.757046s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Starting a new Raft election for term 1.
+2016-06-25T13:02:06.334174000 27.757753s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Added replica on this server.
+2016-06-25T13:02:06.353686000 27.777265s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: This server is Raft leader for term 1. Latest log index is 0.
+2016-06-25T13:02:06.866802000 28.290338s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:24.034900000 165.455572s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:24.232410000 165.653082s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Starting a new Raft election for term 1.
+2016-06-25T13:04:24.232662000 165.653334s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Added replica on this server.
+2016-06-25T13:04:24.255070000 165.675742s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: This server is Raft leader for term 1. Latest log index is 0.
+2016-06-25T13:04:24.764808000 166.185479s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:04:24.767308000 166.187979s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:04:24.979493000 166.400123s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Starting a new Raft election for term 1.
+2016-06-25T13:04:24.979971000 166.400601s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Added replica on this server.
+2016-06-25T13:04:25.000402000 166.421032s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: This server is Raft leader for term 1. Latest log index is 0.
+2016-06-25T13:04:25.513397000 166.934026s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:04:25.516212000 166.936841s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:04:25.673973000 167.094603s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:44.432515000 185.852766s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:44.435225000 185.855475s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:04:44.437737000 185.857988s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:04:44.579544000 185.999795s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:58.081706000 199.501662s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:04:58.084173000 199.504128s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:04:58.087245000 199.507201s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:04:58.222275000 199.642231s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:06:21.530686000 282.948874s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:06:21.533651000 282.951839s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:06:21.536217000 282.954405s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:06:21.755960000 283.174149s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:06:45.236359000 306.654085s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
+2016-06-25T13:06:45.238941000 306.656667s info: Table 16bbf559-f25b-476b-b790-51f07eed71a0: Configuration is changing.
+2016-06-25T13:06:45.241387000 306.659112s info: Table f759863d-4e21-4ab6-b03e-2c8bec34acd5: Configuration is changing.
+2016-06-25T13:06:45.387521000 306.805204s info: Table 443faf1c-6dfd-48ce-8509-d9a2e3ed9c87: Configuration is changing.
