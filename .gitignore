@@ -16,3 +16,4 @@
 !/log/.keep
 /tmp
 /rethinkdb_data
+/rethinkdb_data/*
