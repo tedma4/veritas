@@ -17,3 +17,4 @@
 /tmp
 /rethinkdb_data
 /rethinkdb_data/*
+/public/uploads/*
