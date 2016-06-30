@@ -18,3 +18,5 @@
 /rethinkdb_data
 /rethinkdb_data/*
 /public/uploads/*
+/.idea
+/idea/*

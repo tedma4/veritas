@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do
       resources :users
+    end
+  end
+  
+  scope module: :api do
+    namespace :v1 do
       resources :images
 
     end

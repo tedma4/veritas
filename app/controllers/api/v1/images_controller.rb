@@ -17,6 +17,7 @@ class Api::V1::ImagesController < ApplicationController
     # When Images need to be polymorphic, uncomment below
     # @imageable.attachments.create image_params
     # redirect_to @imageable
+    binding.pry
     @image = Image.new(image_params)
 
     respond_to do |format|
