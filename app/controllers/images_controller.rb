@@ -17,7 +17,7 @@ class ImagesController < ApplicationController
     # When Images need to be polymorphic, uncomment below
     # @imageable.attachments.create image_params
     # redirect_to @imageable
-    @image = Image.new(image_params)
+    @image = Image.new(image_params.to_h)
 
     respond_to do |format|
       if @image.save

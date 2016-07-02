@@ -18,16 +18,9 @@ class Api::V1::ImagesController < ApplicationController
     # @imageable.attachments.create image_params
     # redirect_to @imageable
     @image = Image.new(image_params)
-
-    respond_to do |format|
-      if @image.save
-        format.html { redirect_to @image, notice: 'Image was successfully created.' }
-        format.json { render :show, status: :created, location: @image }
-      else
-        format.html { render :new }
-        format.json { render json: @image.errors, status: :unprocessable_entity }
-      end
-    end
+    @image.save
+    ensure
+      clean_tempfile
   end
   
   def destroy
@@ -41,11 +34,44 @@ class Api::V1::ImagesController < ApplicationController
   private
   
   def image_params
-    params.require(:image).permit(:attachment)
+    the_params = params.require(:image).permit(:attachment)
+    the_params[:attachment] = parse_image_data(the_params[:attachment]) if the_params[:attachment]
+    the_params.to_h
   end
 
   def set_image
     @image = Image.find(params[:id])
+  end
+
+  def parse_image_data(base64_image)
+    filename = "upload-image"
+    # in_content_type, encoding, string = base64_image.split(/[:;,]/)[0..3]
+
+    @tempfile = Tempfile.new(filename)
+    @tempfile.binmode
+    @tempfile.write Base64.decode64(base64_image)
+    @tempfile.rewind
+
+    # for security we want the actual content type, not just what was passed in
+    content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
+
+    # we will also add the extension ourselves based on the above
+    # if it's not gif/jpeg/png, it will fail the validation in the upload model
+    extension = content_type.match(/gif|jpeg|png/).to_s
+    filename += ".#{extension}" if extension
+
+    ActionDispatch::Http::UploadedFile.new({
+                                               tempfile: @tempfile,
+                                               content_type: content_type,
+                                               filename: filename
+                                           })
+  end
+
+  def clean_tempfile
+    if @tempfile
+      @tempfile.close
+      @tempfile.unlink
+    end
   end
   
   # could be improve and include into concerns
