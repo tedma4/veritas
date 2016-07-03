@@ -22,6 +22,8 @@ class Image
   field :attachment, :type => String#, null: false
   field :original_filename, :type => String
   field :content_type, :type => String
+  field :latitude, :type => Float
+  field :longitude, :type => Float
 
   private
   

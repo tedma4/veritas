@@ -34,7 +34,7 @@ class Api::V1::ImagesController < ApplicationController
   private
   
   def image_params
-    the_params = params.require(:image).permit(:attachment)
+    the_params = params.require(:image).permit(:attachment, :latitude, :longitude)#:user_id
     the_params[:attachment] = parse_image_data(the_params[:attachment]) if the_params[:attachment]
     the_params.to_h
   end
