@@ -479,6 +479,10 @@ new_users = [
 	{name: 'Carol Cordova', user_name: 'Carol'},
 	{name: 'Cameron Hicks', user_name: 'Cameron'}
 	]
-new_users.each do |user|
-	User.create(name: user[:name], user_name: user[:user_name])
-end
+	new_users.each do |user|
+		User.create(name: user[:name], user_name: user[:user_name])
+	end
+	User.each do |user| 
+		sample_location = (-180..180).to_a.sample(2)
+		user.update_attributes(current_location: sample_location )
+	end

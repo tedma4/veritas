@@ -17,13 +17,12 @@ class Image
   # Virtual attributes
   alias_attribute :filename, :original_filename
 
-  field :attached_item_id, :type => Integer
-  field :attached_item_type, :type => String 
-  field :attachment, :type => String#, null: false
-  field :original_filename, :type => String
-  field :content_type, :type => String
-  field :latitude, :type => Float
-  field :longitude, :type => Float
+  field :attached_item_id, type: Integer
+  field :attached_item_type, type: String 
+  field :attachment, type: String#, null: false
+  field :original_filename, type: String
+  field :content_type, type: String
+  field :location, type: Geo::Point
 
   private
   

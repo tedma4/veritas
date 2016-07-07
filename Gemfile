@@ -30,6 +30,7 @@ gem 'nobrainer'
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'carrierwave-nobrainer', github: 'nviennot/carrierwave-nobrainer'
 gem 'devise-nobrainer'
+gem 'omniauth-facebook'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
