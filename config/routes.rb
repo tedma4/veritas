@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users
       resources :images
+      get '/map', to: 'users#map'
+
     end
   end
 end

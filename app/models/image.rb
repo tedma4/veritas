@@ -2,7 +2,7 @@ class Image
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 	mount_uploader :attachment, AttachmentUploader
-	# belongs_to :user, polymorphic: true
+	belongs_to :user#, polymorphic: true
 
   # Validations
   # validates_presence_of :attachment
@@ -22,7 +22,7 @@ class Image
   field :attachment, type: String#, null: false
   field :original_filename, type: String
   field :content_type, type: String
-  field :location, type: Geo::Point
+  field :location, type: Geo::Point, index: true
 
   private
   

@@ -61,6 +61,26 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def map
+    if current_user.present? && params[:random] == 'false'
+      @user = current_user
+      @docs = get_docs(@user, params[:area].to_i)
+    else
+      @user = User.sample
+      @docs = get_docs(@user, params[:area].to_i)
+    end
+  end
+
+  def get_docs(user, *area)
+    if area[0] != 0
+      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, area[0], {:unit => 'mi'})}
+      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)}}
+    else
+      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, 10, {:unit => 'mi'})}
+      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)}}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

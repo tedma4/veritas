@@ -32,6 +32,7 @@ gem 'carrierwave-nobrainer', github: 'nviennot/carrierwave-nobrainer'
 gem 'devise-nobrainer'
 gem 'omniauth-facebook'
 gem 'gmaps4rails'
+gem 'faker'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
