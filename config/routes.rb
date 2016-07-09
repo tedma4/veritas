@@ -3,7 +3,13 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   # resources :users
   resources :images
+  # resources :users
   root to: 'images#index'
+  # module :users do
+  #   member do 
+    get '/map', to: 'users#map'
+  #   end
+  # end
   # When Images need to be polymorphic, uncomment this
   # concern :imageable do
   #   resources :images

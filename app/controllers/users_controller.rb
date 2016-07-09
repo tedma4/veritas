@@ -61,6 +61,13 @@ class UsersController < ApplicationController
     end
   end
 
+  def map
+    @user = User.first
+    circle1 = NoBrainer.run { |r| r.circle(@user.current_location.to_a, 10, {:unit => 'mi'})}
+    @docs = NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)}}
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

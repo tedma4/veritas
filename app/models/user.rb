@@ -81,3 +81,9 @@ end
 # var circle1 = r.circle(r.db('veritas_development').table('users').get('3YxPL0X8jlUFqY')('current_location'), 1000, {unit: 'mi'});
 
 # r.db('veritas_development').table('users').filter(r.row('current_location').intersects(circle1))
+
+
+
+
+
+
