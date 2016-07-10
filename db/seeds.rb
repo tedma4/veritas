@@ -26,7 +26,7 @@ unless User.any?
   	user.email = Faker::Internet.email
   	user.password =  'password'
   	user.password_confirmation =  'password'
-  	user.current_location = [Faker::Address.latitude, Faker::Address.longitude] 
+  	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
     user.save
 
     # User.create(
@@ -43,7 +43,7 @@ end
   image = Image.new
   image.remote_attachment_url = Faker::Placeholdit.image
   image.user_id = User.sample.id
-  image.location = [Faker::Address.latitude, Faker::Address.longitude]
+  image.location = [Faker::Address.longitude, Faker::Address.latitude]
   image.save
 end
 

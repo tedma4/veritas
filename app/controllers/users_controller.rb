@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
+  require 'distance'
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users
   # GET /users.json
   def index
-    @users = User.all.order_by(:name => :desc)
+    @users = User.all.order_by(:id => :desc)
   end
 
   # GET /users/1
@@ -73,13 +74,26 @@ class UsersController < ApplicationController
 
   def get_docs(user, *area)
     if area[0] != 0
-      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, area[0], {:unit => 'mi'})}
-      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)}}
+      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, area[0], {:unit => 'mi'}) }
+      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)} }
     else
       circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, 10, {:unit => 'mi'})}
-      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)}}
+      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)} }
     end
   end
+
+  def get_box(user, args)
+    polygon_vertices = DistanceThing.new(user.current_location, args).box_coordinates
+    box = NoBrainer.run { |r| r.polygon(r.args(polygon_vertices)) }
+    @docs = NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
+  end
+
+
+
+
+
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -89,7 +103,7 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :user_name, :password, :password_confiramtion, :current_location, :email)
+      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email)
       #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
     end
 end
