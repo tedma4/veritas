@@ -63,35 +63,31 @@ class UsersController < ApplicationController
   end
 
   def map
-    if current_user.present? && params[:random] == 'false'
+    if params[:current_location]
+      @docs = param_thing(params[:current_location].split(',').map(&:to_f), params[:area].split(",").map(&:to_i))
+      # binding.pry
+    elsif current_user.present? && params[:random] == 'false'
       @user = current_user
-      @docs = get_docs(@user, params[:area].to_i)
+      @docs = get_box(@user, params[:area].split(",").map(&:to_i))
     else
       @user = User.sample
-      @docs = get_docs(@user, params[:area].to_i)
+      @docs = get_box(@user, params[:area].split(",").map(&:to_i))
     end
   end
 
-  def get_docs(user, *area)
-    if area[0] != 0
-      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, area[0], {:unit => 'mi'}) }
-      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)} }
-    else
-      circle1 = NoBrainer.run { |r| r.circle(user.current_location.to_a, 10, {:unit => 'mi'})}
-      NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(circle1)} }
-    end
-  end
-
-  def get_box(user, args)
+  def get_box(user = User.sample, args = [1,2])
     polygon_vertices = DistanceThing.new(user.current_location, args).box_coordinates
+    # binding.pry
     box = NoBrainer.run { |r| r.polygon(r.args(polygon_vertices)) }
-    @docs = NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
+    NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
   end
 
-
-
-
-
+  def param_thing(location, area)#(location = [1.123456, 2.1234567], args = [1,2])
+    # binding.pry
+    polygon_vertices = DistanceThing.new(location, area).box_coordinates
+    box = NoBrainer.run { |r| r.polygon(r.args(polygon_vertices)) }
+    NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
+  end
 
 
 

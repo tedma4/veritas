@@ -18,7 +18,7 @@ class DistanceThing
 	end
 
 	def deg_long(disy)
-		69.1710411*Math::cos(deg_lat(disy))
+		69.1710411*Math::cos(deg_lat(disy)*(Math::PI/180))
 		 # * Math.cos(lat)
 	end
 

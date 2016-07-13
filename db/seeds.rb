@@ -17,8 +17,8 @@
 # 		User.create(name: user[:name], user_name: user[:user_name])
 # 	end
 # password = 'password'
-unless User.any?
-  2000.times do |n|
+# unless User.any?
+  200.times do |n|
     user = User.new
     user.first_name = Faker::Name.first_name
     user.last_name = Faker::Name.last_name
@@ -28,23 +28,16 @@ unless User.any?
   	user.password_confirmation =  'password'
   	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
     user.save
-
-    # User.create(
-    #   name:      Faker::Name.name,
-    #   user_name: "#{Faker::Name.first_name}-#{n+1}",
-    #   email:     Faker::Internet.email,
-    #   encrypted_password:  'password',
-    #   current_location: [Faker::Address.latitude, Faker::Address.longitude] 
-    #   )
   end
-end
-
-200.times do |i|
-  image = Image.new
-  image.remote_attachment_url = Faker::Placeholdit.image
-  image.user_id = User.sample.id
-  image.location = [Faker::Address.longitude, Faker::Address.latitude]
-  image.save
+# end
+unless Image.any?
+  200.times do |i|
+    image = Image.new
+    image.remote_attachment_url = Faker::Placeholdit.image
+    image.user_id = User.sample.id
+    image.location = [Faker::Address.longitude, Faker::Address.latitude]
+    image.save
+  end
 end
 
 

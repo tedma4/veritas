@@ -6,6 +6,8 @@
 
 <% if @user %>
   <%= @user.inspect %>
+<% end %>
+<% if @docs %>
   <% @docs.each do |user| %>
   <ul>
   	<li>
@@ -20,7 +22,7 @@
   </ul>
   <% end %>
 <% else %>
-  Not signed in
+  Not signed in or no user object passed in
 <% end %>
 
 
