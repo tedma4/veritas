@@ -64,32 +64,16 @@ class UsersController < ApplicationController
 
   def map
     if params[:current_location]
-      @docs = param_thing(params[:current_location].split(',').map(&:to_f), params[:area].split(",").map(&:to_i))
-      # binding.pry
-    elsif current_user.present? && params[:random] == 'false'
-      @user = current_user
-      @docs = get_box(@user, params[:area].split(",").map(&:to_i))
+      @docs = param_thing(params[:current_location].split(',').map(&:to_f))
     else
-      @user = User.sample
-      @docs = get_box(@user, params[:area].split(",").map(&:to_i))
+      @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end
   end
 
-  def get_box(user = User.sample, args = [1,2])
-    polygon_vertices = DistanceThing.new(user.current_location, args).box_coordinates
-    # binding.pry
-    box = NoBrainer.run { |r| r.polygon(r.args(polygon_vertices)) }
-    NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
+  def get_document(location)
+    point = NoBrainer.run {|r| r.point(location[1], location[0])}
+    NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 25, unit: 'mi', max_dist: 100} )}
   end
-
-  def param_thing(location, area)#(location = [1.123456, 2.1234567], args = [1,2])
-    # binding.pry
-    polygon_vertices = DistanceThing.new(location, area).box_coordinates
-    box = NoBrainer.run { |r| r.polygon(r.args(polygon_vertices)) }
-    NoBrainer.run { |r| r.table('users').filter {|row| row['current_location'].intersects(box) } }
-  end
-
-
 
   private
     # Use callbacks to share common setup or constraints between actions.

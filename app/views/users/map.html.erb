@@ -11,13 +11,13 @@
   <% @docs.each do |user| %>
   <ul>
   	<li>
-		  <%= user['first_name'] %>  		
+		  <%= user['doc']['first_name'] %>  		
   	</li>
   	<li>
-		  <%= user['current_location']['coordinates'][0] %>
+		  <%= user['doc']['current_location']['coordinates'][0] %>
   	</li>
   	<li>	
-		  <%= user['current_location']['coordinates'][1] %>
+		  <%= user['doc']['current_location']['coordinates'][1] %>
   	</li>
   </ul>
   <% end %>
