@@ -33,6 +33,7 @@ gem 'devise-nobrainer'
 gem 'omniauth-facebook'
 gem 'gmaps4rails'
 gem 'faker'
+gem 'jwt'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
