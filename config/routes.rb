@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do
+      # devise_for :users, :controllers => {sessions: 'api/sessions'}#, registrations: 'api/registrations'
       resources :users
       resources :images
  
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
         match '/sessions' => 'sessions#create', via: :post
         match '/sessions' => 'sessions#destroy', via: :delete
       end
+      
       get '/map', to: 'users#map'
 
     end

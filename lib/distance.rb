@@ -1,19 +1,3 @@
-# The number of kilometers per degree of longitude is approximately
-
-# (2*pi/360) * r_earth * cos(theta)
-# where theta is the latitude in degrees and r_earth is approximately 6378 km.
-
-# The number of kilometers per degree of latitude is approximately the same at all locations, approx
-
-# (2*pi/360) * r_earth = 111 km / degree 
-# So you can do:
-
-# new_latitude  = latitude  + (dy / r_earth) * (180 / pi);
-# new_longitude = longitude + (dx / r_earth) * (180 / pi) / cos(latitude * pi/180);
-
-# As long as dx and dy are small compared to the radius of the earth and you don't get too close to the poles.
-
-
 class DistanceThing
 	# Earth's radius in Mi
 	EARTH_RADIUS = 3958.75586423
