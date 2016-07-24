@@ -1,4 +1,5 @@
-class Api::V1::ImagesController < ApplicationController
+class Api::V1::ImagesController < Api::V1::BaseController
+  skip_before_action :authenticate_user_from_token!
   before_action :set_image, only: [:show, :destroy]
    #:find_imageable
 

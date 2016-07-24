@@ -17,7 +17,7 @@
 # 		User.create(name: user[:name], user_name: user[:user_name])
 # 	end
 # password = 'password'
-# unless User.any?
+unless User.any?
   200.times do |n|
     user = User.new
     user.first_name = Faker::Name.first_name
@@ -27,9 +27,10 @@
   	user.password =  'password'
   	user.password_confirmation =  'password'
   	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
+    user.remote_avatar_url = Faker::Placeholdit.image
     user.save
   end
-# end
+end
 unless Image.any?
   200.times do |i|
     image = Image.new
