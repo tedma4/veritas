@@ -38,7 +38,7 @@ class User
 
   # field :private_account,    type: Boolean, default: false
   has_many :posts
-  has_many :friendships
+  has_many :friends
   validates_integrity_of  :avatar
   validates_processing_of :avatar
 
@@ -70,11 +70,11 @@ class User
   end
 
   def follow!(user)
-    self.friendships.create(friend: user)
+    self.friends.create(friended: user)
   end
 
   def unfollow!(user)
-    self.friendships['friend'][user.id].destroy
+    self.friends['friend'][user.id].destroy
   end
 
   private
