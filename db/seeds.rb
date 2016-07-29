@@ -27,17 +27,17 @@ unless User.any?
   	user.password =  'password'
   	user.password_confirmation =  'password'
   	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
-    user.remote_avatar_url = Faker::Placeholdit.image
+    user.remote_avatar_url = Faker::Placeholdit.post
     user.save
   end
 end
-unless Image.any?
+unless Post.any?
   200.times do |i|
-    image = Image.new
-    image.remote_attachment_url = Faker::Placeholdit.image
-    image.user_id = User.sample.id
-    image.location = [Faker::Address.longitude, Faker::Address.latitude]
-    image.save
+    post = Post.new
+    post.remote_attachment_url = Faker::Placeholdit.post
+    post.user_id = User.sample.id
+    post.location = [Faker::Address.longitude, Faker::Address.latitude]
+    post.save
   end
 end
 

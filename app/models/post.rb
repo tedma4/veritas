@@ -1,4 +1,4 @@
-class Image
+class Post
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 	mount_uploader :attachment, AttachmentUploader
@@ -6,10 +6,10 @@ class Image
 
   # Validations
   # validates_presence_of :attachment
-  # validates_integrity_of :image
+  # validates_integrity_of :post
 
   # Callbacks
-  # before_save :update_image_attributes
+  # before_save :update_post_attributes
 
   # Delegate
   delegate :url, :size, :path, to: :attachment
@@ -26,7 +26,7 @@ class Image
 
   private
   
-  # def update_image_attributes
+  # def update_post_attributes
   #   if attachment.present? && attachment_changed?
   #     self.original_filename = attachment.file.original_filename
   #     self.content_type = attachment.file.content_type

@@ -2,9 +2,9 @@ Rails.application.routes.draw do
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
-  resources :images
+  resources :posts
   resources :users
-  root to: 'images#index'
+  root to: 'posts#index'
 
   get '/map', to: 'users#map'
   
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # devise_for :users, :controllers => {sessions: 'api/sessions'}#, registrations: 'api/registrations'
       resources :users
-      resources :images
+      resources :posts
  
       devise_scope :user do
         match '/sessions' => 'sessions#create', via: :post

@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>post name:</strong>
+  <%= @post.original_filename %>
+</p>
+
+<p>
+  <strong>Id:</strong>
+  <%= @post.id %>
+</p>
+
+<p>
+  <strong>post:</strong>
+  <%= post_tag @post.attachment.url %>
+</p>
+
+<%= link_to 'Back', posts_path %>

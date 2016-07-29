@@ -25,7 +25,6 @@ class User
   field :current_sign_in_ip, type: String
   field :last_sign_in_ip,    type: String
 
-
   # Delegate
   delegate :url, :size, :path, to: :avatar
 
@@ -38,7 +37,7 @@ class User
   field :original_filename, type: String
 
   # field :private_account,    type: Boolean, default: false
-  has_many :images
+  has_many :posts
   has_many :friendships
   validates_integrity_of  :avatar
   validates_processing_of :avatar
@@ -69,12 +68,19 @@ class User
      created_at: self.created_at
     }
   end
-private
+
+  def follow!(user)
+    self.friendships.create(friend: user)
+  end
+
+  def unfollow!(user)
+    self.friendships['friend'][user.id].destroy
+  end
+
+  private
+  
   def avatar_size_validation
     errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
   end
 
 end
-
-
-

@@ -1,56 +1,56 @@
-class Api::V1::ImagesController < Api::V1::BaseController
+class Api::V1::PostsController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
-  before_action :set_image, only: [:show, :destroy]
-   #:find_imageable
+  before_action :set_post, only: [:show, :destroy]
+   #:find_postable
 
   def index
-    @images = Image.all.order_by(id: :desc)
+    @posts = Post.all.order_by(id: :desc)
   end
 
   def show    
   end
 
   def new
-    @image = Image.new    
+    @post = Post.new    
   end
   
   def create
-    # When Images need to be polymorphic, uncomment below
-    # @imageable.attachments.create image_params
-    # redirect_to @imageable
-    @image = Image.new(image_params)
-    @image.save
+    # When posts need to be polymorphic, uncomment below
+    # @postable.attachments.create post_params
+    # redirect_to @postable
+    @post = Post.new(post_params)
+    @post.save
     ensure
       clean_tempfile
   end
   
   def destroy
-    @image.destroy
+    @post.destroy
     respond_to do |format|
-      format.html { redirect_to images_url, notice: 'Image was successfully destroyed.' }
+      format.html { redirect_to posts_url, notice: 'post was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
   
   private
   
-  def image_params
-    the_params = params.require(:image).permit(:attachment, :latitude, :longitude)#:user_id
-    the_params[:attachment] = parse_image_data(the_params[:attachment]) if the_params[:attachment]
+  def post_params
+    the_params = params.require(:post).permit(:attachment, :latitude, :longitude)#:user_id
+    the_params[:attachment] = parse_post_data(the_params[:attachment]) if the_params[:attachment]
     the_params.to_h
   end
 
-  def set_image
-    @image = Image.find(params[:id])
+  def set_post
+    @post = Post.find(params[:id])
   end
 
-  def parse_image_data(base64_image)
-    filename = "upload-image"
-    # in_content_type, encoding, string = base64_image.split(/[:;,]/)[0..3]
+  def parse_post_data(base64_post)
+    filename = "upload-post"
+    # in_content_type, encoding, string = base64_post.split(/[:;,]/)[0..3]
 
     @tempfile = Tempfile.new(filename)
     @tempfile.binmode
-    @tempfile.write Base64.decode64(base64_image)
+    @tempfile.write Base64.decode64(base64_post)
     @tempfile.rewind
 
     # for security we want the actual content type, not just what was passed in
@@ -77,9 +77,9 @@ class Api::V1::ImagesController < Api::V1::BaseController
   
   # could be improve and include into concerns
   # http://api.rubyonrails.org/classes/ActiveSupport/Concern.html
-  # def find_imageable
+  # def find_postable
   #   params.each do |name, value|
-  #     return @imageable = $1.classify.constantize.find(value) if name =~ /(.+)_id$/
+  #     return @postable = $1.classify.constantize.find(value) if name =~ /(.+)_id$/
   #   end
   # end
 end
