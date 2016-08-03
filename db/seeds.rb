@@ -1,4 +1,4 @@
-unless User.any?
+# unless User.any? 
   200.times do |n|
     user = User.new
     user.first_name = Faker::Name.first_name
@@ -8,10 +8,11 @@ unless User.any?
   	user.password =  'password'
   	user.password_confirmation =  'password'
   	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
-    user.remote_avatar_url = Faker::Placeholdit.post
+    user.remote_avatar_url = Faker::Placeholdit.image
+    # user.pin = User.create_pin/
     user.save
   end
-end
+# end
 # unless Post.any?
   200.times do |i|
     post = Post.new
@@ -19,8 +20,11 @@ end
     post.user_id = User.sample.id
     post.location = [Faker::Address.longitude, Faker::Address.latitude]
     post.save
-  end
-# end
+  # end
+end
+
+
+
 
 
 

@@ -1,6 +1,8 @@
 class Api::V1::UsersController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_create :pin_exists
+  after_create :friend_from_pin
 
   # GET /users
   # GET /users.json
@@ -25,11 +27,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST /users
   # POST /users.json
   def create
-    # binding.pry
     @user = User.new(user_params.to_h)
     @auth_token = jwt_token(@user)
     respond_to do |format|
       if @user.save
+        @user.create_pin
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: { auth_token: @auth_token, user: @user.build_user_hash, created_at: @user.created_at } }
       else
@@ -56,6 +58,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
+    User.where()
     @user.destroy
     respond_to do |format|
       format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
@@ -88,4 +91,31 @@ class Api::V1::UsersController < Api::V1::BaseController
       params.require(:user).permit(:name, :user_name, :email, :password)
       #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
     end
+
+    def pin_exists
+      if params[:pin]
+        User.where(pin: params[:pin]).any?
+      else
+        raise 'Not a GoPost User Pin'
+      end
+    end
+
+    def friend_from_pin
+      user_from_pin = User.where(pin: params[:pin]).first
+      @user.update_attributes(followed_users: [user.id])
+      if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
+        user_from_pin.update_attributes(followed_users: [@user.id])
+      else
+        user_from_pin.followed_users << @user.id
+        user_from_pin.save
+      end
+    end
 end
+
+
+
+
+
+
+
+

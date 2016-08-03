@@ -19,7 +19,12 @@ class Api::V1::PostsController < Api::V1::BaseController
     # @postable.attachments.create post_params
     # redirect_to @postable
     @post = Post.new(post_params)
-    @post.save
+    if @post.hidden == false
+      @post.save
+    else
+      @post.selected_users = params[:selected_users]
+      @post.save
+    end
     ensure
       clean_tempfile
   end

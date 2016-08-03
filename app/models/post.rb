@@ -23,6 +23,8 @@ class Post
   field :original_filename, type: String
   field :content_type, type: String
   field :location, type: Geo::Point, index: true
+  field :hidden, type: Boolean, default: false
+  field :selected_users, type: Array
 
   private
   
