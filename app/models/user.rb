@@ -2,6 +2,8 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   mount_uploader :avatar, AttachmentUploader
+  before_create :pin_exists
+  after_create :friend_from_pin
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :omniauthable,
@@ -125,12 +127,61 @@ class User
     self.update_attributes(pin: sudo_random_pin)
   end
 
+  def self.search(search)
+    search = search.split(" ")
+    # binding.pry 
+    if search.count == 1
+      NoBrainer.run {|r| 
+        r.table('users').filter{ 
+          |user| user["first_name"].match("#{search.first}") | 
+                 user["last_name"].match("#{search.first}") | 
+                 user["user_name"].match("#{search.first}")
+          }
+        }
+    else
+      NoBrainer.run {|r| 
+        r.table('users').filter{ 
+          |user| user["first_name"].match("#{search.first}") | user["first_name"].match("#{search.last}") |
+                 user["last_name"].match("#{search.first}") | user["last_name"].match("#{search.last}") |
+                 user["user_name"].match("#{search.first}") | user["user_name"].match("#{search.last}")
+          }
+        }
+    end
 
+    # conditions = []
+    # search_columns = [ :first_name, :last_name, :user_name ]
 
-  private
-  
-  def avatar_size_validation
-    errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
+    # search.split(' ').each do |word|
+    #   search_columns.each do |column|
+    #     conditions << " lower(#{column}) LIKE lower(#{sanitize("%#{word}%")}) "
+    #   end
+    # end
+
+    # conditions = conditions.join('OR')    
+    # self.where(conditions)
   end
+  private
+    def avatar_size_validation
+      errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
+    end
+
+    def pin_exists
+      if params[:pin]
+        User.where(pin: params[:pin]).any?
+      else
+        raise 'Not a GoPost User Pin'
+      end
+    end
+
+    def friend_from_pin
+      user_from_pin = User.where(pin: params[:pin]).first
+      @user.update_attributes(followed_users: [user.id])
+      if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
+        user_from_pin.update_attributes(followed_users: [@user.id])
+      else
+        user_from_pin.followed_users << @user.id
+        user_from_pin.save
+      end
+    end
 
 end

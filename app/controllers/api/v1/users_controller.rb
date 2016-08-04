@@ -1,8 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_create :pin_exists
-  after_create :friend_from_pin
 
   # GET /users
   # GET /users.json
@@ -90,25 +88,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     def user_params
       params.require(:user).permit(:name, :user_name, :email, :password)
       #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
-    end
-
-    def pin_exists
-      if params[:pin]
-        User.where(pin: params[:pin]).any?
-      else
-        raise 'Not a GoPost User Pin'
-      end
-    end
-
-    def friend_from_pin
-      user_from_pin = User.where(pin: params[:pin]).first
-      @user.update_attributes(followed_users: [user.id])
-      if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-        user_from_pin.update_attributes(followed_users: [@user.id])
-      else
-        user_from_pin.followed_users << @user.id
-        user_from_pin.save
-      end
     end
 end
 
