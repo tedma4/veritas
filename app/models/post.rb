@@ -25,6 +25,7 @@ class Post
   field :location, type: Geo::Point, index: true
   field :hidden, type: Boolean, default: false
   field :selected_users, type: Array
+  # validates :user_id, presence: true
 
   private
   

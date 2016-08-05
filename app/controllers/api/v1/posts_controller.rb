@@ -18,6 +18,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     # When posts need to be polymorphic, uncomment below
     # @postable.attachments.create post_params
     # redirect_to @postable
+    binding.pry
     @post = Post.new(post_params)
     if @post.hidden == false
       @post.save
@@ -40,7 +41,11 @@ class Api::V1::PostsController < Api::V1::BaseController
   private
   
   def post_params
-    the_params = params.require(:post).permit(:attachment, :latitude, :longitude)#:user_id
+    the_params = params.require(:post).permit(:location, :user_id, :hidden, :selected_users, :attachment)
+    the_params[:location] = params[:location]
+    the_params[:user_id] = params[:user_id]
+    the_params[:hidden] = params[:hidden]
+    the_params[:selected_users] = params[:selected_users]
     the_params[:attachment] = parse_post_data(the_params[:attachment]) if the_params[:attachment]
     the_params.to_h
   end

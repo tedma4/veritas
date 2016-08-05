@@ -17,6 +17,10 @@ class Api::V1::SessionsController < Api::V1::BaseController
     # respond_with(@auth_token)
   end
 
+  def destroy
+    session[:user_id] = nil
+  end
+
   private
 
   def user_params

@@ -12,7 +12,8 @@
 
 <p>
   <strong>post:</strong>
-  <%= post_tag @post.attachment.url %>
+  <%# binding.pry %>
+  <%= image_tag @post.attachment %>
 </p>
 
 <%= link_to 'Back', posts_path %>

@@ -2,7 +2,6 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   mount_uploader :avatar, AttachmentUploader
-  before_create :pin_exists
   after_create :friend_from_pin
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -20,6 +19,7 @@ class User
   ## Rememberable
   field :remember_created_at, type: Time
   field :pin, type: String
+  validates :pin, presence: true
 
   ## Trackable
   field :sign_in_count,      type: Integer, default: 0
@@ -47,6 +47,7 @@ class User
 
   validates_integrity_of  :avatar
   validates_processing_of :avatar
+  # validate :pin_exists  
 
   ## Confirmable
   # field :confirmation_token,   type: String
@@ -71,6 +72,7 @@ class User
      email: self.email,
      avatar: self.avatar.url,
      user_name: self.user_name,
+     pin: self.pin,
      created_at: self.created_at
     }
   end
@@ -121,10 +123,24 @@ class User
   end
 
   def create_pin
+    pin_is_unique = nil
+    until false
+      pin = sudo_random_pin
+      unless User.where(:pin => pin).any?
+        pin_is_unique = pin
+        break
+      else
+        puts "pin was #{pin}"
+        false
+      end
+    end
+    self.update_attributes(pin: pin_is_unique)
+  end
+
+  def sudo_random_pin
     letter = [('a'..'z').to_a, ('A'..'Z').to_a].flatten.shuffle.first
     numbers = (0..9).to_a.shuffle.first(3).join
-    sudo_random_pin = letter + numbers
-    self.update_attributes(pin: sudo_random_pin)
+    letter + numbers
   end
 
   def self.search(search)
@@ -147,7 +163,6 @@ class User
           }
         }
     end
-
     # conditions = []
     # search_columns = [ :first_name, :last_name, :user_name ]
 
@@ -160,17 +175,30 @@ class User
     # conditions = conditions.join('OR')    
     # self.where(conditions)
   end
+
+  def get_associates(type)
+    case type
+    when 'pending'
+      User.where(:id.in => self.pending_friends).to_a
+    when 'friend'
+      User.where(:id.in => self.followed_users).to_a
+    end
+  end
+
+
+  def pin_exists(pin)
+    binding.pry
+    if pin[:pin]
+      User.where(pin: params[:pin]).any?
+    else
+      raise 'Not a GoPost User Pin'
+    end
+  end
+      
+
   private
     def avatar_size_validation
       errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
-    end
-
-    def pin_exists
-      if params[:pin]
-        User.where(pin: params[:pin]).any?
-      else
-        raise 'Not a GoPost User Pin'
-      end
     end
 
     def friend_from_pin
