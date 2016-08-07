@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       end
       
       get '/map', to: 'users#map'
+      get '/check_pin', to: 'users#check_pin'
 
     end
   end

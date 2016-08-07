@@ -66,16 +66,37 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def map
     if params[:current_location]
-      @docs = get_document(params[:current_location].split(',').map(&:to_f))
+      if params[:post]
+        @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
+        # @docs = posts.map(&:build_post_hash)
+      else
+        @docs = get_document(params[:current_location].split(',').map(&:to_f))
+      end
+    elsif params[:user_id]
+      user = User.where(:id => params[:user_id])
+      @docs = get_followers_and_posts(user)
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end
     respond_with(@docs)
   end
 
-  def get_document(location)
-    point = NoBrainer.run {|r| r.point(location[1], location[0])}
-    NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 250, unit: 'mi', max_dist: 5000} )}
+  def get_document(location, *post)
+    if post
+      point = NoBrainer.run {|r| r.point(location[1], location[0])}
+      NoBrainer.run {|r| r.table('posts').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
+    else
+      point = NoBrainer.run {|r| r.point(location[1], location[0])}
+      NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
+    end
+  end
+
+  def check_pin
+    if params[:pin]
+      errors.add(:pin, "#{params[:pin]} is Not a GoPost User Pin") unless User.where(pin: params[:pin]).any?
+    else
+      errors.add(:pin, "Please input a GoPost User Pin")
+    end
   end
 
   private

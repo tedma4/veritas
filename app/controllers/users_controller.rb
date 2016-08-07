@@ -26,9 +26,10 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params.to_h)
-
+    # binding.pry
     respond_to do |format|
       if @user.save
+        @user.create_pin
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else

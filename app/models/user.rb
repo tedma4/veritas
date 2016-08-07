@@ -7,6 +7,8 @@ class User
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :omniauthable,
          :recoverable, :rememberable, :trackable, :validatable
+  field :pin, type: String
+  validates :pin, presence: true
 
   ## Database authenticatable
   field :email,              type: String, default: "", uniq: true
@@ -18,8 +20,6 @@ class User
 
   ## Rememberable
   field :remember_created_at, type: Time
-  field :pin, type: String
-  validates :pin, presence: true
 
   ## Trackable
   field :sign_in_count,      type: Integer, default: 0
@@ -47,7 +47,7 @@ class User
 
   validates_integrity_of  :avatar
   validates_processing_of :avatar
-  # validate :pin_exists  
+  validate :pin_exists, on: :create
 
   ## Confirmable
   # field :confirmation_token,   type: String
@@ -73,6 +73,7 @@ class User
      avatar: self.avatar.url,
      user_name: self.user_name,
      pin: self.pin,
+     pin: self.current_location,
      created_at: self.created_at
     }
   end
@@ -134,6 +135,7 @@ class User
         false
       end
     end
+    # binding.pry
     self.update_attributes(pin: pin_is_unique)
   end
 
@@ -185,29 +187,32 @@ class User
     end
   end
 
-
-  def pin_exists(pin)
-    binding.pry
-    if pin[:pin]
-      User.where(pin: params[:pin]).any?
-    else
-      raise 'Not a GoPost User Pin'
-    end
+  def get_followers_and_posts(user)
+    users = User.eager_load(:posts).where(:id.in => user.followed_users)
+    posts = Post.where(:user_id.in => users.to_a.pluck(:id))
+    user_hash = users.map(&:build_user_hash)
+    post_hash = posts.map(&:build_post_hash)
+    new_hash = user_hash << post_hash
+    new_hash.flatten
   end
-      
 
   private
     def avatar_size_validation
       errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
     end
 
+    def pin_exists#(pin)
+      errors.add(:pin, "#{self[:pin]} is Not a GoPost User Pin") unless User.where(pin: self[:pin]).any?
+    end
+
     def friend_from_pin
-      user_from_pin = User.where(pin: params[:pin]).first
-      @user.update_attributes(followed_users: [user.id])
+      # binding.pry
+      user_from_pin = User.where(pin: self[:pin]).first
+      self.update_attributes(followed_users: [user_from_pin.id])
       if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-        user_from_pin.update_attributes(followed_users: [@user.id])
+        user_from_pin.update_attributes(followed_users: [self.id])
       else
-        user_from_pin.followed_users << @user.id
+        user_from_pin.followed_users << self.id
         user_from_pin.save
       end
     end
