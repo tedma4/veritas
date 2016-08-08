@@ -73,12 +73,13 @@ class User
      avatar: self.avatar.url,
      user_name: self.user_name,
      pin: self.pin,
-     pin: self.current_location,
+     current_location: self.current_location,
      created_at: self.created_at
     }
   end
 
-  def send_friend_request!(user)
+  def send_friend_request!(user_id)
+    user = User.find(user_id)
     if user.pending_friends.nil? || user.pending_friends.empty?
       user.update_attributes(pending_friends: [self.id])
     else 
@@ -91,7 +92,8 @@ class User
     end
   end
 
-  def accept_friend_request(user)
+  def accept_friend_request(user_id)
+    user = User.find(user_id)
     self.pending_friends.delete(user.id)
     if user.followed_users.nil? || user.followed_users.empty?
       user.update_attributes(followed_users: [self.id])
@@ -115,12 +117,15 @@ class User
 
   def decline_friend_request(user_id)
     self.pending_friends.delete(user_id)
+    self.save
   end
 
   def unfriend_user(user_id)
     self.followed_users.delete(user_id)
-    @user = User.where(id: user_id).first
+    self.save
+    @user = User.find(user_id)
     @user.followed_users.delete(self.id)
+    @user.save
   end
 
   def create_pin

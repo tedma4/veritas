@@ -66,12 +66,14 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def map
     if params[:current_location]
-      if params[:post]
-        @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
-        # @docs = posts.map(&:build_post_hash)
-      else
-        @docs = get_document(params[:current_location].split(',').map(&:to_f))
-      end
+      # if params[:post]
+      #   @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
+      #   # @docs = posts.map(&:build_post_hash)
+      # else
+      # binding.pry
+        this = get_document(params[:current_location].split(',').map(&:to_f))
+        @docs = this.map(&:build_post_hash)
+      # end
     elsif params[:user_id]
       user = User.where(:id => params[:user_id])
       @docs = get_followers_and_posts(user)
@@ -81,14 +83,15 @@ class Api::V1::UsersController < Api::V1::BaseController
     respond_with(@docs)
   end
 
-  def get_document(location, *post)
-    if post
+  def get_document(location)
+    # if post
       point = NoBrainer.run {|r| r.point(location[1], location[0])}
-      NoBrainer.run {|r| r.table('posts').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
-    else
-      point = NoBrainer.run {|r| r.point(location[1], location[0])}
-      NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
-    end
+      posts = NoBrainer.run {|r| r.table('posts').get_nearest(point, {index: 'location', max_results: 50, unit: 'mi', max_dist: 5000} )}
+      posts.map {|post| Post.find(post['doc']['id'])}
+    # else
+    #   point = NoBrainer.run {|r| r.point(location[1], location[0])}
+    #   NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
+    # end
   end
 
   def check_pin
@@ -107,7 +110,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin)
+      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
       #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
     end
 end

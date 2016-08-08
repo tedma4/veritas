@@ -28,15 +28,20 @@ class Post
   # validates :user_id, presence: true
 
   def build_post_hash
-    {id: self.id,
-     created_at: self.created_at,
-     image: self.attachment.url
-     location: self.location,
-     hidden: self.hidden,
-     first_name: self.user.first_name,
-     last_name: self.user.last_name,
-     avatar: self.user.avatar.url,
-     user_name: self.user.user_name
+    {
+      
+        id: self.id,
+        created_at: self.created_at,
+        image: self.attachment.url,
+        location: self.location,
+        hidden: self.hidden,
+     
+      user: {
+        first_name: self.user.first_name,
+        last_name: self.user.last_name,
+        avatar: self.user.avatar.url,
+        user_name: self.user.user_name
+      }
     }
   end
 

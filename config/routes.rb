@@ -6,7 +6,12 @@ Rails.application.routes.draw do
   resources :users
   root to: 'posts#index'
 
-  get '/map', to: 'users#map'
+  get '/map',                to: 'users#map'
+  get '/search',             to: 'users#search'
+  post '/send_request',      to: 'users#send_request'
+  post '/approve_request',   to: 'users#approve_request'
+  delete '/remove_friend',   to: 'users#remove_friend'
+  delete '/decline_request', to: 'users#decline_request'
   
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do

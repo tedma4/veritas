@@ -20,7 +20,12 @@
   <%= @user.id %>
 </p>
 
-<% unless @user == current_user %>
+<p>
+  <strong>Avatar:</strong>
+  <%= image_tag @user.try(:avatar), size: 50 %>
+</p>
+
+<% unless @user == current_user && user_signed_in? %>
 follow
 <% end %>
 

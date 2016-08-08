@@ -76,6 +76,32 @@ class UsersController < ApplicationController
     NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 25, unit: 'mi', max_dist: 100} )}
   end
 
+  def search
+    if params[:search]
+      @search = User.search(params[:search])
+    else
+      @search = User.sample 50
+    end
+  end
+
+  def send_request
+    # binding.pry
+    current_user.send_friend_request!(params['user'])
+  end
+
+  def approve_request
+    current_user.accept_friend_request(params['user'])
+  end
+
+  def remove_friend
+    current_user.unfriend_user(params['user'])
+  end
+
+  def decline_request
+    # binding.pry
+    current_user.decline_friend_request(params['user'])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -84,7 +110,7 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin)
+      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
       #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
     end
 end
