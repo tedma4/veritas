@@ -102,6 +102,13 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def friend_list
+    user = User.find(params[:id])
+    list = User.where(:id.in => user.followed_users)
+    @users = list.map &:build_user_hash
+    respond_with(@users)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
