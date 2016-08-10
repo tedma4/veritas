@@ -42,8 +42,8 @@ class User
   # field :private_account,    type: Boolean, default: false
   has_many :posts
 
-  field :followed_users, type: Array
-  field :pending_friends, type: Array
+  field :followed_users, type: Array, default: Array.new
+  field :pending_friends, type: Array, default: Array.new
 
   validates_integrity_of  :avatar
   validates_processing_of :avatar

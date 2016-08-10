@@ -77,7 +77,7 @@ class UsersController < ApplicationController
   end
 
   def search
-    if params[:search]
+    if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
     else
       @search = User.sample 50
@@ -85,7 +85,6 @@ class UsersController < ApplicationController
   end
 
   def send_request
-    # binding.pry
     current_user.send_friend_request!(params['user'])
   end
 
@@ -98,9 +97,19 @@ class UsersController < ApplicationController
   end
 
   def decline_request
-    # binding.pry
     current_user.decline_friend_request(params['user'])
   end
+
+  def friend_list
+    user = User.find(params[:id])
+    @users = User.where(:id.in => user.followed_users)
+  end
+
+  def accept_requests
+    user = User.find(params[:id])
+    @users = User.where(:id.in => user.pending_friends)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
