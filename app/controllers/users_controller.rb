@@ -110,6 +110,12 @@ class UsersController < ApplicationController
     @users = User.where(:id.in => user.pending_friends)
   end
 
+  def friends_posts
+    user = User.find(params[:id])
+    posts = User.where(:id.in => user.followed_users.flatten).map {|user| user.posts.to_a }
+    @posts = posts.flatten.sort {|a, b| b['created_at'] <=> a['created_at']}
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

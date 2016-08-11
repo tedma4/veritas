@@ -1,0 +1,29 @@
+<h1>Friend List</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Post Id</th>
+      <th>Post Location</th>
+      <th>Post Attachment</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if @posts.present? %>
+	    <% @posts.each do |user| %>
+	      <tr>
+	        <td><%= user['id'] %></td>
+	        <td><%= user['location'] %></td>
+		    	<td><%= image_tag user.attachment.url, size: '50' %></td>
+	        <td><%= link_to 'Show', "/users/#{user.user.id}" %></td>
+	        <td><%= link_to 'Edit', "/users/#{user.user['id']}/edit" %></td>
+	        <td>
+						<%= link_to 'Un-friend', remove_friend_path(user: user['id']), method: :delete, remote: true, data: { confirm: 'Are you sure?' } %>
+	        </td>
+	      </tr>
+	    <% end %>
+    <% end %>
+  </tbody>
+</table>

@@ -13,6 +13,7 @@
 <% if user_signed_in? %>
 <%= link_to 'Friend List', "/users/#{current_user.id}/friend_list" %>
 <%= link_to 'Accept Requests', "/users/#{current_user.id}/accept_requests" %>
+<%= link_to "Friend's posts", "/users/#{current_user.id}/friends_posts" %>
 <%= link_to 'Edit profile', edit_user_registration_path %>
 <%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
 <% else %>

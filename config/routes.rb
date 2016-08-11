@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   
   get '/users/:id/friend_list',     to: 'users#friend_list'
   get '/users/:id/accept_requests', to: 'users#accept_requests'
+  get '/users/:id/friends_posts',   to: 'users#friends_posts'
   
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do
