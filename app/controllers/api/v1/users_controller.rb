@@ -65,18 +65,26 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def map
-    if params[:current_location]
-      # if params[:post]
-      #   @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
-      #   # @docs = posts.map(&:build_post_hash)
-      # else
-      # binding.pry
-        this = get_document(params[:current_location].split(',').map(&:to_f))
-        @docs = this.map(&:build_post_hash)
+
+    # params[:current_location]
+    #   # if params[:post]
+    #   #   @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
+    #   #   # @docs = posts.map(&:build_post_hash)
+    #   # else
+    #   # binding.pry
+    #     this = get_document(params[:current_location].split(',').map(&:to_f))
+    #     @docs = this.map(&:build_post_hash)
+    #   # end
+    # elsif
+
+    if params[:user_id]
+      user = User.where(:id => params[:user_id]).first
+      # if params[:current_location]
+      #   user.current_location = [params[:current_location][1], params[:current_location][0]]
+      #   user.save
       # end
-    elsif params[:user_id]
-      user = User.where(:id => params[:user_id])
-      @docs = get_followers_and_posts(user)
+      # binding.pry
+      @docs = User.get_followers_and_posts(user)
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end

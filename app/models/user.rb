@@ -192,13 +192,15 @@ class User
     end
   end
 
-  def get_followers_and_posts(user)
+  def self.get_followers_and_posts(user)
+    # binding.pry
     users = User.eager_load(:posts).where(:id.in => user.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
-    user_hash = users.map(&:build_user_hash)
-    post_hash = posts.map(&:build_post_hash)
-    new_hash = user_hash << post_hash
-    new_hash.flatten
+    # user_hash = users.map(&:build_user_hash)
+    posts.map(&:build_post_hash)
+    # new_hash = user_hash << post_hash
+    # binding.pry
+    # new_hash.flatten
   end
 
   private
