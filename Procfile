@@ -1,2 +1,2 @@
 web: `python lib/tunnel.py`
-web: rails nobrainer:sync_schema
+web: RAILS_ENV=production rails nobrainer:sync_schema
