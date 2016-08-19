@@ -107,7 +107,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       if User.where(pin: params[:pin]).any?
         return true
       else
-        raise { error: 'Access denied' }.to_json
+        raise 'Access denied'
       end
     end
   end
