@@ -104,9 +104,11 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def check_pin
     if params[:pin]
-      errors.add(:pin, "#{params[:pin]} is Not a GoPost User Pin") unless User.where(pin: params[:pin]).any?
-    else
-      errors.add(:pin, "Please input a GoPost User Pin")
+      if User.where(pin: params[:pin]).any?
+        return true
+      else
+        raise { error: 'Access denied' }.to_json
+      end
     end
   end
 

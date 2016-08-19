@@ -34,6 +34,7 @@ gem 'omniauth-facebook'
 gem 'gmaps4rails'
 gem 'faker'
 gem 'jwt'
+gem 'figaro'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
