@@ -14,9 +14,9 @@
   end
 # end
 # unless Post.any?
-  200.times do |i|
+  800.times do |i|
     post = Post.new
-    post.remote_attachment_url = Faker::Placeholdit.image
+    post.remote_attachment_url = Faker::Avatar.image
     post.user_id = User.sample.id
     post.location = [Faker::Address.longitude, Faker::Address.latitude]
     post.save
