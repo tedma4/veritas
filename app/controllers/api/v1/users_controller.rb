@@ -119,6 +119,16 @@ class Api::V1::UsersController < Api::V1::BaseController
     respond_with(@users)
   end
 
+  def search
+    if params[:search] && !params[:search].blank?
+      @search = User.search(params[:search])
+      respond_with @search
+    else
+      @search = User.sample 50
+      respond_with @search
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
