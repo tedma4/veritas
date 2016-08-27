@@ -129,6 +129,13 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def feed
+    @user = User.where(id: params[:id]).first
+    @feed = User.get_followers_and_posts(@user)
+    respond_with @feed
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

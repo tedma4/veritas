@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get '/check_pin', to: 'users#check_pin'
       get '/search', to: 'users#search'
       get '/users/:id/friend_list', to: 'users#friend_list'
+      get '/feed', to: 'users#feed'
 
     end
   end
