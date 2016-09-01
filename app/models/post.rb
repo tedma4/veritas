@@ -3,6 +3,7 @@ class Post
   include NoBrainer::Document::Timestamps
 	mount_uploader :attachment, AttachmentUploader
 	belongs_to :user#, polymorphic: true
+  has_many :notifications
 
   # Validations
   # validates_presence_of :attachment

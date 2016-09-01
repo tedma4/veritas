@@ -41,6 +41,7 @@ class User
 
   # field :private_account,    type: Boolean, default: false
   has_many :posts
+  has_many :notifications
 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
