@@ -25,6 +25,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     else
       @post.selected_users = params[:selected_users]
       @post.save
+      hidden_post_notification @post
     end
     ensure
       clean_tempfile
@@ -92,4 +93,27 @@ class Api::V1::PostsController < Api::V1::BaseController
   #     return @postable = $1.classify.constantize.find(value) if name =~ /(.+)_id$/
   #   end
   # end
+
+  def hidden_post_notification(post)
+    return if post.user.id == current_user.id
+    users = post.selected_users.split(',')
+    users.each do |user_id|
+      Notification.create(user_id: user_id,
+                          notified_by_id: current_user.id,
+                          post_id: post.id,
+                          notice_type: 'hidden post')
+    end
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+

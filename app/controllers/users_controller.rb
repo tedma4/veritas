@@ -29,6 +29,7 @@ class UsersController < ApplicationController
     # binding.pry
     respond_to do |format|
       if @user.save
+        @user.signup_with_pin_notification(@user.pin)
         @user.create_pin
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
@@ -85,11 +86,13 @@ class UsersController < ApplicationController
   end
 
   def send_request
-    current_user.send_friend_request!(params['user'])
+    current_user.send_friend_request(params['user'])
+    current_user.send_friend_request_notification(params['user'])
   end
 
   def approve_request
     current_user.accept_friend_request(params['user'])
+    current_user.accept_friend_request_notification(params['user'])
   end
 
   def remove_friend

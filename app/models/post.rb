@@ -3,7 +3,7 @@ class Post
   include NoBrainer::Document::Timestamps
 	mount_uploader :attachment, AttachmentUploader
 	belongs_to :user#, polymorphic: true
-  has_many :notifications
+  has_many :notifications, dependent: :destroy  
 
   # Validations
   # validates_presence_of :attachment
@@ -30,13 +30,11 @@ class Post
 
   def build_post_hash
     {
-      
-        id: self.id,
-        created_at: self.created_at,
-        image: self.attachment.url,
-        location: self.location,
-        hidden: self.hidden,
-     
+      id: self.id,
+      created_at: self.created_at,
+      image: self.attachment.url,
+      location: self.location,
+      hidden: self.hidden,
       user: {
         first_name: self.user.first_name,
         last_name: self.user.last_name,

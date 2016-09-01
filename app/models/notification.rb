@@ -14,12 +14,4 @@ class Notification
   belongs_to :post
   # validates :user_id, :notified_by_id, :post_id, :identifier, :notice_type, presence: true
 
-
-  # t.integer  "user_id"
-  # t.integer  "notified_by_id"
-  # t.integer  "post_id"
-  # t.integer  "identifier"
-  # t.string   "notice_type"
-  # t.boolean  "read",           default: false
-
 end

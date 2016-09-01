@@ -41,7 +41,7 @@ class User
 
   # field :private_account,    type: Boolean, default: false
   has_many :posts
-  has_many :notifications
+  has_many :notifications, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
@@ -79,7 +79,7 @@ class User
     }
   end
 
-  def send_friend_request!(user_id)
+  def send_friend_request(user_id)
     user = User.find(user_id)
     if user.pending_friends.nil? || user.pending_friends.empty?
       user.update_attributes(pending_friends: [self.id])
@@ -205,6 +205,28 @@ class User
   end
 
   private
+    def send_friend_request_notification(user_id)
+      return if user_id == self.id 
+      Notification.create(user_id: user_id,
+                          notified_by_id: self.id,
+                          notice_type: 'friend request')
+    end
+
+    def accept_friend_request_notification(user_id)
+      return if user_id == self.id 
+      Notification.create(user_id: user_id,
+                          notified_by_id: self.id,
+                          notice_type: 'accept request')
+    end
+
+    def signup_with_pin_notification(pin)
+      user_id = User.where(:pin => pin).first.id
+      return if user_id == self.id 
+      Notification.create(user_id: user_id,
+                          notified_by_id: self.id,
+                          notice_type: 'pin signup')
+    end
+
     def avatar_size_validation
       errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
     end
