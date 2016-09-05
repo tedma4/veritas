@@ -12,6 +12,14 @@
     # user.validate = false
     user.save(validate: false)
   end
+
+  if User.where(:followed_users.eq => []).any?
+    User.where(:followed_users.eq => []).each do |user|
+      user.followed_users << User.sample(10).pluck(:id)
+      user.followed_users.flatten!
+      user.save
+    end
+  end
 # end
 # unless Post.any?
   800.times do |i|
