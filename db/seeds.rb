@@ -8,7 +8,7 @@
   	user.password =  'password'
   	user.password_confirmation =  'password'
   	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
-    user.remote_avatar_url = Faker::Placeholdit.image
+    user.remote_avatar_url = Faker::Avatar.image
     # user.validate = false
     user.save(validate: false)
   end
