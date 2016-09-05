@@ -11,7 +11,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
 
   def new
-    @post = Post.new    
+    @post = Post.new
   end
   
   def create
@@ -96,7 +96,7 @@ class Api::V1::PostsController < Api::V1::BaseController
 
   def hidden_post_notification(post)
     return if post.user.id == current_user.id
-    users = post.selected_users.split(',')
+    users = post.selected_users.count > 1 ? post.selected_users.split(',') : post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
                           notified_by_id: current_user.id,

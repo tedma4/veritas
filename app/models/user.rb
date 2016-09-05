@@ -238,13 +238,17 @@ class User
 
     def friend_from_pin
       # binding.pry
-      user_from_pin = User.where(pin: self[:pin]).first
-      self.update_attributes(followed_users: [user_from_pin.id])
-      if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-        user_from_pin.update_attributes(followed_users: [self.id])
+      unless self.pin.nil?
+        user_from_pin = User.where(pin: self[:pin]).first
+        self.update_attributes(followed_users: [user_from_pin.id])
+        if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
+          user_from_pin.update_attributes(followed_users: [self.id])
+        else
+          user_from_pin.followed_users << self.id
+          user_from_pin.save
+        end
       else
-        user_from_pin.followed_users << self.id
-        user_from_pin.save
+        return true
       end
     end
 
