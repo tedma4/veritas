@@ -18,14 +18,14 @@ class Api::V1::PostsController < Api::V1::BaseController
     # When posts need to be polymorphic, uncomment below
     # @postable.attachments.create post_params
     # redirect_to @postable
-    binding.pry
+    # binding.pry
     @post = Post.new(post_params)
     if @post.hidden == false
       @post.save
     else
       @post.selected_users = params[:selected_users]
       @post.save
-      hidden_post_notification @post
+      # hidden_post_notification @post
     end
     ensure
       clean_tempfile

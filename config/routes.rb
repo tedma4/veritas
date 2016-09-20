@@ -31,8 +31,9 @@ Rails.application.routes.draw do
       get '/map', to: 'users#map'
       get '/check_pin', to: 'users#check_pin'
       get '/search', to: 'users#search'
-      get '/users/:id/friend_list', to: 'users#friend_list'
+      get '/friend_list', to: 'users#friend_list'
       get '/feed', to: 'users#feed'
+      post "/send_request", to: 'users#send_request'
 
     end
   end

@@ -34,6 +34,9 @@ class Api::V1::SessionsController < Api::V1::BaseController
   end
 
   def invalid_login_attempt
-    render_unauthorized errors: { unauthenticated: ["Invalid credentials"] }
+    self.status = :unauthorized
+    self.response_body = { error: 'Access denied' }
+
+    # render_unauthorized errors: { unauthenticated: ["Invalid credentials"] }
   end
 end

@@ -76,7 +76,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     #     @docs = this.map(&:build_post_hash)
     #   # end
     # elsif
-
+    # binding.pry
     if params[:user_id]
       user = User.where(:id => params[:user_id]).first
       # if params[:current_location]
@@ -84,7 +84,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       #   user.save
       # end
       # binding.pry
-      @docs = User.get_followers_and_posts(user)
+      @docs = user.get_followers_and_posts
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end
@@ -122,19 +122,55 @@ class Api::V1::UsersController < Api::V1::BaseController
   def search
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
-      respond_with @search
+      # binding.pry
+      if current_user
+        respond_with @search.map {|user| 
+        user = User.find(user["id"])
+        if current_user.followed_users.include?(user.id)
+          build_search_hash(user)['friend'] = true
+        else
+          return build_search_hash(user)
+        end
+      }
+      else
+      respond_with @search.map {|user| 
+        user = User.find(user["id"])
+        build_search_hash(user)}
+      end
     else
-      @search = User.sample 50
+      @search = User.sample 10
       respond_with @search
     end
   end
 
+    def build_search_hash(user)
+      # binding.pry
+    {id: user["id"],
+     first_name: user["first_name"],
+     last_name: user["last_name"],
+     email: user["email"],
+     avatar: user.avatar.url,
+     user_name: user["user_name"],
+     pin: user["pin"],
+     current_location: user["current_location"],
+     created_at: user["created_at"]
+    }
+  end
+
   def feed
+    # binding.pry
     @user = User.where(id: params[:id]).first
-    @feed = User.get_followers_and_posts(@user)
+    @feed = @user.get_followers_and_posts
     respond_with @feed
 
   end
+
+  def send_request
+    user = User.find(params["user_id"])
+    user.send_friend_request(params["friend_id"])
+    user.send_friend_request_notification(params['friend_id'])
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
