@@ -122,20 +122,17 @@ class Api::V1::UsersController < Api::V1::BaseController
   def search
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
-      # binding.pry
-      if current_user
+      if params["user_id"]
+        current_user = User.find(params["user_id"])
         respond_with @search.map {|user| 
-        user = User.find(user["id"])
-        if current_user.followed_users.include?(user.id)
-          build_search_hash(user)['friend'] = true
-        else
-          return build_search_hash(user)
-        end
-      }
+          user = User.find(user["id"])
+          build_search_hash(current_user, user)
+        }
       else
-      respond_with @search.map {|user| 
-        user = User.find(user["id"])
-        build_search_hash(user)}
+        respond_with @search.map {|user| 
+            user = User.find(user["id"])
+            build_search_hash(user)
+          }
       end
     else
       @search = User.sample 10
@@ -143,17 +140,19 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
-    def build_search_hash(user)
-      # binding.pry
-    {id: user["id"],
-     first_name: user["first_name"],
-     last_name: user["last_name"],
-     email: user["email"],
+  def build_search_hash(current_user, user)
+    {id: user.id,
+     first_name: user.first_name,
+     last_name: user.last_name,
+     email: user.email,
      avatar: user.avatar.url,
-     user_name: user["user_name"],
-     pin: user["pin"],
-     current_location: user["current_location"],
-     created_at: user["created_at"]
+     user_name: user.user_name,
+     pin: user.pin,
+     current_location: user.current_location,
+     created_at: user.created_at,
+     friendship_status: current_user.followed_users.include?(user.id) ? 
+       "Is already a friend" : (user.pending_friends.include?(current_user.id) ? 
+        "Request Sent" : "Send Request")
     }
   end
 
@@ -167,7 +166,13 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def send_request
     user = User.find(params["user_id"])
-    user.send_friend_request(params["friend_id"])
+    user.send_friend_request(params["friend_id"]) unless user.followed_users.include?(params["friend_id"])
+    friended_user = User.find(params["friend_id"])
+    if friended_user.pending_friends.include?(user.id)
+      render json: {status: :ok}
+    else
+      render json: {status: :unprocessable_entity}
+    end
     user.send_friend_request_notification(params['friend_id'])
   end
 
