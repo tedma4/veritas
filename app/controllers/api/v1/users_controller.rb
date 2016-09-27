@@ -27,12 +27,14 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create
     @user = User.new(user_params.to_h)
     @auth_token = jwt_token(@user)
+        binding.pry
     respond_to do |format|
       if @user.save
         @user.create_pin
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: { auth_token: @auth_token, user: @user.build_user_hash, created_at: @user.created_at } }
       else
+        binding.pry
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -186,7 +188,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
-      #attachments_attributes: [:id, :attachment, :attachment_cache, :_destroy]
     end
 end
 
