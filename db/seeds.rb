@@ -29,6 +29,15 @@
     post.location = [Faker::Address.longitude, Faker::Address.latitude]
     post.save
   end
+
+100.times do |i|
+  note = Notification.new
+  note.user_id = User.sample.id
+  note.notified_by_id = User.sample.id
+  note.notice_type = ["accept request", "friend request", "pin signup"].sample
+  note.save
+end
+
 # end
 
 
