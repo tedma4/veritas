@@ -11,6 +11,7 @@
     user.remote_avatar_url = Faker::Avatar.image
     # user.validate = false
     user.save(validate: false)
+    user.create_pin
   end
 
   if User.where(:followed_users.eq => []).any?

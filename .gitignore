@@ -16,9 +16,12 @@
 !/log/.keep
 /tmp
 /rethinkdb_data
-/rethinkdb_data/*
+/rethinkdb_data/**
 /public/uploads/*
 /.idea
 /idea/*
 # Ignore application configuration
 /config/application.yml
+config/.DS_Store
+*.DS_Store
+.DS_Store
