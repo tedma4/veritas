@@ -32,13 +32,13 @@ class Post
     {
       id: self.id,
       created_at: self.created_at,
-      image: self.attachment.url,
+      image: self.attachment.url || "/assets/images/default-image.png",
       location: self.location,
       hidden: self.hidden,
       user: {
         first_name: self.user.first_name,
         last_name: self.user.last_name,
-        avatar: self.user.avatar.url,
+        avatar: self.user.avatar.url || "/assets/images/default-image.png",
         user_name: self.user.user_name
       }
     }

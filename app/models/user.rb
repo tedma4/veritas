@@ -71,7 +71,7 @@ class User
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,
-     avatar: self.avatar.url,
+     avatar: self.avatar.url || "/assets/images/default-image.png",
      user_name: self.user_name,
      pin: self.pin,
      current_location: self.current_location,
