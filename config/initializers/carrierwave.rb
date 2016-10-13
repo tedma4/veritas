@@ -1,11 +1,11 @@
 CarrierWave.configure do |config|
   config.storage    = :aws
   config.aws_bucket = ENV.fetch('S3_BUCKET_NAME')
-  # config.aws_acl    = 'public-read'
+  config.aws_acl    = 'public-read'
 
   # Optionally define an asset host for configurations that are fronted by a
   # content host, such as CloudFront.
-  config.asset_host = 'https://veritas-go.herokuapp.com'
+  config.asset_host = "https://s3-us-west-2.amazonaws.com/#{ENV['S3_BUCKET_NAME']}"
   # config.asset_host = 'http://localhost:3000'
 
   # The maximum period for authenticated_urls is only 7 days.
