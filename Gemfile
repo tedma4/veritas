@@ -35,7 +35,7 @@ gem 'gmaps4rails'
 gem 'faker'
 gem 'jwt'
 gem 'figaro'
-gem 'fog', '1.38.0'
+gem 'carrierwave-aws', '1.0.2'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
