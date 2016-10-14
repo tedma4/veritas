@@ -23,7 +23,7 @@
   # end
 # end
 # unless Post.any?
-  1.times do |i|
+  999.times do |i|
     post = Post.new
     post.remote_attachment_url = Faker::Avatar.image
     post.user_id = User.sample.id
