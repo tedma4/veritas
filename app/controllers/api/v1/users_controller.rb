@@ -46,10 +46,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   def update
     respond_to do |format|
       if @user.update(user_params.to_h)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
+        format.json { render json: @user.build_user_hash, status: :ok }
       else
-        format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
@@ -61,7 +59,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     User.where()
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -180,15 +177,55 @@ class Api::V1::UsersController < Api::V1::BaseController
 
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def user_params
-      params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
+  def set_user
+    @user = User.find(params[:id])
+  end
+  
+  def user_params
+    the_params = params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
+    the_params[:first_name] = params[:first_name]
+    the_params[:last_name] = params[:last_name]
+    the_params[:user_name] = params[:user_name]
+    the_params[:password] = params[:password]
+    the_params[:password_confiramtion] = params[:password_confiramtion]
+    the_params[:current_location] = params[:current_location]
+    the_params[:email] = params[:email]
+    the_params[:pin] = params[:pin]
+    the_params[:avatar] = parse_user_data(the_params[:avatar]) if the_params[:avatar]
+    the_params.to_h
+  end
+
+  def parse_user_data(base64_user)
+    filename = "upload-user"
+    # in_content_type, encoding, string = base64_user.split(/[:;,]/)[0..3]
+
+    @tempfile = Tempfile.new(filename)
+    @tempfile.binmode
+    @tempfile.write Base64.decode64(base64_user)
+    @tempfile.rewind
+
+    # for security we want the actual content type, not just what was passed in
+    content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
+
+    # we will also add the extension ourselves based on the above
+    # if it's not gif/jpeg/png, it will fail the validation in the upload model
+    extension = content_type.match(/gif|jpeg|png/).to_s
+    filename += ".#{extension}" if extension
+
+    ActionDispatch::Http::UploadedFile.new({
+                                               tempfile: @tempfile,
+                                               content_type: content_type,
+                                               filename: filename
+                                           })
+  end
+
+  def clean_tempfile
+    if @tempfile
+      @tempfile.close
+      @tempfile.unlink
     end
+  end
 end
 
 

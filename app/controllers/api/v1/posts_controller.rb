@@ -1,7 +1,6 @@
 class Api::V1::PostsController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
   before_action :set_post, only: [:show, :destroy]
-   #:find_postable
 
   def index
     @posts = Post.all.order_by(id: :desc)
@@ -15,17 +14,12 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
   
   def create
-    # When posts need to be polymorphic, uncomment below
-    # @postable.attachments.create post_params
-    # redirect_to @postable
-    # binding.pry
     @post = Post.new(post_params)
     if @post.hidden == false
       @post.save
     else
       @post.selected_users = params[:selected_users]
       @post.save
-      # hidden_post_notification @post
     end
     ensure
       clean_tempfile
@@ -85,14 +79,6 @@ class Api::V1::PostsController < Api::V1::BaseController
       @tempfile.unlink
     end
   end
-  
-  # could be improve and include into concerns
-  # http://api.rubyonrails.org/classes/ActiveSupport/Concern.html
-  # def find_postable
-  #   params.each do |name, value|
-  #     return @postable = $1.classify.constantize.find(value) if name =~ /(.+)_id$/
-  #   end
-  # end
 
   def hidden_post_notification(post)
     return if post.user.id == current_user.id
