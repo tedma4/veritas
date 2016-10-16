@@ -3,7 +3,7 @@ class PostsController < ApplicationController
    #:find_postable
 
   def index
-    @posts = Post.all.order_by(id: :desc)
+    @posts = Post.all.order_by(created_at: :desc).limit(100)
   end
 
   def show    

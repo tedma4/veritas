@@ -134,7 +134,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           }
       end
     else
-      @search = User.sample 10
+      @search = nil
       respond_with @search
     end
   end
@@ -183,12 +183,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
   
   def user_params
-    the_params = params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confiramtion, :current_location, :email, :pin, :avatar)
+    the_params = params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confirmation, :current_location, :email, :pin, :avatar)
     the_params[:first_name] = params[:first_name]
     the_params[:last_name] = params[:last_name]
     the_params[:user_name] = params[:user_name]
     the_params[:password] = params[:password]
-    the_params[:password_confiramtion] = params[:password_confiramtion]
+    the_params[:password_confirmation] = params[:password_confirmation]
     the_params[:current_location] = params[:current_location]
     the_params[:email] = params[:email]
     the_params[:pin] = params[:pin]
