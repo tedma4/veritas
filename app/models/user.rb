@@ -8,7 +8,7 @@ class User
   devise :database_authenticatable, :registerable, :omniauthable,
          :recoverable, :rememberable, :trackable, :validatable
   field :pin, type: String
-  validates :pin, presence: true
+  validates :pin, presence: true, on: :create
 
   ## Database authenticatable
   field :email,              type: String, default: "", uniq: true
