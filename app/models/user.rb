@@ -195,7 +195,7 @@ class User
 
   def get_followers_and_posts
     # binding.pry
-    users = User.eager_load(:posts).where(:id.in => self.followed_users)
+    users = User.where(:id.in => self.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
     # user_hash = users.map(&:build_user_hash)
     posts.map(&:build_post_hash)
