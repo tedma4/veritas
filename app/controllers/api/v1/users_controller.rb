@@ -27,14 +27,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create
     @user = User.new(user_params.to_h)
     @auth_token = jwt_token(@user)
-        # binding.pry
     respond_to do |format|
       if @user.save
         @user.create_pin
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: { auth_token: @auth_token, user: @user.build_user_hash, created_at: @user.created_at } }
       else
-        # binding.pry
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -44,8 +42,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    # binding.pry
     respond_to do |format|
+    binding.pry
       if @user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
       else
@@ -76,14 +74,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     #     @docs = this.map(&:build_post_hash)
     #   # end
     # elsif
-    # binding.pry
     if params[:user_id]
       user = User.where(:id => params[:user_id]).first
       # if params[:current_location]
       #   user.current_location = [params[:current_location][1], params[:current_location][0]]
       #   user.save
       # end
-      # binding.pry
       @docs = user.get_followers_and_posts
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
@@ -157,7 +153,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def feed
-    # binding.pry
     @user = User.where(id: params[:id]).first
     @feed = @user.get_followers_and_posts
     respond_with @feed
@@ -174,6 +169,24 @@ class Api::V1::UsersController < Api::V1::BaseController
       render json: {status: :unprocessable_entity}
     end
     user.send_friend_request_notification(params['friend_id'])
+  end
+
+  def approve_request
+    current_user.accept_friend_request(params['user'])
+    current_user.accept_friend_request_notification(params['user'])
+  end
+
+  def remove_friend
+    current_user.unfriend_user(params['user'])
+  end
+
+  def decline_request
+    current_user.decline_friend_request(params['user'])
+  end
+
+  def accept_requests
+    user = User.find(params[:id])
+    @users = User.where(:id.in => user.pending_friends)
   end
 
 

@@ -9,6 +9,7 @@ class User
          :recoverable, :rememberable, :trackable, :validatable
   field :pin, type: String
   validates :pin, presence: true, on: :create
+  validates :pin, presence: true, on: :update, allow_blank: true
 
   ## Database authenticatable
   field :email,              type: String, default: "", uniq: true
@@ -237,7 +238,6 @@ class User
     end
 
     def friend_from_pin
-      # binding.pry
       unless self.pin.nil?
         user_from_pin = User.where(pin: self[:pin]).first
         self.update_attributes(followed_users: [user_from_pin.id])
