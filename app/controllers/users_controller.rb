@@ -103,11 +103,6 @@ class UsersController < ApplicationController
     current_user.decline_friend_request(params['user'])
   end
 
-  def friend_list
-    user = User.find(params[:id])
-    @users = User.where(:id.in => user.followed_users)
-  end
-
   def accept_requests
     user = User.find(params[:id])
     @users = User.where(:id.in => user.pending_friends)
@@ -119,6 +114,10 @@ class UsersController < ApplicationController
     @posts = posts.flatten.sort {|a, b| b['created_at'] <=> a['created_at']}
   end
 
+  def friend_list
+    user = User.find(params[:id])
+    @users = User.where(:id.in => user.followed_users)
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
