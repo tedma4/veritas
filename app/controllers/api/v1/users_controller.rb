@@ -44,7 +44,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    binding.pry
+    # binding.pry
     respond_to do |format|
       if @user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
@@ -199,7 +199,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
   
   def user_params
-    # binding.pry
     the_params = params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confirmation, :current_location, :email, :pin, :avatar)
     the_params[:first_name] = params[:user][:first_name]
     the_params[:last_name] = params[:user][:last_name]
@@ -210,7 +209,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     the_params[:email] = params[:user][:email]
     the_params[:pin] = params[:user][:pin]
     the_params[:avatar] = parse_user_data(the_params[:avatar]) if the_params[:avatar]
-    the_params.delete_if {|k, v| k == nil}
+    the_params.delete_if {|k, v| v == nil}
     return the_params
   end
 
