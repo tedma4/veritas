@@ -43,7 +43,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-    binding.pry
       if @user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
       else

@@ -15,7 +15,7 @@
     <% @posts.each do |post| %>
       <tr>
         <td>
-          <%= image_tag post.attachment.url || "/assets/images/default-image.png" %>
+          <%= image_tag post.attachment.url || "/assets/images/default-image.png", size: "300x300" %>
         </td>
         <td><%= link_to 'Show', post %></td>
         <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
