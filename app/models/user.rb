@@ -63,7 +63,7 @@ class User
 
   field :first_name, type: String
   field :last_name, type: String
-  field :user_name, type: String, uniq: true
+  field :user_name, type: String#, uniq: true
   field :current_location, type: Geo::Point, index: true
 
   def build_user_hash

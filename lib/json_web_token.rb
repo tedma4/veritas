@@ -3,7 +3,6 @@ require 'jwt'
 
 class JsonWebToken
   def self.encode(payload, expiration = 24.hours.from_now)
-    # binding.pry
     payload = payload.dup
     # payload['exp'] = expiration.to_i
     # Setting a json web_token secret for now

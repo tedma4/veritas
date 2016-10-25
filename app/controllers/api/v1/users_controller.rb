@@ -25,8 +25,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST /users
   # POST /users.json
   def create
+    # binding.pry
     @user = User.new(user_params.to_h)
     @auth_token = jwt_token(@user)
+    # binding.pry
     respond_to do |format|
       if @user.save
         @user.create_pin
@@ -42,6 +44,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+    binding.pry
     respond_to do |format|
       if @user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
@@ -196,17 +199,19 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
   
   def user_params
+    # binding.pry
     the_params = params.require(:user).permit(:first_name, :last_name, :user_name, :password, :password_confirmation, :current_location, :email, :pin, :avatar)
-    the_params[:first_name] = params[:first_name]
-    the_params[:last_name] = params[:last_name]
-    the_params[:user_name] = params[:user_name]
-    the_params[:password] = params[:password]
-    the_params[:password_confirmation] = params[:password_confirmation]
-    the_params[:current_location] = params[:current_location]
-    the_params[:email] = params[:email]
-    the_params[:pin] = params[:pin]
+    the_params[:first_name] = params[:user][:first_name]
+    the_params[:last_name] = params[:user][:last_name]
+    the_params[:user_name] = params[:user][:user_name]
+    the_params[:password] = params[:user][:password]
+    the_params[:password_confirmation] = params[:user][:password_confirmation]
+    the_params[:current_location] = params[:user][:current_location]
+    the_params[:email] = params[:user][:email]
+    the_params[:pin] = params[:user][:pin]
     the_params[:avatar] = parse_user_data(the_params[:avatar]) if the_params[:avatar]
-    the_params.to_h
+    the_params.delete_if {|k, v| k == nil}
+    return the_params
   end
 
   def parse_user_data(base64_user)
