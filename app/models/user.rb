@@ -94,8 +94,9 @@ class User
   end
 
   def accept_friend_request(user_id)
+    return if self.followed_users.include?(user_id)
     user = User.find(user_id)
-    self.pending_friends.delete(user.id)
+    self.pending_friends.delete(user.id) if self.pending_friends.include?(user.id)
     if user.followed_users.nil? || user.followed_users.empty?
       user.update_attributes(followed_users: [self.id])
       if self.followed_users.nil? || self.followed_users.empty?
@@ -116,7 +117,8 @@ class User
     end
   end
 
-  def decline_friend_request(user_id)
+  def remove_user_from_pending_friends(user_id)
+    return unless self.pending_friends.include?(user_id)
     self.pending_friends.delete(user_id)
     self.save
   end
@@ -125,6 +127,7 @@ class User
     self.followed_users.delete(user_id)
     self.save
     @user = User.find(user_id)
+    return unless @user.followed_users.include?(self.id)
     @user.followed_users.delete(self.id)
     @user.save
   end
@@ -208,14 +211,14 @@ class User
     return if user_id == self.id 
     Notification.create(user_id: user_id,
                         notified_by_id: self.id,
-                        notice_type: 'friend request')
+                        notice_type: "Sent Friend Request")
   end
 
   def accept_friend_request_notification(user_id)
     return if user_id == self.id 
     Notification.create(user_id: user_id,
                         notified_by_id: self.id,
-                        notice_type: 'accept request')
+                        notice_type: "Accepted Friend Request")
   end
 
   def signup_with_pin_notification(pin)
@@ -223,7 +226,7 @@ class User
     return if user_id == self.id 
     Notification.create(user_id: user_id,
                         notified_by_id: self.id,
-                        notice_type: 'pin signup')
+                        notice_type: "Signed Up With Your Pin")
   end
 
   private

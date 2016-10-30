@@ -34,6 +34,9 @@ Rails.application.routes.draw do
       get '/friend_list', to: 'users#friend_list'
       get '/feed', to: 'users#feed'
       post "/send_request", to: 'users#send_request'
+      post "/approve_friend_request", to: 'users#approve_friend_request'
+      post "/decline_friend_request", to: 'users#decline_friend_request'
+      post "/remove_friend", to: 'users#remove_friend'
       get "/notifications", to: "notifications#index"
 
     end

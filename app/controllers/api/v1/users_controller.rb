@@ -1,6 +1,7 @@
 class Api::V1::UsersController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
 
   # GET /users
   # GET /users.json
@@ -173,17 +174,20 @@ class Api::V1::UsersController < Api::V1::BaseController
     user.send_friend_request_notification(params['friend_id'])
   end
 
-  def approve_request
-    current_user.accept_friend_request(params['user'])
-    current_user.accept_friend_request_notification(params['user'])
+  def approve_friend_request
+    user = User.find(params["user_id"])
+    user.accept_friend_request(params['friend_id'])
+    user.accept_friend_request_notification(params['friend_id'])
   end
 
   def remove_friend
-    current_user.unfriend_user(params['user'])
+    user = User.find(params["user_id"])
+    user.unfriend_user(params['friend_id'])
   end
 
-  def decline_request
-    current_user.decline_friend_request(params['user'])
+  def decline_friend_request
+    user = User.find(params["user_id"])
+    user.remove_user_from_pending_friends(params['friend_id'])
   end
 
   def accept_requests
@@ -193,6 +197,10 @@ class Api::V1::UsersController < Api::V1::BaseController
 
 
   private
+
+  def delete_notification
+    Notification.find(params["notification_id"]).destroy
+  end
 
   def set_user
     @user = User.find(params[:id])

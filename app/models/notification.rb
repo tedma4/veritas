@@ -26,7 +26,8 @@ class Notification
         first_name: self.notified_by.first_name,
         last_name: self.notified_by.last_name,
         avatar: self.notified_by.avatar.url || "/assets/images/default-image.png",
-        user_name: self.notified_by.user_name
+        user_name: self.notified_by.user_name,
+        id: self.notified_by.id
       }
     }
   end
