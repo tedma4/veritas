@@ -1,7 +1,7 @@
 class Api::V1::UsersController < Api::V1::BaseController
   skip_before_action :authenticate_user_from_token!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
+  after_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
 
   # GET /users
   # GET /users.json
