@@ -36,6 +36,7 @@ gem 'faker'
 gem 'jwt'
 gem 'figaro'
 gem 'carrierwave-aws', '1.0.2'
+gem 'bootstrap', '4.0.0.alpha5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
