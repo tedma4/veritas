@@ -24,7 +24,7 @@ class Post
   field :original_filename, type: String
   field :content_type, type: String
   field :location, type: Geo::Point, index: true
-  field :hidden, type: Boolean, default: false
+  field :post_type, type: String, default: "none"
   field :selected_users, type: Array
   # validates :user_id, presence: true
 
@@ -34,7 +34,7 @@ class Post
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
       location: self.location,
-      hidden: self.hidden,
+      post_type: self.post_type,
       user: {
         first_name: self.user.first_name,
         last_name: self.user.last_name,

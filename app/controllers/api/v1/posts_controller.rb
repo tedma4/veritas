@@ -14,12 +14,14 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
   
   def create
-    @post = Post.new(post_params)
-    if @post.hidden == false
+    @post = Post.new(post_params.to_h)
+    if @post.post_type == "none"
       @post.save
     else
-      @post.selected_users = params[:selected_users]
+      # binding.pry
+      # @post.selected_users = params[:selected_users]
       @post.save
+      hidden_post_notification @post
     end
     ensure
       clean_tempfile
@@ -36,13 +38,16 @@ class Api::V1::PostsController < Api::V1::BaseController
   private
   
   def post_params
-    the_params = params.require(:post).permit(:location, :user_id, :hidden, :selected_users, :attachment)
-    the_params[:location] = params[:location]
-    the_params[:user_id] = params[:user_id]
-    the_params[:hidden] = params[:hidden]
-    the_params[:selected_users] = params[:selected_users]
+    # binding.pry
+    the_params = params.require(:post).permit(:location, :user_id, :post_type, :selected_users, :attachment)
+    # the_params[:location] = the_params[:location]
+    # the_params[:user_id] = the_params[:user_id]
+    # the_params[:post_type] = the_params[:post_type]
+    # binding.pry
+    the_params[:selected_users] = the_params[:selected_users].split(",") if the_params[:selected_users]
     the_params[:attachment] = parse_post_data(the_params[:attachment]) if the_params[:attachment]
-    the_params.to_h
+    the_params.delete_if {|k, v| v == nil}
+    return the_params
   end
 
   def set_post
@@ -81,11 +86,12 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
 
   def hidden_post_notification(post)
-    return if post.user.id == current_user.id
-    users = post.selected_users.count > 1 ? post.selected_users.split(',') : post.selected_users
+    return if post.post_type != "hidden"
+    return unless post.selected_users
+    users = post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
-                          notified_by_id: current_user.id,
+                          notified_by_id: post.user_id,
                           post_id: post.id,
                           notice_type: 'hidden post')
     end
