@@ -18,7 +18,6 @@ class Api::V1::PostsController < Api::V1::BaseController
     if @post.post_type == "none"
       @post.save
     else
-      # binding.pry
       # @post.selected_users = params[:selected_users]
       @post.save
       hidden_post_notification @post
@@ -38,13 +37,11 @@ class Api::V1::PostsController < Api::V1::BaseController
   private
   
   def post_params
-    # binding.pry
-    the_params = params.require(:post).permit(:location, :user_id, :post_type, :selected_users, :attachment)
+    the_params = params.require(:post).permit(:location, :user_id, :post_type, {:selected_users => []}, :attachment)
     # the_params[:location] = the_params[:location]
     # the_params[:user_id] = the_params[:user_id]
     # the_params[:post_type] = the_params[:post_type]
-    # binding.pry
-    the_params[:selected_users] = the_params[:selected_users].split(",") if the_params[:selected_users]
+    the_params[:selected_users] = params[:post][:selected_users] if the_params[:selected_users]
     the_params[:attachment] = parse_post_data(the_params[:attachment]) if the_params[:attachment]
     the_params.delete_if {|k, v| v == nil}
     return the_params
