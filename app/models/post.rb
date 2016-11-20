@@ -24,7 +24,7 @@ class Post
   field :original_filename, type: String
   field :content_type, type: String
   field :location, type: Geo::Point, index: true
-  field :post_type, type: String, default: "none"
+  field :post_type, type: String, default: "public"
   field :selected_users, type: Array
   # validates :user_id, presence: true
 
