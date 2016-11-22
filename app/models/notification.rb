@@ -18,11 +18,10 @@ class Notification
 
 
 	def build_notification_hash
-    {
+    note = {
       id: self.id,
       created_at: self.created_at,
       notice_type: self.notice_type,
-      identifier: self.identifier if self.identifier,
       user: {
         first_name: self.notified_by.first_name,
         last_name: self.notified_by.last_name,
@@ -31,6 +30,7 @@ class Notification
         id: self.notified_by.id
       }
     }
+    note[:identifier] = self.identifier if self.identifier
   end
 
 end
