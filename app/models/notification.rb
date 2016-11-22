@@ -5,7 +5,7 @@ class Notification
   field :user_id, 			 type: String
   field :notified_by_id, type: String
   field :post_id, 		   type: String
-  # field :identifier, 		 type: String
+  field :identifier, 		 type: String
   field :notice_type, 	 type: String
   field :read, 					 type: Boolean, default: false
 
@@ -22,6 +22,7 @@ class Notification
       id: self.id,
       created_at: self.created_at,
       notice_type: self.notice_type,
+      identifier: self.identifier if self.identifier,
       user: {
         first_name: self.notified_by.first_name,
         last_name: self.notified_by.last_name,

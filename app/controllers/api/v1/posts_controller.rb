@@ -15,12 +15,16 @@ class Api::V1::PostsController < Api::V1::BaseController
   
   def create
     @post = Post.new(post_params.to_h)
-    if @post.post_type == "none"
+    case params[:post_type]
+    when "public"
       @post.save
-    else
-      # @post.selected_users = params[:selected_users]
+    when "reply"
+      @post.save
+      reply_post_notification @post, params[:user_repling_to], params[:post_repling_to]
+    when "hidden"
       @post.save
       hidden_post_notification @post
+    else
     end
     ensure
       clean_tempfile
@@ -92,6 +96,15 @@ class Api::V1::PostsController < Api::V1::BaseController
                           post_id: post.id,
                           notice_type: 'hidden post')
     end
+  end
+
+  def reply_post_notification(post, user_id, post_id)
+    return if post.post_type != "reply"
+    Notification.create(user_id: user_id,
+                        notified_by_id: post.user_id,
+                        post_id: post.id,
+                        identifier: post_id,
+                        notice_type: 'reply post')
   end
 end
 
