@@ -39,8 +39,8 @@ class User
   field :avatar, type: String#, null: false
   field :original_filename, type: String
 
-  # field :private_account,    type: Boolean, default: false
-  has_many :posts
+  has_many :likes, dependent: :destroy
+  has_many :posts, dependent: :destroy
   has_many :notifications, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
@@ -227,6 +227,22 @@ class User
     Notification.create(user_id: user_id,
                         notified_by_id: self.id,
                         notice_type: "Signed Up With Your Pin")
+  end
+
+    # creates a new like row with post_id and user_id
+  def like!(post)
+    self.likes.create!(post_id: post.id)
+  end
+
+  # destroys a like with matching post_id and user_id
+  def unlike!(post)
+    like = self.likes.find_by_post_id(post.id)
+    like.destroy!
+  end
+
+  # returns true of false if a post is likeed by user
+  def like?(post)
+    self.likes.find_by_post_id(post.id)
   end
 
   private

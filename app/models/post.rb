@@ -4,6 +4,7 @@ class Post
 	mount_uploader :attachment, AttachmentUploader
 	belongs_to :user, index: true
   has_many :notifications, dependent: :destroy  
+  has_many :likes, dependent: :destroy
 
   # Validations
   # validates_presence_of :attachment

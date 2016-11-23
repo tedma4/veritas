@@ -38,6 +38,8 @@ Rails.application.routes.draw do
       post "/decline_friend_request", to: 'users#decline_friend_request'
       post "/remove_friend", to: 'users#remove_friend'
       get "/notifications", to: "notifications#index"
+      post 'like', to: 'likes#like'
+      delete 'unlike', to: 'likes#unlike'
 
     end
   end
