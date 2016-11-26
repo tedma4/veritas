@@ -1,12 +1,11 @@
 class  Api::V1::LikesController < Api::V1::BaseController
-
-	respond_to :js
+  skip_before_action :authenticate_user_from_token!
 
 	def like
 	  @user = User.find(params[:user_id])
 	  @post = Post.find(params[:post_id])
-	  @user.like!(@post)
-	  like_post_notification @post, @user
+	  like = Like.new(post_id: @post.id, user_id: @user.id)
+	  like_post_notification(@post, @user) if like.save
 	end
 
 	def unlike
