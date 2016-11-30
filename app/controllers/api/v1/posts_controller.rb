@@ -87,8 +87,8 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
 
   def hidden_post_notification(post)
-    return if ["hidden", "memory"].include?(post.post_type)
-    return unless post.selected_users
+    return unless ["hidden", "memory"].include?(post.post_type)
+    return if post.selected_users.nil?
     users = post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
