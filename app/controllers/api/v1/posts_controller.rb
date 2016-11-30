@@ -94,7 +94,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       Notification.create(user_id: user_id,
                           notified_by_id: post.user_id,
                           post_id: post.id,
-                          notice_type: post.post_type)
+                          notice_type: post.post_type + " post")
     end
   end
 
