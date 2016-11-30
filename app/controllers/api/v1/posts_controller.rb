@@ -21,7 +21,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     when "reply"
       @post.save
       reply_post_notification @post, params[:user_repling_to], params[:post_repling_to]
-    when "hidden" || "memory"
+    when "hidden", "memory"
       @post.save
       hidden_post_notification @post
     else
