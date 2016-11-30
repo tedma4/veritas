@@ -21,7 +21,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     when "reply"
       @post.save
       reply_post_notification @post, params[:user_repling_to], params[:post_repling_to]
-    when "hidden"
+    when "hidden" || "memory"
       @post.save
       hidden_post_notification @post
     else
@@ -87,14 +87,14 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
 
   def hidden_post_notification(post)
-    return if post.post_type != "hidden"
+    return if ["hidden" || "memory"].includes?(post.post_type)
     return unless post.selected_users
     users = post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
                           notified_by_id: post.user_id,
                           post_id: post.id,
-                          notice_type: 'hidden post')
+                          notice_type: post.post_type)
     end
   end
 

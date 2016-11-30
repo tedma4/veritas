@@ -26,10 +26,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST /users
   # POST /users.json
   def create
-    # binding.pry
     @user = User.new(user_params.to_h)
     @auth_token = jwt_token(@user)
-    # binding.pry
     respond_to do |format|
       if @user.save
         @user.create_pin
@@ -45,7 +43,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    # binding.pry
     respond_to do |format|
       if @user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
@@ -58,7 +55,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    User.where()
     @user.destroy
     respond_to do |format|
       format.json { head :no_content }
@@ -72,7 +68,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     #   #   @docs = get_document(params[:current_location].split(',').map(&:to_f), params[:post])
     #   #   # @docs = posts.map(&:build_post_hash)
     #   # else
-    #   # binding.pry
     #     this = get_document(params[:current_location].split(',').map(&:to_f))
     #     @docs = this.map(&:build_post_hash)
     #   # end
