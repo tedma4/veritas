@@ -19,11 +19,9 @@ class Api::V1::PostsController < Api::V1::BaseController
     when "public"
       @post.save
     when "reply"
-      @post.save
-      reply_post_notification @post, params[:user_repling_to], params[:post_repling_to]
+      reply_post_notification(@post, params[:user_repling_to], params[:post_repling_to]) if @post.save
     when "hidden", "memory"
-      @post.save
-      hidden_post_notification @post
+      hidden_post_notification(@post) if @post.save
     else
     end
     ensure
