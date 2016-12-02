@@ -43,6 +43,19 @@ class Api::V1::PostsController < Api::V1::BaseController
   end
   
   def destroy
+    if @post.post_type == "hidden"
+      if @post.likes
+        like = @post.likes
+        if like.count > 1
+          like.each do |like|
+            like.post_id = "destroyed hidden post"
+            like.save(validate: false)
+        else
+          like.post_id = "destroyed hidden post"
+          like.save(validate: false)
+        end
+      end
+    end
     @post.destroy
     respond_to do |format|
       format.html { redirect_to posts_url, notice: 'post was successfully destroyed.' }
