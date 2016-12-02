@@ -67,7 +67,7 @@ class User
   field :current_location, type: Geo::Point, index: true
 
   def build_user_hash
-    {id: self.id,
+    user = {id: self.id,
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,
@@ -77,6 +77,8 @@ class User
      current_location: self.current_location,
      created_at: self.created_at
     }
+    user[:like_count] = self.likes.count if self.likes
+    return user
   end
 
   def send_friend_request(user_id)
