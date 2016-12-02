@@ -31,6 +31,7 @@ class Notification
       }
     }
     note[:identifier] = self.identifier if self.identifier
+    return note
   end
 
 end
