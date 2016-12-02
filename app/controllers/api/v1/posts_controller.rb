@@ -44,7 +44,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   
   def destroy
     if @post.post_type == "hidden"
-      if @post.likes
+      if @post.likes.any?
         like = @post.likes
         if like.count > 1
           like.each do |like|
