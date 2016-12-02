@@ -50,6 +50,7 @@ class Api::V1::PostsController < Api::V1::BaseController
           like.each do |like|
             like.post_id = "destroyed hidden post"
             like.save(validate: false)
+          end
         else
           like.post_id = "destroyed hidden post"
           like.save(validate: false)
@@ -114,7 +115,7 @@ class Api::V1::PostsController < Api::V1::BaseController
 
   def hidden_post_notification(post)
     return unless ["hidden", "memory"].include?(post.post_type)
-    return if post.selected_users.nil?
+    return if post.selected_users.blank?
     users = post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
