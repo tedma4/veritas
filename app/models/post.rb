@@ -27,10 +27,11 @@ class Post
   field :location, type: Geo::Point, index: true
   field :post_type, type: String, default: "public"
   field :selected_users, type: Array
+  field :caption, type: String
   # validates :user_id, presence: true
 
   def build_post_hash
-    {
+    post = {
       id: self.id,
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
@@ -43,6 +44,7 @@ class Post
         user_name: self.user.user_name
       }
     }
+    post[:caption] = self.caption if self.caption
   end
 
   private
