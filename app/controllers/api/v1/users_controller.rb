@@ -135,7 +135,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def build_search_hash(current_user, user)
-    {id: user.id,
+    user_hash = {id: user.id,
      first_name: user.first_name,
      last_name: user.last_name,
      email: user.email,
@@ -148,6 +148,8 @@ class Api::V1::UsersController < Api::V1::BaseController
        "Is already a friend" : (user.pending_friends.include?(current_user.id) ? 
         "Request Sent" : "Send Request")
     }
+    user_hash[:like_count] = user.likes.count if user.likes
+    return user_hash
   end
 
   def feed

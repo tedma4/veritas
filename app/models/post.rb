@@ -31,7 +31,8 @@ class Post
   # validates :user_id, presence: true
 
   def build_post_hash
-    post = {
+    # binding.pry
+    post_hash = {
       id: self.id,
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
@@ -44,7 +45,8 @@ class Post
         user_name: self.user.user_name
       }
     }
-    post[:caption] = self.caption if self.caption
+    post_hash[:caption] = self.caption if self.caption
+    return post_hash
   end
 
   private

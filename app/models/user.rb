@@ -144,7 +144,6 @@ class User
         false
       end
     end
-    # binding.pry
     self.update_attributes(pin: pin_is_unique)
   end
 
@@ -156,7 +155,6 @@ class User
 
   def self.search(search)
     search = search.split(" ")
-    # binding.pry 
     if search.count == 1
       NoBrainer.run {|r| 
         r.table('users').filter{ 
@@ -197,13 +195,11 @@ class User
   end
 
   def get_followers_and_posts
-    # binding.pry
     users = User.where(:id.in => self.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
     # user_hash = users.map(&:build_user_hash)
     posts.map(&:build_post_hash)
     # new_hash = user_hash << post_hash
-    # binding.pry
     # new_hash.flatten
   end
 
