@@ -40,6 +40,8 @@ Rails.application.routes.draw do
       get "/notifications", to: "notifications#index"
       post 'like', to: 'likes#like'
       delete 'unlike', to: 'likes#unlike'
+      get 'memories', to: 'users#memories'
+      get 'get_memories', to: 'users#get_memories'
 
     end
   end

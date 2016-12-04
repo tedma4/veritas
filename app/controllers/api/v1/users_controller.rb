@@ -192,6 +192,29 @@ class Api::V1::UsersController < Api::V1::BaseController
     @users = User.where(:id.in => user.pending_friends)
   end
 
+  def memories
+    # "http://localhost:3000/v1/memories?user_id=user_id"
+    # Gettting the users the current user selected
+    current_user = User.find(User.last.id)
+    user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id).to_a.pluck(:selected_users).flatten.uniq
+    # Getting the users that selected the current user
+    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.include => current_user.id).to_a.pluck(:user_id)
+    all = user_ids_the_current_user_selected  << users_that_selected_the_current_user
+    list = all.flatten.uniq
+    people = User.where(:id.in => list)
+    @users = people.map &:build_user_hash
+    respond_with(@users)
+  end
+
+  def get_memories
+    # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
+    current_user_posts = Post.where(post_type: "memory", user_id: user_id, :selected_users.include => params[:friend_id]).to_a
+    friend_posts = Post.where(post_type: "memory", user_id: friend_id, :selected_users.include => params[:user_id]).to_a
+    all_posts = current_user_posts << friend_posts
+    @posts = all_posts.flatten.map &:build_post_hash
+    respond_with @posts
+  end
+
 
   private
 
