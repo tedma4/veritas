@@ -208,10 +208,11 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def get_memories
     # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
-    current_user_posts = Post.where(post_type: "memory", user_id: user_id, :selected_users.include => params[:friend_id]).to_a
-    friend_posts = Post.where(post_type: "memory", user_id: friend_id, :selected_users.include => params[:user_id]).to_a
+    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.include => params[:friend_id]).to_a.pluck(:id)
+    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.include => params[:user_id]).to_a.pluck(:id)
     all_posts = current_user_posts << friend_posts
-    @posts = all_posts.flatten.map &:build_post_hash
+    posts = Post.where(:id.in => all_posts.flatten)
+    @posts = posts.flatten.map &:build_post_hash
     respond_with @posts
   end
 
