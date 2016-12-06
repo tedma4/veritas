@@ -30,8 +30,7 @@ class Post
   field :caption, type: String
   # validates :user_id, presence: true
 
-  def build_post_hash
-    # binding.pry
+  def build_post_hash(*likes)
     post_hash = {
       id: self.id,
       created_at: self.created_at,
@@ -46,6 +45,7 @@ class Post
       }
     }
     post_hash[:caption] = self.caption if self.caption
+    post_hash[:liked_by_current_user] = likes.flatten.include?(self.id) if likes
     return post_hash
   end
 

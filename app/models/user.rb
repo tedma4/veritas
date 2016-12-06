@@ -197,12 +197,13 @@ class User
   end
 
   def get_followers_and_posts
+    likes = self.likes.to_a.pluck(:post_id)
     users = User.where(:id.in => self.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
-    # user_hash = users.map(&:build_user_hash)
-    posts.map(&:build_post_hash)
-    # new_hash = user_hash << post_hash
-    # new_hash.flatten
+
+    posts.map {|post| 
+      post.build_post_hash(likes)
+    }
   end
 
   def send_friend_request_notification(user_id)
@@ -229,7 +230,7 @@ class User
 
   # returns true of false if a post is likeed by user
   def like?(post)
-    self.likes.find_by_post_id(post.id)
+    self.likes.where(post_id: post.id)
   end
 
   private

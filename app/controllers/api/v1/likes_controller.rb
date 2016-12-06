@@ -5,7 +5,12 @@ class  Api::V1::LikesController < Api::V1::BaseController
 	  @user = User.find(params[:user_id])
 	  @post = Post.find(params[:post_id])
 	  like = Like.new(post_id: @post.id, user_id: @user.id)
-	  like_post_notification(@post, @user) if like.save
+	  if like.save
+		  like_post_notification(@post, @user)
+		  render json: {status: 200}
+	  else
+	  	render json: {error: like.errors}
+	  end
 	end
 
 	def unlike
