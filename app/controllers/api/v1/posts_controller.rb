@@ -24,7 +24,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       end
     when "reply"
       if @post.save
-        reply_post_notification(@post, params[:user_repling_to], params[:post_repling_to])
+        reply_post_notification(@post, params[:user_repling_to], params[:post_replying_to])
         render json: {status: 200}
       else
         render json: {errors: @post.errors}
