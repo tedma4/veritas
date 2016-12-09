@@ -1,6 +1,9 @@
 class User
-  include NoBrainer::Document
-  include NoBrainer::Document::Timestamps
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include Mongoid::Geospatial
+  include Mongoid::Attributes::Dynamic
+
   mount_uploader :avatar, AttachmentUploader
   after_create :friend_from_pin
   # Include default devise modules. Others available are:
@@ -11,7 +14,8 @@ class User
   validates :pin, presence: true
 
   ## Database authenticatable
-  field :email,              type: String, default: "", uniq: true
+  field :email,              type: String, default: ""
+  validates_uniqueness_of :email
   field :encrypted_password, type: String, default: ""
 
   ## Recoverable
@@ -31,13 +35,13 @@ class User
   # Delegate
   delegate :url, :size, :path, to: :avatar
 
-  # Virtual attributes
-  alias_attribute :filename, :original_filename
-
   field :attached_item_id, type: Integer
   field :attached_item_type, type: String 
   field :avatar, type: String#, null: false
   field :original_filename, type: String
+
+  # Virtual attributes
+  alias_attribute :filename, :original_filename
 
   has_many :likes, dependent: :destroy
   has_many :posts, dependent: :destroy
@@ -64,7 +68,9 @@ class User
   field :first_name, type: String
   field :last_name, type: String
   field :user_name, type: String#, uniq: true
-  field :current_location, type: Geo::Point, index: true
+  field :current_location, type: Point
+  spatial_index :current_location
+
 
   def build_user_hash
     user = {id: self.id,

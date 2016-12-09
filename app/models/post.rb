@@ -1,8 +1,10 @@
 class Post
-  include NoBrainer::Document
-  include NoBrainer::Document::Timestamps
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include Mongoid::Geospatial
+  include Mongoid::Attributes::Dynamic
 	mount_uploader :attachment, AttachmentUploader
-	belongs_to :user, index: true
+	belongs_to :user, index: true, counter_cache: true
   has_many :notifications, dependent: :destroy  
   has_many :likes, dependent: :destroy
 
@@ -16,15 +18,16 @@ class Post
   # Delegate
   delegate :url, :size, :path, to: :attachment
 
-  # Virtual attributes
-  alias_attribute :filename, :original_filename
-
   field :attached_item_id, type: Integer
   field :attached_item_type, type: String 
   field :attachment, type: String#, null: false
   field :original_filename, type: String
+
+  # Virtual attributes
+  alias_attribute :filename, :original_filename
   field :content_type, type: String
-  field :location, type: Geo::Point, index: true
+  field :location, type: Point
+  spatial_index :location
   field :post_type, type: String, default: "public"
   field :selected_users, type: Array
   field :caption, type: String
