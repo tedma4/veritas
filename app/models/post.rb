@@ -41,7 +41,7 @@ class Post
         first_name: self.user.first_name,
         last_name: self.user.last_name,
         avatar: self.user.avatar.url || "/assets/images/default-image.png",
-        user_name: self.user.user_name
+        user_name: self.user.user_name,
         id: self.user.id
       }
     }
