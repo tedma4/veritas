@@ -46,7 +46,7 @@ class Post
       }
     }
     post_hash[:caption] = self.caption if self.caption
-    post_hash[:liked_by_current_user] = likes.flatten.include?(self.id) if likes
+    post_hash[:liked] = likes.flatten.include?(self.id) if likes
     return post_hash
   end
 
