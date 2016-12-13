@@ -36,8 +36,9 @@ gem 'jbuilder', '~> 2.5'
 # mongoid equivalents
 gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
 gem 'bson_ext'
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+gem 'carrierwave', '0.10.0'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
+gem 'mini_magick'
 gem 'devise'
 gem 'mongoid-geospatial', require: 'mongoid/geospatial'
 
@@ -54,7 +55,7 @@ gem 'carrierwave-aws', '1.0.2'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'pry-rails'
-  # gem 'byebug', platform: :mri
+  gem 'pry-byebug'
 end
 
 group :development do

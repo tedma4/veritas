@@ -45,10 +45,10 @@ end
 
 
 
-Notification.where(:notice_type => "friend request").each do |note| note.update_attributes(notice_type: "Sent Friend Request") end
-Notification.where(:notice_type => "pin signup").each do |note| note.update_attributes(notice_type: "Signed Up With Your Pin") end
-Notification.where(:notice_type => "accept request").count
-Notification.where(:notice_type => "accept request").count
+# Notification.where(:notice_type => "friend request").each do |note| note.update_attributes(notice_type: "Sent Friend Request") end
+# Notification.where(:notice_type => "pin signup").each do |note| note.update_attributes(notice_type: "Signed Up With Your Pin") end
+# Notification.where(:notice_type => "accept request").count
+# Notification.where(:notice_type => "accept request").count
 
 
 
