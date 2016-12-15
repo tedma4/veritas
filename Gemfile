@@ -35,10 +35,9 @@ gem 'jbuilder', '~> 2.5'
 
 # mongoid equivalents
 gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
-gem 'bson_ext'
 gem 'carrierwave', '0.10.0'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
-gem 'mini_magick'
+# gem 'mini_magick'
 gem 'devise'
 gem 'mongoid-geospatial', require: 'mongoid/geospatial'
 

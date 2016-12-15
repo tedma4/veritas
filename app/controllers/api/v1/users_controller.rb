@@ -121,7 +121,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def build_search_hash(current_user, user)
-    user_hash = {id: user.id,
+    user_hash = {id: user.id.to_s,
      first_name: user.first_name,
      last_name: user.last_name,
      email: user.email,
@@ -130,8 +130,8 @@ class Api::V1::UsersController < Api::V1::BaseController
      pin: user.pin,
      current_location: user.current_location,
      created_at: user.created_at,
-     friendship_status: current_user.followed_users.include?(user.id) ? 
-       "Is already a friend" : (user.pending_friends.include?(current_user.id) ? 
+     friendship_status: current_user.followed_users.include?(user.id.to_s) ? 
+       "Is already a friend" : (user.pending_friends.include?(current_user.id.to_s) ? 
         "Request Sent" : "Send Request")
     }
     user_hash[:like_count] = user.likes.count if user.likes
@@ -149,7 +149,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     user = User.find(params["user_id"])
     user.send_friend_request(params["friend_id"]) unless user.followed_users.include?(params["friend_id"])
     friended_user = User.find(params["friend_id"])
-    if friended_user.pending_friends.include?(user.id)
+    if friended_user.pending_friends.include?(user.id.to_s)
       render json: {status: :ok}
     else
       render json: {status: :unprocessable_entity}
@@ -181,10 +181,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   def memories
     # "http://localhost:3000/v1/memories?user_id=user_id"
     # Gettting the users the current user selected
-    current_user = User.find(User.last.id)
-    user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id).to_a.pluck(:selected_users).flatten.uniq
+    current_user = User.find(User.last.id.to_s)
+    user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id.to_s).to_a.pluck(:selected_users).flatten.uniq
     # Getting the users that selected the current user
-    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.include => current_user.id).to_a.pluck(:user_id)
+    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.include => current_user.id.to_s).to_a.pluck(:user_id)
     all = user_ids_the_current_user_selected  << users_that_selected_the_current_user
     list = all.flatten.uniq
     people = User.where(:id.in => list)

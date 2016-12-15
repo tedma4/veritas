@@ -19,7 +19,7 @@ class Notification
 
 	def build_notification_hash
     note = {
-      id: self.id,
+      id: self.id.to_s,
       created_at: self.created_at,
       notice_type: self.notice_type,
       user: {
@@ -27,7 +27,7 @@ class Notification
         last_name: self.notified_by.last_name,
         avatar: self.notified_by.avatar.url || "/assets/images/default-image.png",
         user_name: self.notified_by.user_name,
-        id: self.notified_by.id
+        id: self.notified_by.id.to_s
       }
     }
     note[:identifier] = self.identifier if self.identifier

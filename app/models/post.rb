@@ -35,7 +35,7 @@ class Post
 
   def build_post_hash(*likes)
     post_hash = {
-      id: self.id,
+      id: self.id.to_s,
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
       location: self.location,
@@ -48,7 +48,7 @@ class Post
       }
     }
     post_hash[:caption] = self.caption if self.caption
-    post_hash[:liked_by_current_user] = likes.flatten.include?(self.id) if likes
+    post_hash[:liked_by_current_user] = likes.flatten.include?(self.id.to_s) if likes
     return post_hash
   end
 

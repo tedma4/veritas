@@ -4,7 +4,7 @@ class  Api::V1::LikesController < Api::V1::BaseController
 	def like
 	  @user = User.find(params[:user_id])
 	  @post = Post.find(params[:post_id])
-	  like = Like.new(post_id: @post.id, user_id: @user.id)
+	  like = Like.new(post_id: @post.id.to_s, user_id: @user.id.to_s)
 	  if like.save
 		  like_post_notification(@post, @user)
 		  render json: {status: 200}
@@ -21,10 +21,10 @@ class  Api::V1::LikesController < Api::V1::BaseController
 	end
 
   def like_post_notification(post, user)
-    return if post.user_id == user.id
+    return if post.user_id == user.id.to_s
     Notification.create(user_id: post.user_id,
-                        notified_by_id: user.id,
-                        post_id: post.id,
+                        notified_by_id: user.id.to_s,
+                        post_id: post.id.to_s,
                         notice_type: 'liked post')
   end
 

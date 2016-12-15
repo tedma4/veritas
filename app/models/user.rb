@@ -71,9 +71,8 @@ class User
   field :current_location, type: Point
   spatial_index :current_location
 
-
   def build_user_hash
-    user = {id: self.id,
+    user = {id: self.id.to_s.to_s,
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,
@@ -90,10 +89,10 @@ class User
   def send_friend_request(user_id)
     user = User.find(user_id)
     if user.pending_friends.nil? || user.pending_friends.empty?
-      user.update_attributes(pending_friends: [self.id])
+      user.update_attributes(pending_friends: [self.id.to_s])
     else 
-      unless user.pending_friends.include?(self.id)
-        user.pending_friends << self.id
+      unless user.pending_friends.include?(self.id.to_s)
+        user.pending_friends << self.id.to_s
         user.save
       else
         puts "You already sent a request to #{user.first_name}"
@@ -104,22 +103,22 @@ class User
   def accept_friend_request(user_id)
     return if self.followed_users.include?(user_id)
     user = User.find(user_id)
-    self.pending_friends.delete(user.id) if self.pending_friends.include?(user.id)
+    self.pending_friends.delete(user.id.to_s) if self.pending_friends.include?(user.id.to_s)
     if user.followed_users.nil? || user.followed_users.empty?
-      user.update_attributes(followed_users: [self.id])
+      user.update_attributes(followed_users: [self.id.to_s])
       if self.followed_users.nil? || self.followed_users.empty?
-        self.update_attributes(followed_users: [user.id])
+        self.update_attributes(followed_users: [user.id.to_s])
       else
-        self.followed_users << user.id
+        self.followed_users << user.id.to_s
         self.save
       end
     else
-      user.followed_users << self.id
+      user.followed_users << self.id.to_s
       user.save
       if self.followed_users.nil? || self.followed_users.empty?
-        self.update_attributes(followed_users: [user.id])
+        self.update_attributes(followed_users: [user.id.to_s])
       else
-        self.followed_users << user.id
+        self.followed_users << user.id.to_s
         self.save
       end
     end
@@ -135,8 +134,8 @@ class User
     self.followed_users.delete(user_id)
     self.save
     @user = User.find(user_id)
-    return unless @user.followed_users.include?(self.id)
-    @user.followed_users.delete(self.id)
+    return unless @user.followed_users.include?(self.id.to_s)
+    @user.followed_users.delete(self.id.to_s)
     @user.save
   end
 
@@ -213,30 +212,30 @@ class User
   end
 
   def send_friend_request_notification(user_id)
-    return if user_id == self.id 
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Sent Friend Request")
   end
 
   def accept_friend_request_notification(user_id)
-    return if user_id == self.id 
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Accepted Friend Request")
   end
 
   def signup_with_pin_notification(pin)
-    user_id = User.where(:pin => pin).first.id
-    return if user_id == self.id 
+    user_id = User.where(:pin => pin).first.id.to_s
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Signed Up With Your Pin")
   end
 
   # returns true of false if a post is likeed by user
   def like?(post)
-    self.likes.where(post_id: post.id)
+    self.likes.where(post_id: post.id.to_s)
   end
 
   private
@@ -252,11 +251,11 @@ class User
     def friend_from_pin
       unless self.pin.nil?
         user_from_pin = User.where(pin: self[:pin]).first
-        self.update_attributes(followed_users: [user_from_pin.id])
+        self.update_attributes(followed_users: [user_from_pin.id.to_s])
         if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-          user_from_pin.update_attributes(followed_users: [self.id])
+          user_from_pin.update_attributes(followed_users: [self.id.to_s])
         else
-          user_from_pin.followed_users << self.id
+          user_from_pin.followed_users << self.id.to_s
           user_from_pin.save
         end
       else

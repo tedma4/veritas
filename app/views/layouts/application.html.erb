@@ -11,9 +11,9 @@
 <%= content_tag(:div, flash[:notice], :id => "flash_notice") if flash[:notice] %>
 <%= content_tag(:div, flash[:alert], :id => "flash_alert") if flash[:alert] %>
 <% if user_signed_in? %>
-<%= link_to 'Friend List', "/users/#{current_user.id}/friend_list" %>
-<%= link_to 'Accept Requests', "/users/#{current_user.id}/accept_requests" %>
-<%= link_to "Friend's posts", "/users/#{current_user.id}/friends_posts" %>
+<%= link_to 'Friend List', "/users/#{current_user.id.to_s}/friend_list" %>
+<%= link_to 'Accept Requests', "/users/#{current_user.id.to_s}/accept_requests" %>
+<%= link_to "Friend's posts", "/users/#{current_user.id.to_s}/friends_posts" %>
 <%= link_to 'Edit profile', edit_user_registration_path %>
 <%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
 <% else %>
