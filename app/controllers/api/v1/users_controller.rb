@@ -72,14 +72,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def get_document(location)
-    # if post
-      point = NoBrainer.run {|r| r.point(location[1], location[0])}
-      posts = NoBrainer.run {|r| r.table('posts').get_nearest(point, {index: 'location', max_results: 50, unit: 'mi', max_dist: 5000} )}
-      posts.map {|post| Post.find(post['doc']['id'])}
-    # else
-    #   point = NoBrainer.run {|r| r.point(location[1], location[0])}
-    #   NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 1, unit: 'mi', max_dist: 100} )}
-    # end
+    Post.near(location: [location[1], location[0]]).max_distance(location: 50)
   end
 
   def check_pin
@@ -105,12 +98,12 @@ class Api::V1::UsersController < Api::V1::BaseController
       if params["user_id"]
         current_user = User.find(params["user_id"])
         respond_with @search.map {|user| 
-          user = User.find(user["id"])
-          build_search_hash(current_user, user)
+          # user = User.find(user["id"])
+          build_search_hash(user, current_user)
         }
       else
         respond_with @search.map {|user| 
-            user = User.find(user["id"])
+            # user = User.find(user["id"])
             build_search_hash(user)
           }
       end
@@ -120,7 +113,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
-  def build_search_hash(current_user, user)
+  def build_search_hash(user, *current_user)
     user_hash = {id: user.id.to_s,
      first_name: user.first_name,
      last_name: user.last_name,
@@ -129,11 +122,13 @@ class Api::V1::UsersController < Api::V1::BaseController
      user_name: user.user_name,
      pin: user.pin,
      current_location: user.current_location,
-     created_at: user.created_at,
-     friendship_status: current_user.followed_users.include?(user.id.to_s) ? 
-       "Is already a friend" : (user.pending_friends.include?(current_user.id.to_s) ? 
-        "Request Sent" : "Send Request")
+     created_at: user.created_at
     }
+    if current_user
+      user_hash[:friendship_status] = current_user.followed_users.include?(user.id.to_s) ? 
+         "Is already a friend" : (user.pending_friends.include?(current_user.id.to_s) ? 
+          "Request Sent" : "Send Request")
+    end
     user_hash[:like_count] = user.likes.count if user.likes
     return user_hash
   end
@@ -194,8 +189,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def get_memories
     # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
-    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.include => params[:friend_id]).to_a.pluck(:id)
-    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.include => params[:user_id]).to_a.pluck(:id)
+    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.include => params[:friend_id]).to_a.pluck(:id).map(&:to_s)
+    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.include => params[:user_id]).to_a.pluck(:id).map(&to_s)
     all_posts = current_user_posts << friend_posts
     posts = Post.where(:id.in => all_posts.flatten)
     @posts = posts.flatten.map &:build_post_hash

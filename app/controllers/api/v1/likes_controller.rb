@@ -21,8 +21,8 @@ class  Api::V1::LikesController < Api::V1::BaseController
 	end
 
   def like_post_notification(post, user)
-    return if post.user_id == user.id.to_s
-    Notification.create(user_id: post.user_id,
+    return if post.user_id.to_s == user.id.to_s
+    Notification.create(user_id: post.user_id.to_s,
                         notified_by_id: user.id.to_s,
                         post_id: post.id.to_s,
                         notice_type: 'liked post')

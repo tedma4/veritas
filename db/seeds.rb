@@ -2,7 +2,7 @@
 require 'image_string'
 
 # unless User.any? 
-  4.times do |n|
+  40.times do |n|
     user = User.new
     user.first_name = Faker::Name.first_name
     user.last_name = Faker::Name.last_name
@@ -16,16 +16,16 @@ require 'image_string'
     user.create_pin
   end
 
-  # if User.where(:followed_users => []).any?
-  #   User.where(:followed_users => []).each do |user|
-  #     user.followed_users << User.all.to_a.sample(10).pluck(:id)
-  #     user.followed_users.flatten!
-  #     user.save
-  #   end
-#   end
+  if User.where(:followed_users => []).any?
+    User.where(:followed_users => []).each do |user|
+      user.followed_users << User.all.to_a.sample(10).pluck(:id).map(&:to_s)
+      user.followed_users.flatten!
+      user.save
+    end
+  end
 # # end
 # # unless Post.any?
-  9.times do |i|
+  91.times do |i|
     post = Post.new
     post.attachment = ImageString.image_file
     post.user_id = User.all.to_a.sample.id.to_s
@@ -33,13 +33,13 @@ require 'image_string'
     post.save
   end
 
-# 10.times do |i|
-#   note = Notification.new
-#   note.user_id = "3xmX4xyzDFvvkp"
-#   note.notified_by_id = User.all.to_a.sample.id.to_s
-#   note.notice_type = "Sent Friend Request"
-#   note.save
-# end
+10.times do |i|
+  note = Notification.new
+  note.user_id = "3xmX4xyzDFvvkp"
+  note.notified_by_id = User.all.to_a.sample.id.to_s
+  note.notice_type = ["Sent Friend Request", "Signed Up With Your Pin"]
+  note.save
+end
 
 # end
 
@@ -49,7 +49,6 @@ require 'image_string'
 
 # Notification.where(:notice_type => "friend request").each do |note| note.update_attributes(notice_type: "Sent Friend Request") end
 # Notification.where(:notice_type => "pin signup").each do |note| note.update_attributes(notice_type: "Signed Up With Your Pin") end
-# Notification.where(:notice_type => "accept request").count
 # Notification.where(:notice_type => "accept request").count
 
 

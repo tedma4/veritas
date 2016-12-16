@@ -119,7 +119,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     users = post.selected_users
     users.each do |user_id|
       Notification.create(user_id: user_id,
-                          notified_by_id: post.user_id,
+                          notified_by_id: post.user_id.to_s,
                           post_id: post.id.to_s,
                           notice_type: post.post_type + " post")
     end
@@ -128,7 +128,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   def reply_post_notification(post, user_id, post_id)
     return if post.post_type != "reply"
     Notification.create(user_id: user_id,
-                        notified_by_id: post.user_id,
+                        notified_by_id: post.user_id.to_s,
                         post_id: post.id.to_s,
                         identifier: post_id,
                         notice_type: 'reply post')

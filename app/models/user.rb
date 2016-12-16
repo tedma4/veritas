@@ -163,33 +163,20 @@ class User
   def self.search(search)
     search = search.split(" ")
     if search.count == 1
-      NoBrainer.run {|r| 
-        r.table('users').filter{ 
-          |user| user["first_name"].match("#{search.first}") | 
-                 user["last_name"].match("#{search.first}") | 
-                 user["user_name"].match("#{search.first}")
-          }
-        }
+      User.or(
+        {"first_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.first}.*/}, 
+        {"user_name": /.*#{search.first}.*/}
+        )
     else
-      NoBrainer.run {|r| 
-        r.table('users').filter{ 
-          |user| user["first_name"].match("#{search.first}") | user["first_name"].match("#{search.last}") |
-                 user["last_name"].match("#{search.first}") | user["last_name"].match("#{search.last}") |
-                 user["user_name"].match("#{search.first}") | user["user_name"].match("#{search.last}")
-          }
-        }
+      User.or(
+        {"first_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.last}.*/}, 
+        {"user_name": /.*#{search.last}.*/}, 
+        {"user_name": /.*#{search.first}.*/}
+        )
     end
-    # conditions = []
-    # search_columns = [ :first_name, :last_name, :user_name ]
-
-    # search.split(' ').each do |word|
-    #   search_columns.each do |column|
-    #     conditions << " lower(#{column}) LIKE lower(#{sanitize("%#{word}%")}) "
-    #   end
-    # end
-
-    # conditions = conditions.join('OR')    
-    # self.where(conditions)
   end
 
   def get_associates(type)
@@ -202,7 +189,7 @@ class User
   end
 
   def get_followers_and_posts
-    likes = self.likes.to_a.pluck(:post_id)
+    likes = self.likes.to_a.pluck(:post_id).map(&:to_s)
     users = User.where(:id.in => self.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
 
