@@ -181,7 +181,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def memories
     # "http://localhost:3000/v1/memories?user_id=user_id"
     # Gettting the users the current user selected
-    current_user = User.find(User.last.id)
+    current_user = User.find(params[:user_id])
     user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id).to_a.pluck(:selected_users).flatten.uniq
     # Getting the users that selected the current user
     users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.include => current_user.id).to_a.pluck(:user_id)
