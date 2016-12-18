@@ -164,17 +164,17 @@ class User
     search = search.split(" ")
     if search.count == 1
       User.or(
-        {"first_name": /.*#{search.first}.*/}, 
-        {"last_name": /.*#{search.first}.*/}, 
-        {"user_name": /.*#{search.first}.*/}
+        {"first_name": /.*#{search.first}.*/i}, 
+        {"last_name": /.*#{search.first}.*/i}, 
+        {"user_name": /.*#{search.first}.*/i}
         )
     else
       User.or(
-        {"first_name": /.*#{search.first}.*/}, 
-        {"last_name": /.*#{search.first}.*/}, 
-        {"last_name": /.*#{search.last}.*/}, 
-        {"user_name": /.*#{search.last}.*/}, 
-        {"user_name": /.*#{search.first}.*/}
+        {"first_name": /.*#{search.first}.*/i}, 
+        {"last_name": /.*#{search.first}.*/i}, 
+        {"last_name": /.*#{search.last}.*/i}, 
+        {"user_name": /.*#{search.last}.*/i}, 
+        {"user_name": /.*#{search.first}.*/i}
         )
     end
   end
