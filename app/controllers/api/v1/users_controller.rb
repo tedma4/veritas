@@ -63,7 +63,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def map
     if params[:user_id]
-      user = User.eager_load(:likes).where(:id => params[:user_id]).first
+      user = User.includes(:likes).where(:id => params[:user_id]).first
       @docs = user.get_followers_and_posts
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
@@ -134,7 +134,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def feed
-    @user = User.eager_load(:likes).where(id: params[:id]).first
+    @user = User.includes(:likes).where(id: params[:id]).first
     @feed = @user.get_followers_and_posts
     respond_with @feed
 
