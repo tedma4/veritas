@@ -78,7 +78,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def check_pin
     if params[:pin]
       if User.where(pin: params[:pin]).any?
-        return true
+        render json: {status: 200}
       else
         raise 'Access denied'
       end
