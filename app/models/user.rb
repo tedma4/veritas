@@ -1,6 +1,9 @@
 class User
-  include NoBrainer::Document
-  include NoBrainer::Document::Timestamps
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include Mongoid::Geospatial
+  include Mongoid::Attributes::Dynamic
+
   mount_uploader :avatar, AttachmentUploader
   after_create :friend_from_pin
   # Include default devise modules. Others available are:
@@ -11,7 +14,8 @@ class User
   validates :pin, presence: true
 
   ## Database authenticatable
-  field :email,              type: String, default: "", uniq: true
+  field :email,              type: String, default: ""
+  validates_uniqueness_of :email
   field :encrypted_password, type: String, default: ""
 
   ## Recoverable
@@ -31,13 +35,13 @@ class User
   # Delegate
   delegate :url, :size, :path, to: :avatar
 
-  # Virtual attributes
-  alias_attribute :filename, :original_filename
-
   field :attached_item_id, type: Integer
   field :attached_item_type, type: String 
   field :avatar, type: String#, null: false
   field :original_filename, type: String
+
+  # Virtual attributes
+  alias_attribute :filename, :original_filename
 
   has_many :likes, dependent: :destroy
   has_many :posts, dependent: :destroy
@@ -64,10 +68,11 @@ class User
   field :first_name, type: String
   field :last_name, type: String
   field :user_name, type: String#, uniq: true
-  field :current_location, type: Geo::Point, index: true
+  field :current_location, type: Point
+  spatial_index :current_location
 
   def build_user_hash
-    user = {id: self.id,
+    user = {id: self.id.to_s.to_s,
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,
@@ -84,10 +89,10 @@ class User
   def send_friend_request(user_id)
     user = User.find(user_id)
     if user.pending_friends.nil? || user.pending_friends.empty?
-      user.update_attributes(pending_friends: [self.id])
+      user.update_attributes(pending_friends: [self.id.to_s])
     else 
-      unless user.pending_friends.include?(self.id)
-        user.pending_friends << self.id
+      unless user.pending_friends.include?(self.id.to_s)
+        user.pending_friends << self.id.to_s
         user.save
       else
         puts "You already sent a request to #{user.first_name}"
@@ -98,22 +103,22 @@ class User
   def accept_friend_request(user_id)
     return if self.followed_users.include?(user_id)
     user = User.find(user_id)
-    self.pending_friends.delete(user.id) if self.pending_friends.include?(user.id)
+    self.pending_friends.delete(user.id.to_s) if self.pending_friends.include?(user.id.to_s)
     if user.followed_users.nil? || user.followed_users.empty?
-      user.update_attributes(followed_users: [self.id])
+      user.update_attributes(followed_users: [self.id.to_s])
       if self.followed_users.nil? || self.followed_users.empty?
-        self.update_attributes(followed_users: [user.id])
+        self.update_attributes(followed_users: [user.id.to_s])
       else
-        self.followed_users << user.id
+        self.followed_users << user.id.to_s
         self.save
       end
     else
-      user.followed_users << self.id
+      user.followed_users << self.id.to_s
       user.save
       if self.followed_users.nil? || self.followed_users.empty?
-        self.update_attributes(followed_users: [user.id])
+        self.update_attributes(followed_users: [user.id.to_s])
       else
-        self.followed_users << user.id
+        self.followed_users << user.id.to_s
         self.save
       end
     end
@@ -129,8 +134,8 @@ class User
     self.followed_users.delete(user_id)
     self.save
     @user = User.find(user_id)
-    return unless @user.followed_users.include?(self.id)
-    @user.followed_users.delete(self.id)
+    return unless @user.followed_users.include?(self.id.to_s)
+    @user.followed_users.delete(self.id.to_s)
     @user.save
   end
 
@@ -158,33 +163,20 @@ class User
   def self.search(search)
     search = search.split(" ")
     if search.count == 1
-      NoBrainer.run {|r| 
-        r.table('users').filter{ 
-          |user| user["first_name"].match("#{search.first}") | 
-                 user["last_name"].match("#{search.first}") | 
-                 user["user_name"].match("#{search.first}")
-          }
-        }
+      User.or(
+        {"first_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.first}.*/}, 
+        {"user_name": /.*#{search.first}.*/}
+        )
     else
-      NoBrainer.run {|r| 
-        r.table('users').filter{ 
-          |user| user["first_name"].match("#{search.first}") | user["first_name"].match("#{search.last}") |
-                 user["last_name"].match("#{search.first}") | user["last_name"].match("#{search.last}") |
-                 user["user_name"].match("#{search.first}") | user["user_name"].match("#{search.last}")
-          }
-        }
+      User.or(
+        {"first_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.first}.*/}, 
+        {"last_name": /.*#{search.last}.*/}, 
+        {"user_name": /.*#{search.last}.*/}, 
+        {"user_name": /.*#{search.first}.*/}
+        )
     end
-    # conditions = []
-    # search_columns = [ :first_name, :last_name, :user_name ]
-
-    # search.split(' ').each do |word|
-    #   search_columns.each do |column|
-    #     conditions << " lower(#{column}) LIKE lower(#{sanitize("%#{word}%")}) "
-    #   end
-    # end
-
-    # conditions = conditions.join('OR')    
-    # self.where(conditions)
   end
 
   def get_associates(type)
@@ -197,7 +189,7 @@ class User
   end
 
   def get_followers_and_posts
-    likes = self.likes.to_a.pluck(:post_id)
+    likes = self.likes.to_a.pluck(:post_id).map(&:to_s)
     users = User.where(:id.in => self.followed_users)
     posts = Post.where(:user_id.in => users.to_a.pluck(:id))
 
@@ -207,30 +199,30 @@ class User
   end
 
   def send_friend_request_notification(user_id)
-    return if user_id == self.id 
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Sent Friend Request")
   end
 
   def accept_friend_request_notification(user_id)
-    return if user_id == self.id 
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Accepted Friend Request")
   end
 
   def signup_with_pin_notification(pin)
-    user_id = User.where(:pin => pin).first.id
-    return if user_id == self.id 
+    user_id = User.where(:pin => pin).first.id.to_s
+    return if user_id == self.id.to_s 
     Notification.create(user_id: user_id,
-                        notified_by_id: self.id,
+                        notified_by_id: self.id.to_s,
                         notice_type: "Signed Up With Your Pin")
   end
 
   # returns true of false if a post is likeed by user
   def like?(post)
-    self.likes.where(post_id: post.id)
+    self.likes.where(post_id: post.id.to_s)
   end
 
   private
@@ -246,11 +238,11 @@ class User
     def friend_from_pin
       unless self.pin.nil?
         user_from_pin = User.where(pin: self[:pin]).first
-        self.update_attributes(followed_users: [user_from_pin.id])
+        self.update_attributes(followed_users: [user_from_pin.id.to_s])
         if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-          user_from_pin.update_attributes(followed_users: [self.id])
+          user_from_pin.update_attributes(followed_users: [self.id.to_s])
         else
-          user_from_pin.followed_users << self.id
+          user_from_pin.followed_users << self.id.to_s
           user_from_pin.save
         end
       else

@@ -28,12 +28,12 @@
 						<% if current_user.pending_friends.include?(user['id']) %>
 							<%= link_to 'Approve', approve_request_path(user: user['id']), method: :post, remote: true %>
 							<%= link_to 'Deny', decline_request_path(user: user['id']), method: :delete, remote: true %>
-						<% elsif user_signed_in? && current_user.id != user['id'] %>
+						<% elsif user_signed_in? && current_user.id.to_s != user['id'] %>
 							<% if !user['followed_users'].nil? || !user['followed_users'].blank? %>
-								<% if user['followed_users'].include?(current_user.id) %>
+								<% if user['followed_users'].include?(current_user.id.to_s) %>
 								  <%= link_to 'Un-friend', remove_friend_path(user: user['id']), method: :delete, remote: true, data: { confirm: 'Are you sure?' } %>
 								<% elsif !user['pending_friends'].nil? || !user['pending_friends'].blank? %>
-									<% if user['pending_friends'].include?(current_user.id) %>
+									<% if user['pending_friends'].include?(current_user.id.to_s) %>
 								    <p>Current user is waiting for this user to accept or deny</p>
 									<% else %>
 								    <p><%= link_to 'Add Friend', send_request_path(user: user['id']), method: :post, remote: true %></p>
@@ -42,7 +42,7 @@
 								  <p><%= link_to 'Add Friend', send_request_path(user: user['id']), method: :post, remote: true %></p>
 								<% end %>
 							<% elsif !user['pending_friends'].nil? || !user['pending_friends'].blank? %>
-								<% if user['pending_friends'].include?(current_user.id) %>
+								<% if user['pending_friends'].include?(current_user.id.to_s) %>
 								  <p>Current user is waiting for this user to accept or deny</p>
 								<% else %>
 								  <p><%= link_to 'Add Friend', send_request_path(user: user['id']), method: :post, remote: true %></p>

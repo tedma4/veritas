@@ -26,17 +26,27 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-gem 'nobrainer'
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
-gem 'carrierwave-nobrainer', github: 'nviennot/carrierwave-nobrainer'
-gem 'devise-nobrainer'
+
+# nobrainer stuff to remove
+# gem 'nobrainer'
+# gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+# gem 'carrierwave-nobrainer', github: 'nviennot/carrierwave-nobrainer'
+# gem 'devise-nobrainer'
+
+# mongoid equivalents
+gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
+gem 'carrierwave', '0.10.0'
+gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
+# gem 'mini_magick'
+gem 'devise'
+gem 'mongoid-geospatial', require: 'mongoid/geospatial'
+
 gem 'omniauth-facebook'
 gem 'gmaps4rails'
 gem 'faker'
 gem 'jwt'
 gem 'figaro'
 gem 'carrierwave-aws', '1.0.2'
-gem 'bootstrap', '4.0.0.alpha5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -44,7 +54,7 @@ gem 'bootstrap', '4.0.0.alpha5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'pry-rails'
-  # gem 'byebug', platform: :mri
+  gem 'pry-byebug'
 end
 
 group :development do
@@ -58,7 +68,6 @@ end
 
 group :production do
 	gem 'rails_12factor'
-  # gem 'nobrainer'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -81,7 +81,7 @@ class UsersController < ApplicationController
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
     else
-      @search = User.sample 50
+      @search = User.all.to_a.sample 50
     end
   end
 

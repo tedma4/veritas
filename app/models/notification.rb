@@ -1,6 +1,6 @@
 class Notification
-  include NoBrainer::Document
-  include NoBrainer::Document::Timestamps
+  include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :user_id, 			 type: String
   field :notified_by_id, type: String
@@ -12,14 +12,14 @@ class Notification
   # current_user.notifications.last.notified_by
   # Returns the User object that made the notification
   belongs_to :notified_by, foreign_key: :notified_by_id, class_name: :User, index: true
-  belongs_to :user, index: true
+  belongs_to :user, index: true, counter_cache: true
   belongs_to :post, index: true
   # validates :user_id, :notified_by_id, :post_id, :identifier, :notice_type, presence: true
 
 
 	def build_notification_hash
     note = {
-      id: self.id,
+      id: self.id.to_s,
       created_at: self.created_at,
       notice_type: self.notice_type,
       user: {
@@ -27,7 +27,7 @@ class Notification
         last_name: self.notified_by.last_name,
         avatar: self.notified_by.avatar.url || "/assets/images/default-image.png",
         user_name: self.notified_by.user_name,
-        id: self.notified_by.id
+        id: self.notified_by.id.to_s
       }
     }
     note[:identifier] = self.identifier if self.identifier
