@@ -40,7 +40,7 @@ gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
 # gem 'mini_magick'
 gem 'devise'
 gem 'mongoid-geospatial', require: 'mongoid/geospatial'
-
+gem 'rgeo', '0.5.3'
 gem 'omniauth-facebook'
 gem 'gmaps4rails'
 gem 'faker'

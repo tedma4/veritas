@@ -10,7 +10,9 @@ require 'image_string'
   	user.email = Faker::Internet.email
   	user.password =  'password'
   	user.password_confirmation =  'password'
-  	user.current_location = [Faker::Address.longitude, Faker::Address.latitude] 
+    lat = Random.rand(33.319861..33.463984)
+    long = Random.rand(-111.978976..-111.877226)
+  	user.current_location = [long, lat]
     user.avatar = ImageString.image_file
     user.save(validate: false)
     user.create_pin
@@ -28,8 +30,10 @@ require 'image_string'
   91.times do |i|
     post = Post.new
     post.attachment = ImageString.image_file
-    post.user_id = User.all.to_a.sample.id.to_s
-    post.location = [Faker::Address.longitude, Faker::Address.latitude]
+    post.user_id = User.all.to_a.sample.id
+    lat = Random.rand(33.319861..33.463984) # Random.rand(33.319861..33.463984)
+    long = Random.rand(-111.978976..-111.877226) # Random.rand(-111.978976..-111.877226)
+    post.location = [long, lat]
     post.save
   end
 
@@ -40,6 +44,26 @@ require 'image_string'
   note.notice_type = ["Sent Friend Request", "Signed Up With Your Pin"]
   note.save
 end
+
+
+
+
+# Bounding Box: Tempe 
+# North Latitude: 33.463984
+# South Latitude: 33.319861
+# East Longitude: -111.877226
+# West Longitude: -111.978976
+
+# lat = Random.rand(33.319861..33.463984) # Random.rand(33.319861..33.463984)
+# long = Random.rand(-111.978976..-111.877226) # Random.rand(-111.978976..-111.877226)
+# [long, lat]
+
+
+# Bounding Box: Phoenix
+# North Latitude: 33.920570
+# South Latitude: 33.290260
+# East Longitude: -111.926046
+# West Longitude: -112.324056
 
 # end
 

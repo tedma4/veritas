@@ -65,11 +65,8 @@ class UsersController < ApplicationController
   end
 
   def map
-    if params[:current_location]
-      @docs = param_thing(params[:current_location].split(',').map(&:to_f))
-    else
-      @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
-    end
+    post = Post.all.limit(250).pluck(:location)
+    @posts = post.map {|p| [p[1], p[0]] }
   end
 
   def get_document(location)
