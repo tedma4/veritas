@@ -65,7 +65,29 @@ class UsersController < ApplicationController
   end
 
   def map
-    post = Post.all.limit(250).pluck(:location)
+    # user, multiple accessible
+    # time, single or between
+    if params[:user].present? && params[:time].present?
+      if params[:time].include?(",")
+        date_array = params[:time].split(",")
+        date = (Date.parse(date_array.first)..Date.parse(date_array.last))
+      else
+        date = (Date.parse(params[:time])..Date.today)
+      end
+      post = Post.between(created_at: date).union.in(user_id: params[:user].split(",")).pluck(:location)
+    elsif params[:time].present? && !params[:user].present?
+      if params[:time].include?(",")
+        date_array = params[:time].split(",")
+        date = (Date.parse(date_array.first)..Date.parse(date_array.last))
+      else
+        date = (Date.parse(params[:time])..Date.today)
+      end
+      post = Post.between(created_at: date).pluck(:location)
+    elsif params[:user]
+      post = Post.in(user_id: params[:user].split(",")).pluck(:location)
+    else
+      post = Post.all.limit(250).pluck(:location)
+    end
     @posts = post.map {|p| [p[1], p[0]] }
   end
 
