@@ -3,11 +3,7 @@ class PostsController < ApplicationController
    #:find_postable
 
   def index
-    if signed_in?
-      @posts = Post.all.order_by(created_at: :desc).limit(50)
-    else
-      redirect_to "/users/sign_in"
-    end
+    @posts = Post.all.order_by(created_at: :desc).limit(50)
   end
 
   def show

@@ -21,7 +21,6 @@ class Api::V1::SessionsController < Api::V1::BaseController
   private
 
   def user_params
-    # binding.pry
     params.require(:user).permit(:email, :password)
   end
 

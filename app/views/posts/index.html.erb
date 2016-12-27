@@ -1,30 +1,65 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Listing posts</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>post name</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @posts.each do |post| %>
+<% if signed_in? %>
+  <p id="notice"><%= notice %></p>
+  <h1>Listing posts</h1>
+  <table>
+    <thead>
       <tr>
-        <td>
-          <%= image_tag post.attachment.url || "/assets/images/default-image.png", size: "300x300" %>
-        </td>
-        <td><%= link_to 'Show', post %></td>
-        <td><%= post.caption if post.caption %></td>
-        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th>Name</th>
+        <th>post name</th>
+        <th colspan="3"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New post', new_post_path %>
+    </thead>
+    <tbody>
+      <% @posts.each do |post| %>
+        <tr>
+          <td>
+            <%= image_tag post.attachment.url || "default-image.png", size: "300x300" %>
+          </td>
+          <td><%= link_to 'Show', post %></td>
+          <td><%= post.caption if post.caption %></td>
+          <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br>
+  <%= link_to 'New post', new_post_path %>
+<% else %>
+<style>
+  body {
+    background-color: #222222;
+  }
+  .image {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .main {
+    background-image: url(/assets/delite-banner.png);
+    background-image: url(/assets/delite-banner.png), repeating-radial-gradient(red, yellow 10%, green 15%);
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: block;
+    margin: 15px;
+    max-width: 100%;
+    height: 400px;
+    position: relative;
+  }
+  .main .links {
+    bottom: 0;
+    position: absolute;
+  }
+  .main .link-styles {
+    text-decoration: none;
+    font: 30px monospace;
+  }
+</style>
+  <%#= image_tag "delite-banner.png", class: "image" %>  
+  <div class="main">
+    <div class="links">
+      <%=  link_to 'Sign Up', new_user_registration_path, class: "link-styles" %>    
+      <%=  link_to 'Log In', new_user_session_path, class: "link-styles" %>
+    </div>
+  </div>
+<% end %>

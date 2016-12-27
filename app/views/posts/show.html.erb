@@ -12,8 +12,7 @@
 
 <p>
   <strong>post:</strong>
-  <%# binding.pry %>
-  <%= image_tag @post.attachment || "/assets/images/default-image.png" %>
+  <%= image_tag @post.attachment || "default-image.png" %>
 </p>
 
 <%= link_to 'Back', posts_path %>

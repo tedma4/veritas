@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Veritas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
@@ -11,21 +12,18 @@
 <%= content_tag(:div, flash[:notice], :id => "flash_notice") if flash[:notice] %>
 <%= content_tag(:div, flash[:alert], :id => "flash_alert") if flash[:alert] %>
 <% if user_signed_in? %>
-<%= link_to 'Friend List', "/users/#{current_user.id.to_s}/friend_list" %>
-<%= link_to 'Accept Requests', "/users/#{current_user.id.to_s}/accept_requests" %>
-<%= link_to "Friend's posts", "/users/#{current_user.id.to_s}/friends_posts" %>
-<%= link_to 'Edit profile', edit_user_registration_path %>
-<%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
-<%= link_to 'map', "/map" %>
-<% else %>
-<%=  link_to 'sign up', new_user_registration_path %>
-<%=  link_to 'sign in', new_user_session_path %>
+	<%= link_to 'Friend List', "/users/#{current_user.id.to_s}/friend_list" %>
+	<%= link_to 'Accept Requests', "/users/#{current_user.id.to_s}/accept_requests" %>
+	<%= link_to "Friend's posts", "/users/#{current_user.id.to_s}/friends_posts" %>
+	<%= link_to 'Edit profile', edit_user_registration_path %>
+	<%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
+	<%= link_to 'map', "/map" %>
+	<%= form_tag search_path, method: 'get' do %>
+	  <button type="submit" style="color: #00eebc;">Go</button>
+	  <%= text_field_tag :search, params[:search], placeholder: "Users" %>
+	<% end %>
 <% end %>
 
-<%= form_tag search_path, method: 'get' do %>
-  <button type="submit" style="color: #00eebc;">Go</button>
-  <%= text_field_tag :search, params[:search], placeholder: "Users" %>
-<% end %>
 <%= yield %>
 
 </body>
