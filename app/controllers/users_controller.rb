@@ -5,12 +5,19 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all.order_by(:id => :desc)
+    if signed_in?
+      @users = User.all.order_by(:id => :desc)
+    else
+      redirect_to "/users/sign_in"
+    end
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
+    if !signed_in?
+      redirect_to "/users/sign_in"
+    end
   end
 
   # GET /users/new
@@ -20,13 +27,15 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    if !signed_in?
+      redirect_to "/users/sign_in"
+    end
   end
 
   # POST /users
   # POST /users.json
   def create
     @user = User.new(user_params.to_h)
-    # binding.pry
     respond_to do |format|
       if @user.save
         @user.signup_with_pin_notification(@user.pin)
@@ -65,30 +74,32 @@ class UsersController < ApplicationController
   end
 
   def map
-    # user, multiple accessible
-    # time, single or between
-    if params[:user].present? && params[:time].present?
-      if params[:time].include?(",")
-        date_array = params[:time].split(",")
-        date = (Date.parse(date_array.first)..Date.parse(date_array.last))
+    if signed_in?
+      if params[:user].present? && params[:time].present?
+        if params[:time].include?(",")
+          date_array = params[:time].split(",")
+          date = (Date.parse(date_array.first)..Date.parse(date_array.last))
+        else
+          date = (Date.parse(params[:time])..Date.today)
+        end
+        post = Post.between(created_at: date).union.in(user_id: params[:user].split(",")).pluck(:location)
+      elsif params[:time].present? && !params[:user].present?
+        if params[:time].include?(",")
+          date_array = params[:time].split(",")
+          date = (Date.parse(date_array.first)..Date.parse(date_array.last))
+        else
+          date = (Date.parse(params[:time])..Date.today)
+        end
+        post = Post.between(created_at: date).pluck(:location)
+      elsif params[:user]
+        post = Post.in(user_id: params[:user].split(",")).pluck(:location)
       else
-        date = (Date.parse(params[:time])..Date.today)
+        post = Post.all.limit(250).pluck(:location)
       end
-      post = Post.between(created_at: date).union.in(user_id: params[:user].split(",")).pluck(:location)
-    elsif params[:time].present? && !params[:user].present?
-      if params[:time].include?(",")
-        date_array = params[:time].split(",")
-        date = (Date.parse(date_array.first)..Date.parse(date_array.last))
-      else
-        date = (Date.parse(params[:time])..Date.today)
-      end
-      post = Post.between(created_at: date).pluck(:location)
-    elsif params[:user]
-      post = Post.in(user_id: params[:user].split(",")).pluck(:location)
+      @posts = post.map {|p| [p[1], p[0]] }
     else
-      post = Post.all.limit(250).pluck(:location)
+      redirect_to "users/sign_in"
     end
-    @posts = post.map {|p| [p[1], p[0]] }
   end
 
   def get_document(location)

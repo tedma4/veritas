@@ -16,6 +16,7 @@
 <%= link_to "Friend's posts", "/users/#{current_user.id.to_s}/friends_posts" %>
 <%= link_to 'Edit profile', edit_user_registration_path %>
 <%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
+<%= link_to 'map', "/map" %>
 <% else %>
 <%=  link_to 'sign up', new_user_registration_path %>
 <%=  link_to 'sign in', new_user_session_path %>
