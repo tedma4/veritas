@@ -1,5 +1,4 @@
 <% if signed_in? %>
-  <p id="notice"><%= notice %></p>
   <h1>Listing posts</h1>
   <table>
     <thead>
@@ -37,7 +36,7 @@
   }
   .main {
     background-image: url(/assets/delite-banner.png);
-    background-size: 60% 60%;
+    background-size: 60% 75%;
     background-repeat: no-repeat;
     background-position: center center;
     display: block;
@@ -47,18 +46,44 @@
     position: relative;
   }
   .main .links {
-    bottom: 0;
-    position: absolute;
+    position: inherit;
+    text-align: center;
+    bottom: -100%;
   }
   .main .link-styles {
     text-decoration: none;
-    font: 30px monospace;
+  }
+  .btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+  .btn-info {
+    color: #00eebc;
+    border-color: #00eebc;
+    font-family: sans-serif;
   }
 </style>
   <%#= image_tag "delite-banner.png", class: "image" %>  
   <div class="main">
     <div class="links">
-      <%=  link_to 'Log In', new_user_session_path, class: "link-styles" %>
+      <%=  link_to 'Log In', new_user_session_path, class: "link-styles btn btn-info" %>
     </div>
   </div>
 <% end %>
