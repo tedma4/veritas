@@ -37,7 +37,7 @@
   }
   .main {
     background-image: url(/assets/delite-banner.png);
-    background-image: url(/assets/delite-banner.png), repeating-radial-gradient(red, yellow 10%, green 15%);
+    background-size: 60% 60%;
     background-repeat: no-repeat;
     background-position: center center;
     display: block;
@@ -58,7 +58,6 @@
   <%#= image_tag "delite-banner.png", class: "image" %>  
   <div class="main">
     <div class="links">
-      <%=  link_to 'Sign Up', new_user_registration_path, class: "link-styles" %>    
       <%=  link_to 'Log In', new_user_session_path, class: "link-styles" %>
     </div>
   </div>
