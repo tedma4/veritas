@@ -22,7 +22,7 @@ private
   end
 
   def is_admin?(user)
-    ["585716f4c29163000406ff86", "58574fd110ded40004c956dc", "5856d773c2382f415081e8cd"].include?(user.id.to_s)
+    user[:veritas_delite_admin]
   end
 
   def invalid_login_attempt
