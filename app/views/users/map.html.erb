@@ -6,6 +6,13 @@
   }
   /* Optional: Makes the sample page fill the window. */ 
 </style>
+  <%= form_tag map_path, method: 'get' do %>
+    <button type="submit" style="color: #00eebc;">Go</button>
+    <label>Separate user ids with a comma</label>
+    <%= text_field_tag :user, params[:user], placeholder: "User Ids" %>
+    <label>Separate dates with a comma</label>
+    <%= text_field_tag :time, params[:time], placeholder: "Time" %>
+  <% end %>
 <div id="map"></div>
 <script>
   var map;

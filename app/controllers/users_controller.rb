@@ -100,6 +100,11 @@ class UsersController < ApplicationController
     else
       redirect_to "users/sign_in"
     end
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def get_document(location)
