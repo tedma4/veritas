@@ -19,27 +19,39 @@
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 10,
-      center: new google.maps.LatLng(33.4484,-112.0740)
+      center: new google.maps.LatLng(33.4484,-112.0740),
+      mapTypeId: 'roadmap'
     });
 
-    // Create a <script> tag and set the USGS URL as the source.
-    var script = document.createElement('script');
-    // // This example uses a local copy of the GeoJSON stored at
-    // // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
-    script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
-    document.getElementsByTagName('head')[0].appendChild(script);
-  }
+    var iconBase = 'https://storage.googleapis.com/support-kms-prod/';
+    var icons = {
+      post: {
+        icon: iconBase + 'SNP_2752125_en_v0'
+      }
+    };
 
-  // Loop through the results array and place a marker for each
-  // set of coordinates.
-  window.eqfeed_callback = function(results) {
-    for (var i = 0; i < <%= @posts.length %>; i++) {
-      var coords = <%= @posts %>[i];
-      var latLng = new google.maps.LatLng(coords[0], coords[1]);
+    function addMarker(feature) {
       var marker = new google.maps.Marker({
-        position: latLng,
+        position: feature.position,
+        icon: icons[feature.type].icon,
         map: map
       });
+    }
+
+    var array_of_stuff = <%= @posts %>
+
+    function new_hash(item, index) {
+      var js_sucks = { 
+      position: new google.maps.LatLng(item[0], item[1]),
+      type: 'post'
+      };
+      return js_sucks;
+    }
+
+    var features = array_of_stuff.map(new_hash)
+
+    for (var i = 0, feature; feature = features[i]; i++) {
+      addMarker(feature);
     }
   }
 
