@@ -97,13 +97,13 @@ class UsersController < ApplicationController
         post = Post.all.limit(250).pluck(:location)
       end
       @posts = post.map {|p| [p[1], p[0]] }
-    else
-      redirect_to "users/sign_in"
-    end
 
-    respond_to do |format|
-      format.html
-      format.js
+      respond_to do |format|
+        format.html
+        format.js
+      end
+    else
+      redirect_to "/"
     end
   end
 

@@ -124,7 +124,7 @@ class Api::V1::UsersController < Api::V1::BaseController
      current_location: user.current_location,
      created_at: user.created_at
     }
-    if current_user
+    if !current_user.blank?
       user_hash[:friendship_status] = current_user.followed_users.include?(user.id.to_s) ? 
          "Is already a friend" : (user.pending_friends.include?(current_user.id.to_s) ? 
           "Request Sent" : "Send Request")

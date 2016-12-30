@@ -17,7 +17,7 @@
 	        <td><%= user['first_name'] %></td>
 	        <td><%= user['last_name'] %></td>
 	        <td><%= user['user_name'] %></td>
-		    	<td><%= image_tag user.avatar.url, size: '50' %></td>
+					<td><%= image_tag(user.avatar.url, size: '50') if user.avatar.url %></td>
 	        <td><%= link_to 'Show', "/users/#{user['id']}" %></td>
 	        <td><%= link_to 'Edit', "/users/#{user['id']}/edit" %></td>
 	        <td>
