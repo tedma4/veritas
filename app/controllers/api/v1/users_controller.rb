@@ -185,13 +185,17 @@ class Api::V1::UsersController < Api::V1::BaseController
     list = all.flatten.uniq
     people = User.where(:id.in => list)
     @users = people.map &:build_user_hash
-    respond_with(@users)
+    if @users.any?
+      respond_with(@users)
+    else
+      render json: { status: 201, message: "The user has no memories"}
+    end
   end
 
   def get_memories
     # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
     current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.in => [params[:friend_id]]).to_a.pluck(:id).map(&:to_s)
-    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.in => [params[:user_id]]).to_a.pluck(:id).map(&to_s)
+    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.in => [params[:user_id]]).to_a.pluck(:id).map(&:to_s)
     all_posts = current_user_posts << friend_posts
     posts = Post.where(:id.in => all_posts.flatten)
     @posts = posts.flatten.map &:build_post_hash
