@@ -16,6 +16,7 @@
           </td>
           <td><%= link_to 'Show', post %></td>
           <td><%= post.caption if post.caption %></td>
+          <td><%= post.post_type if post.post_type %></td>
           <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>
       <% end %>
