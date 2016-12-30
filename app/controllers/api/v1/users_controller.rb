@@ -179,7 +179,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     current_user = User.find(params[:user_id])
     user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id).to_a.pluck(:selected_users).flatten.uniq
     # Getting the users that selected the current user
-    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.include => current_user.id.to_s).to_a.pluck(:user_id)
+
+    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.in => [current_user.id.to_s]).to_a.pluck(:user_id)
     all = user_ids_the_current_user_selected  << users_that_selected_the_current_user
     list = all.flatten.uniq
     people = User.where(:id.in => list)
@@ -189,12 +190,16 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def get_memories
     # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
-    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.include => params[:friend_id]).to_a.pluck(:id).map(&:to_s)
-    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.include => params[:user_id]).to_a.pluck(:id).map(&to_s)
+    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.in => [params[:friend_id]]).to_a.pluck(:id).map(&:to_s)
+    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.in => [params[:user_id]]).to_a.pluck(:id).map(&to_s)
     all_posts = current_user_posts << friend_posts
     posts = Post.where(:id.in => all_posts.flatten)
     @posts = posts.flatten.map &:build_post_hash
-    respond_with @posts
+    if @posts.any?
+      respond_with @posts
+    else
+      render json: { status: 201, message: "There are no memories with this friend"}
+    end
   end
 
 
