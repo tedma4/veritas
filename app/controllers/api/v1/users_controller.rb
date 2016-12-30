@@ -98,7 +98,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       if params["user_id"]
         current_user = User.find(params["user_id"])
         respond_with @search.map {|user| 
-          # user = User.find(user["id"])
+          user = User.find(user["id"])
           build_search_hash(user, current_user)
         }
       else
@@ -125,8 +125,8 @@ class Api::V1::UsersController < Api::V1::BaseController
      created_at: user.created_at
     }
     if !current_user.blank?
-      user_hash[:friendship_status] = current_user.followed_users.include?(user.id.to_s) ? 
-         "Is already a friend" : (user.pending_friends.include?(current_user.id.to_s) ? 
+      user_hash[:friendship_status] = current_user.first.followed_users.include?(user.id.to_s) ? 
+         "Is already a friend" : (user.pending_friends.include?(current_user.first.id.to_s) ? 
           "Request Sent" : "Send Request")
     end
     user_hash[:like_count] = user.likes.count if user.likes
