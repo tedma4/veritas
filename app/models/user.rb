@@ -45,6 +45,7 @@ class User
 
   has_many :likes, dependent: :destroy
   has_many :posts, dependent: :destroy
+  has_one :location, dependent: :destroy
   has_many :notifications, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
