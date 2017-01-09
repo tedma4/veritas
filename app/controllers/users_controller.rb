@@ -96,8 +96,11 @@ class UsersController < ApplicationController
       else
         post = Post.all.limit(250).pluck(:location)
       end
-      @posts = post.map {|p| [p[1], p[0]] }
-
+      location = Location.pluck(:location_details).flatten.map {|l| {position: {lat: l["coords"][1], lng: l["coords"][0]}, type: "user"} }
+      post_hashes = post.map {|p| {position: {lat: p[1], lng: p[0] }, type: "post" } }
+      merge = post_hashes << location
+      @posts = merge.flatten
+      # @posts = Location.pluck(:location_details).flatten.map {|l| {position: {lat: l["coords"][1], lng: l["coords"][0]}, type: "user"} }
       respond_to do |format|
         format.html
         format.js

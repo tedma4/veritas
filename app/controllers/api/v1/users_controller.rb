@@ -61,16 +61,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
-  def map
-    if params[:user_id]
-      user = User.includes(:likes).where(:id => params[:user_id]).first
-      @docs = user.get_followers_and_posts
-    else
-      @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
-    end
-    respond_with(@docs)
-  end
-
   def get_document(location)
     Post.near(location: [location[1], location[0]]).max_distance(location: 50)
   end
@@ -133,13 +123,6 @@ class Api::V1::UsersController < Api::V1::BaseController
     return user_hash
   end
 
-  def feed
-    @user = User.includes(:likes).where(id: params[:id]).first
-    @feed = @user.get_followers_and_posts
-    respond_with @feed
-
-  end
-
   def send_request
     user = User.find(params["user_id"])
     user.send_friend_request(params["friend_id"]) unless user.followed_users.include?(params["friend_id"])
@@ -198,8 +181,46 @@ class Api::V1::UsersController < Api::V1::BaseController
       respond_with @posts
   end
 
+  def user_location
+    # get http://veritas-go.herokuapp.com/v1/user_location?user_id=123123123&coords=123.123,123.123&time_stamp=2017-01-0821:14:12
+    # binding.pry
+    if params[:user_id]
+      add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      render json: {status: 200}
+    else
+      render json: {errors: 400}
+    end
+  end
+
+  def map
+    # Earth Radius in miles = 3959
+    # http://localhost:3000/v1/map?user_id=123123123123123&location=-111.97020039802361,33.35998611316586&time_stamp=2017-01-0821:14:12
+    if params[:user_id]
+      user = User.includes(:likes).where(:id => params[:user_id]).first
+      @docs = user.get_followers_and_posts(params[:location].split(","))
+      add_location_data(params[:user_id], params[:location], params[:time_stamp])
+    else
+      @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
+    end
+    respond_with(@docs)
+  end
+
+  def feed
+    @user = User.includes(:likes).where(id: params[:id]).first
+    @feed = @user.get_followers_and_posts
+    respond_with @feed
+  end
 
   private
+
+  def add_location_data(user_id, coords, time_stamp)
+    loc = Location.find_or_create_by(user_id: user_id)
+    coords = coords.split(",")
+    loc.location_details.create(
+      coords: coords, 
+      time_stamp: DateTime.parse(time_stamp)
+      )
+  end
 
   def delete_notification
     Notification.find(params["notification_id"]).destroy

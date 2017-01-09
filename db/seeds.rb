@@ -27,13 +27,18 @@ require 'image_string'
   end
 # # end
 # # unless Post.any?
-  91.times do |i|
+  # require "image_string"
+  7.times do |i|
     post = Post.new
     post.attachment = ImageString.image_file
+    # post.user_id = User.last.id
     post.user_id = User.all.to_a.sample.id
     lat = Random.rand(33.319861..33.463984) # Random.rand(33.319861..33.463984)
     long = Random.rand(-111.978976..-111.877226) # Random.rand(-111.978976..-111.877226)
     post.location = [long, lat]
+    # post.selected_users = ["5856d773c2382f415081e8cd", "585716f4c29163000406ff86"]
+    # post.caption = Faker::ChuckNorris.fact
+    # post.post_type = "memory"
     post.save
   end
 

@@ -14,6 +14,7 @@
     <%= text_field_tag :time, params[:time], placeholder: "Time" %>
   <% end %>
 <div id="map"></div>
+
 <script>
   var map;
   function initMap() {
@@ -28,6 +29,9 @@
     var icons = {
       post: {
         icon: iconBase + 'SNP_2752125_en_v0'
+      },
+      user: {
+        icon: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png"
       }
     };
 
@@ -42,10 +46,10 @@
 
     function addCircle(feature) {
         var circle = new google.maps.Circle({
-        strokeColor: '#FF0000',
+        strokeColor: '#00eebc',
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#FF0000',
+        fillColor: '#ooeebc',
         fillOpacity: 0.35,
         map: map,
         center: feature.position,
@@ -54,17 +58,7 @@
       return circle
     }
 
-    var array_of_stuff = <%= @posts %>
-
-    function new_hash(item, index) {
-      var js_sucks = { 
-      position: {lat: item[0], lng: item[1]},
-      type: 'post'
-      };
-      return js_sucks;
-    }
-
-    var features = array_of_stuff.map(new_hash)
+    var features = <%= @posts.to_json.html_safe %>
 
     for (var i = 0, feature; feature = features[i]; i++) {
       var individualMarker = addMarker(feature);

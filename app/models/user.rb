@@ -189,11 +189,20 @@ class User
     end
   end
 
-  def get_followers_and_posts
+  def get_followers_and_posts(*coords) # coords is an array of longitude and latitude
     likes = self.likes.to_a.pluck(:post_id).map(&:to_s)
     users = User.where(:id.in => self.followed_users)
-    posts = Post.where(:user_id.in => users.to_a.pluck(:id))
-
+    if !coords.blank?
+      posts = Post.where(:location => 
+        {"$within" => 
+          {"$centerSphere" => [coords.flatten.map(&:to_f), (2.5.fdiv(3959) )]}
+        },
+        :user_id.in => users.to_a.pluck(:id),
+        :post_type.nin => ["reply"]
+        )
+    else
+      posts = Post.where(:user_id.in => users.to_a.pluck(:id))
+    end
     posts.map {|post| 
       post.build_post_hash(likes)
     }

@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       delete 'unlike', to: 'likes#unlike'
       get 'memories', to: 'users#memories'
       get 'get_memories', to: 'users#get_memories'
+      get 'user_location', to: 'users#user_location'
 
     end
   end
