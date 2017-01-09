@@ -195,7 +195,7 @@ class User
     if !coords.blank?
       posts = Post.where(:location => 
         {"$within" => 
-          {"$centerSphere" => [coords.flatten.map(&:to_f), (2.5.fdiv(3959) )]}
+          {"$centerSphere" => [coords.flatten.map(&:to_f), (1.5.fdiv(3959) )]}
         },
         :user_id.in => users.to_a.pluck(:id),
         :post_type.nin => ["reply"]

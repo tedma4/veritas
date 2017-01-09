@@ -38,14 +38,14 @@ class Post
       id: self.id.to_s,
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
-      location: self.location,
+      location: {latitude: self.location[1], longitude: self.location[0]},
       post_type: self.post_type,
       user: {
         first_name: self.user.first_name,
         last_name: self.user.last_name,
         avatar: self.user.avatar.url || "/assets/images/default-image.png",
         user_name: self.user.user_name,
-        id: self.user.id
+        id: self.user.id.to_s
       }
     }
     post_hash[:caption] = self.caption if self.caption
