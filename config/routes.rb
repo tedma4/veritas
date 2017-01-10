@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   
   resources :posts
   resources :users
+  resources :areas
   root to: 'posts#index'
-
   get '/map',                       to: 'users#map'
   get '/search',                    to: 'users#search'
   post '/send_request',             to: 'users#send_request'
