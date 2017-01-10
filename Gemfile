@@ -47,6 +47,7 @@ gem 'faker'
 gem 'jwt'
 gem 'figaro'
 gem 'carrierwave-aws', '1.0.2'
+gem "mongoid-tree", :require => "mongoid/tree"
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

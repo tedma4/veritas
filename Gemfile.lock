@@ -131,6 +131,8 @@ GEM
     mongoid-grid_fs (2.3.0)
       mime-types (>= 1.0, < 4.0)
       mongoid (>= 3.0, < 7.0)
+    mongoid-tree (2.1.0)
+      mongoid (>= 4.0, < 7.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -260,6 +262,7 @@ DEPENDENCIES
   listen (~> 3.0.5)
   mongoid!
   mongoid-geospatial
+  mongoid-tree
   omniauth-facebook
   pry-byebug
   pry-rails
