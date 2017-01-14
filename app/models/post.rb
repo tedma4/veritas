@@ -26,8 +26,7 @@ class Post
   # Virtual attributes
   alias_attribute :filename, :original_filename
   field :content_type, type: String
-  field :location, type: Point
-  spatial_index :location
+  field :location, type: Point, sphere: true
   field :post_type, type: String, default: "public"
   field :selected_users, type: Array
   field :caption, type: String

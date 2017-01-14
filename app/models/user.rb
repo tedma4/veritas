@@ -69,8 +69,7 @@ class User
   field :first_name, type: String
   field :last_name, type: String
   field :user_name, type: String#, uniq: true
-  field :current_location, type: Point
-  spatial_index :current_location
+  field :current_location, type: Point, sphere: true
 
   def build_user_hash
     user = {id: self.id.to_s.to_s,
@@ -198,7 +197,7 @@ class User
           {"$centerSphere" => [coords.flatten.map(&:to_f), (1.5.fdiv(3959) )]}
         },
         :user_id.in => users.to_a.pluck(:id),
-        :post_type.nin => ["reply"]
+        :post_type.nin => ["reply", "memory"]
         )
     else
       posts = Post.where(:user_id.in => users.to_a.pluck(:id))

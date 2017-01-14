@@ -2,7 +2,8 @@
   /* Always set the map height explicitly to define the size of the div
    * element that contains the map. */
   #map {
-    height: 100%;
+    height: 50%;
+    margin: 0 0 50px 0;
   }
   /* Optional: Makes the sample page fill the window. */
   html, body {
@@ -12,41 +13,35 @@
   }
 </style>
 <div id="map"></div>
-<script>
-  // This example requires the Drawing library. Include the libraries=drawing
-  // parameter when you first load the API. For example:
-  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=drawing">
+<%= form_for @area,remote: true,  html: {id: "areaForm"} do |f| %>
+<%= f.label :title %>
+<%= f.text_field :title %>
+<%= f.submit %>
+<% end %>
 
+<script>
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 33.4484, lng: -112.0740},
-      zoom: 15
+      center: {lat: 33.6782379, lng: -112.10129119999999},
+      zoom: 18
     });
 
     var drawingManager = new google.maps.drawing.DrawingManager({
-      // This line sets the mode when the map is initalized
-      drawingMode: google.maps.drawing.OverlayType.MARKER, 
+      drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: ['circle','rectangle', 'polygon'] //, 'polyline', "marker"
+        drawingModes: ['polygon', 'rectangle']
       },
       // markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
-      circleOptions: {
-        fillColor: '#ffff00',
-        fillOpacity: .1,
-        strokeWeight: 1,
-        clickable: false,
-        editable: false,
-        zIndex: 1
-      },
       rectangleOptions: {
         fillColor: '#ffff00',
         fillOpacity: .1,
         strokeWeight: 1,
         clickable: false,
         editable: false,
-        zIndex: 1
+        zIndex: 1,
+        geodesic: true
       },
       polygonOptions: {
         fillColor: '#ffff00',
@@ -54,23 +49,48 @@
         strokeWeight: 1,
         clickable: false,
         editable: false,
-        zIndex: 1
+        zIndex: 1,
+        geodesic: true
       }
     });
     drawingManager.setMap(map);
     google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-      // var radius = event.overlay.getRadius();
-      // var center = event.overlay.getPaths();
-      var mapbounds = map.getBounds();
-      var coords = { lat: mapbounds.getNorthEast().lat(), lng: mapbounds.getNorthEast().lng() }
-      console.log(coords);
-      // console.log(radius);
-      // console.log(center);
+
+      if (event.type == 'rectangle') {
+        var bounds = event.overlay.getBounds();
+
+        var polygon_bounds = [
+          [
+            bounds.getNorthEast().lat(), 
+            bounds.getNorthEast().lng()
+          ], 
+          [
+            bounds.getSouthWest().lat(), 
+            bounds.getSouthWest().lng()
+          ]
+        ]
+      }else if (event.type == 'polygon') {
+        var points = event.overlay.getPath().b;
+        var polygon_bounds = points.map(function(event) {
+          var latlng = [event.lat(), event.lng()]
+          return latlng
+        });
+
+      }
+      var thing = document.getElementById("areaForm")
+      // loop to add the input elements after an overlay is created
+      for (var i = 0; i < polygon_bounds.length; i++) {
+        var lat = polygon_bounds[i][0];
+        var lng = polygon_bounds[i][1];
+
+        var point_input = document.createElement("input");
+        point_input.setAttribute("type", "text")
+        point_input.setAttribute("name", "area[area_profile][]")
+        point_input.setAttribute("value", [lat, lng])
+        thing.appendChild(point_input)
+      }
+      // infowindow.open(map, event.overlay);
     });
-    // google.maps.event.addListener(drawingManager, 'circlecomplete', function(circle) {
-    //   var radius = circle.getRadius();
-    //   console.log(radius)
-    // });
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAU7vv1IU0p7UKr8YiKASuKXKn7ptBrcUk&libraries=drawing&callback=initMap"

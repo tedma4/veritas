@@ -3,17 +3,20 @@ class Area
   include Mongoid::Timestamps
   include Mongoid::Geospatial
   include Mongoid::Tree
-  # has_many :locations
 
-  # field :area_polygon, type: Polygon
-  # spatial_index :area_polygon
+  field :area_profile, type: Polygon, sphere: true
 
-  # field :area_circle, type: Point
-  # spatial_index :area_circle
-  # field :radius, type: Float
-  # field :area_type, type: String
+  field :title, type: String, default: "public"
 
-  # field :title, type: String, default: "public"
-  # validates :user_id, presence: true
+  # before_destroy :update_tree
+  # before_save :find_ancestor
 
+  private
+  def find_ancestor
+    Area.intersects_polygon(area_profile)
+  end
+
+  # def update_tree
+
+  # end
 end
