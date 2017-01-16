@@ -6,6 +6,13 @@ GIT
       activemodel (~> 5.0)
       mongo (~> 2.4)
 
+GIT
+  remote: https://github.com/tedma4/mongoid-geospatial
+  revision: bf9a959637a959e5b59dd13dba94f35c0f733f88
+  specs:
+    mongoid-geospatial (5.0.0)
+      mongoid (>= 4.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -126,8 +133,6 @@ GEM
     minitest (5.10.1)
     mongo (2.4.0)
       bson (~> 4.2.0)
-    mongoid-geospatial (5.0.0)
-      mongoid (>= 5.0.0.beta)
     mongoid-grid_fs (2.3.0)
       mime-types (>= 1.0, < 4.0)
       mongoid (>= 3.0, < 7.0)
@@ -261,7 +266,7 @@ DEPENDENCIES
   jwt
   listen (~> 3.0.5)
   mongoid!
-  mongoid-geospatial
+  mongoid-geospatial!
   mongoid-tree
   omniauth-facebook
   pry-byebug

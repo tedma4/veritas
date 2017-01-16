@@ -202,6 +202,7 @@ class User
     else
       posts = Post.where(:user_id.in => users.to_a.pluck(:id))
     end
+
     posts.map {|post| 
       post.build_post_hash(likes)
     }
