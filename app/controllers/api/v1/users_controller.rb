@@ -182,9 +182,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def user_location
-    # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&coords=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    # binding.pry
+    # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    
+    # binding.pry
     if params[:user_id]
-      add_location_data(params[:user_id], params[:coords], params[:time_stamp])
+      add_location_data(params[:user_id], params[:location], params[:time_stamp])
       render json: {status: 200}
     else
       render json: {errors: 400}
@@ -193,7 +194,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def map
     # Earth Radius in miles = 3959
-    # http://localhost:3000/v1/map?user_id=123123123123123&location=-111.97020039802361,33.35998611316586&time_stamp=2017-01-0821:14:12
+    # http://localhost:3000/v1/map?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00 
     if params[:user_id]
       user = User.includes(:likes).where(:id => params[:user_id]).first
       @docs = user.get_followers_and_posts(params[:location].split(","))
