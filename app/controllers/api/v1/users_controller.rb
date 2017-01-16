@@ -182,9 +182,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def user_location
-    # get http://veritas-go.herokuapp.com/v1/user_location?user_id=123123123&coords=123.123,123.123&time_stamp=2017-01-0821:14:12
+    # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&coords=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    # binding.pry
     if params[:user_id]
-      add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      add_location_data(params[:user_id], params[:coords], params[:time_stamp])
       render json: {status: 200}
     else
       render json: {errors: 400}
