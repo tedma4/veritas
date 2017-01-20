@@ -214,12 +214,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   private
 
   def add_location_data(user_id, coords, time_stamp)
-    loc = Location.find_or_create_by(user_id: user_id)
-    coords = coords.split(",")
-    loc.location_details.create(
-      coords: coords, 
-      time_stamp: DateTime.parse(time_stamp)
-      )
+    loc = UserLocation.new
+    loc.user_id = user_id
+    loc.coords = coords.split(",")
+    loc.time_stamp = time_stamp
+    loc.save(validate: false)
   end
 
   def delete_notification
