@@ -185,7 +185,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    
     # binding.pry
     if params[:user_id]
-      add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      # User.area_info
       render json: {status: 200}
     else
       render json: {errors: 400}
@@ -198,7 +199,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if params[:user_id]
       user = User.includes(:likes).where(:id => params[:user_id]).first
       @docs = user.get_followers_and_posts(params[:location].split(","))
-      add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end
@@ -212,14 +213,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   private
-
-  def add_location_data(user_id, coords, time_stamp)
-    loc = UserLocation.new
-    loc.user_id = user_id
-    loc.coords = coords.split(",")
-    loc.time_stamp = time_stamp
-    loc.save(validate: false)
-  end
 
   def delete_notification
     Notification.find(params["notification_id"]).destroy

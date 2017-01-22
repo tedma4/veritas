@@ -34,20 +34,20 @@ gem 'jbuilder', '~> 2.5'
 # gem 'devise-nobrainer'
 
 # mongoid equivalents
-gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
 gem 'carrierwave', '0.10.0'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
+gem 'carrierwave-aws', '1.0.2'
 # gem 'mini_magick'
 gem 'devise'
+gem 'jwt'
+gem 'mongoid', git: 'https://github.com/mongodb/mongoid.git'
 gem 'mongoid-geospatial', git: "https://github.com/tedma4/mongoid-geospatial", require: 'mongoid/geospatial'
 gem 'rgeo', '0.5.3'
-gem 'omniauth-facebook'
-gem 'gmaps4rails'
 gem 'faker'
-gem 'jwt'
 gem 'figaro'
-gem 'carrierwave-aws', '1.0.2'
-gem "mongoid-tree", :require => "mongoid/tree"
+# gem 'omniauth-facebook'
+# gem 'gmaps4rails'
+# gem "mongoid-tree", :require => "mongoid/tree"
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

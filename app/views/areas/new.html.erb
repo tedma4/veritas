@@ -16,13 +16,14 @@
 <%= form_for @area,remote: true,  html: {id: "areaForm"} do |f| %>
 <%= f.label :title %>
 <%= f.text_field :title %>
+<%= f.text_field :level %>
 <%= f.submit %>
 <% end %>
-
+<%= @areas.to_json.html_safe %>
 <script>
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 33.6782379, lng: -112.10129119999999},
+      center: {lat: 33.481347, lng: -111.9751887},
       zoom: 18
     });
 
@@ -40,8 +41,7 @@
         strokeWeight: 1,
         clickable: false,
         editable: false,
-        zIndex: 1,
-        geodesic: true
+        zIndex: 1
       },
       polygonOptions: {
         fillColor: '#ffff00',
@@ -49,8 +49,7 @@
         strokeWeight: 1,
         clickable: false,
         editable: false,
-        zIndex: 1,
-        geodesic: true
+        zIndex: 1
       }
     });
     drawingManager.setMap(map);
@@ -91,6 +90,63 @@
       }
       // infowindow.open(map, event.overlay);
     });
+
+    var levelColor = {
+      l1: {
+        strokeColor: '#00eebc',
+        fillColor: '#00eebc',
+      },
+      l2: {
+        strokeColor: '#BFBFBF',
+        fillColor: '#BFBFBF',
+      },
+      l3: {
+        strokeColor: '#622662',
+        fillColor: '#622662',
+      }
+    };
+
+    var features = <%= @areas.to_json.html_safe %>
+
+  // Construct the polygon.
+  function addPolygon(feature) {
+
+    var area = new google.maps.Polygon({
+      paths: feature.coords,
+      strokeColor: levelColor[feature.level].strokeColor,
+      strokeOpacity: 0.8,
+      strokeWeight: 3,
+      fillColor: levelColor[feature.level].fillColor,
+      fillOpacity: 0.35,
+      map: map
+    });
+    google.maps.event.addListener(area, "click", function(event) {
+      var vertices = this.getPath();
+      var contentString = '<b>'+ feature.title +'</b><br>' + '<a href="http://localhost:3000/areas/new">click me</a><br>' +
+          'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
+          '<br>';
+      // Iterate over the vertices.
+      for (var i =0; i < vertices.getLength(); i++) {
+        var xy = vertices.getAt(i);
+        contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
+            xy.lng();
+      }
+
+      // Replace the info window's content and position.
+      infoWindow.setContent(contentString);
+      infoWindow.setPosition(event.latLng);
+
+      infoWindow.open(map);
+    });
+  }
+
+  infoWindow = new google.maps.InfoWindow;
+
+    for (var i = 0, feature; feature = features[i]; i++) {
+      // console.log(feature);
+      addPolygon(feature);
+    }
+  infoWindow = new google.maps.InfoWindow;
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAU7vv1IU0p7UKr8YiKASuKXKn7ptBrcUk&libraries=drawing&callback=initMap"

@@ -57,7 +57,7 @@
         fillOpacity: 0.35,
         map: map,
         center: feature.position,
-        radius: 15
+        radius: 17
       });
       return circle
     }
@@ -65,9 +65,13 @@
     var features = <%= @posts.to_json.html_safe %>
 
     for (var i = 0, feature; feature = features[i]; i++) {
+      // console.log(feature);
       var individualMarker = addMarker(feature);
-      // var individualCircle = addCircle(feature);
-      // individualCircle.bindTo("center", individualMarker, "position")
+      if (feature.type == "post") {
+      var individualCircle = addCircle(feature);
+      individualCircle.bindTo("center", individualMarker, "position")
+
+      }
     }
   }
 

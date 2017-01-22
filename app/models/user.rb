@@ -45,7 +45,7 @@ class User
 
   has_many :likes, dependent: :destroy
   has_many :posts, dependent: :destroy
-  has_one :location, dependent: :destroy
+  # has_one :location, dependent: :destroy
   has_many :notifications, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
@@ -69,7 +69,7 @@ class User
   field :first_name, type: String
   field :last_name, type: String
   field :user_name, type: String#, uniq: true
-  field :current_location, type: Point, sphere: true
+  # field :current_location, type: Point, sphere: true
 
   def build_user_hash
     user = {id: self.id.to_s.to_s,
@@ -233,6 +233,14 @@ class User
   # returns true of false if a post is likeed by user
   def like?(post)
     self.likes.where(post_id: post.id.to_s)
+  end
+
+  def self.add_location_data(user_id, coords, time_stamp)
+    loc = UserLocation.new
+    loc.user_id = user_id
+    loc.coords = coords.split(",")
+    loc.time_stamp = time_stamp
+    loc.save(validate: false)
   end
 
   private
