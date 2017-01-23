@@ -18,6 +18,8 @@
 	<%= link_to 'Edit profile', edit_user_registration_path %>
 	<%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
 	<%= link_to 'map', "/map" %>
+	<%= link_to 'new areas', "/areas/new" %>
+	<%= link_to 'area list', "/areas" %>
 	<%= form_tag search_path, method: 'get' do %>
 	  <button type="submit" style="color: #00eebc;">Go</button>
 	  <%= text_field_tag :search, params[:search], placeholder: "Users" %>
