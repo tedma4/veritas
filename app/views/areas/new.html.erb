@@ -13,13 +13,12 @@
   }
 </style>
 <div id="map"></div>
-<%= form_for @area,remote: true,  html: {id: "areaForm"} do |f| %>
+<%= form_for @area, remote: true,  html: {id: "areaForm"} do |f| %>
 <%= f.label :title %>
 <%= f.text_field :title %>
 <%= f.text_field :level %>
 <%= f.submit %>
 <% end %>
-<%= @areas.to_json.html_safe %>
 <script>
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -28,7 +27,7 @@
     });
 
     var drawingManager = new google.maps.drawing.DrawingManager({
-      drawingMode: google.maps.drawing.OverlayType.POLYGON,
+      // drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
@@ -105,8 +104,7 @@
         fillColor: '#622662',
       }
     };
-
-    var features = <%= @areas.to_json.html_safe %>
+  var features = <%= @areas.to_json.html_safe %>
 
   // Construct the polygon.
   function addPolygon(feature) {
@@ -122,7 +120,7 @@
     });
     google.maps.event.addListener(area, "click", function(event) {
       var vertices = this.getPath();
-      var contentString = '<b>'+ feature.title +'</b><br>' + '<a href="http://localhost:3000/areas/new">click me</a><br>' +
+      var contentString = '<b>'+ feature.title +'</b><br>' + '<a href="http://localhost:3000/areas/' + feature.id + '">click me</a><br>' +
           'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
           '<br>';
       // Iterate over the vertices.
@@ -131,7 +129,6 @@
         contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
             xy.lng();
       }
-
       // Replace the info window's content and position.
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
@@ -140,12 +137,10 @@
     });
   }
 
-  infoWindow = new google.maps.InfoWindow;
-
-    for (var i = 0, feature; feature = features[i]; i++) {
-      // console.log(feature);
-      addPolygon(feature);
-    }
+  for (var i = 0, feature; feature = features[i]; i++) {
+    // console.log(feature);
+    addPolygon(feature);
+  }
   infoWindow = new google.maps.InfoWindow;
   }
 </script>

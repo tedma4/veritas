@@ -19,20 +19,16 @@
   var map;
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 10,
-      center: {lat: 33.4484, lng: -112.0740},
+      zoom: 18,
+      center: {lat: 33.481347, lng: -111.9751887},
       mapTypeId: 'roadmap'
     });
     
     var icons = {
-      post: {
-        icon: 'https://storage.googleapis.com/support-kms-prod/SNP_2752125_en_v0'
-      },
       user: {
         icon: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png"
       }
     };
-
     function addMarker(feature) {
       var marker = new google.maps.Marker({
         position: feature.position,
@@ -45,29 +41,22 @@
       return marker
     }
 
-    function addCircle(feature) {
-        var circle = new google.maps.Circle({
-        strokeColor: '#00eebc',
+    function addPolygon() {
+      var area = new google.maps.Polygon({
+        paths: <%= @polygon[:coords].to_json.html_safe %>,
+        strokeColor: "#00eebc",
         strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#ooeebc',
+        strokeWeight: 3,
+        fillColor: "#00eebc",
         fillOpacity: 0.35,
-        map: map,
-        center: feature.position,
-        radius: 17
+        map: map
       });
-      return circle
     }
-
-    var features = <%= @posts.to_json.html_safe %>
-
+    addPolygon();
+    var features = <%= @dots.to_json.html_safe %>
     for (var i = 0, feature; feature = features[i]; i++) {
       // console.log(feature);
-      var individualMarker = addMarker(feature);
-      if (feature.type == "post") {
-      var individualCircle = addCircle(feature);
-      individualCircle.bindTo("center", individualMarker, "position")
-      }
+      addMarker(feature);
     }
   }
 

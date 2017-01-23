@@ -79,7 +79,6 @@ class User
      avatar: self.avatar.url || "/assets/images/default-image.png",
      user_name: self.user_name,
      pin: self.pin,
-     current_location: self.current_location,
      created_at: self.created_at
     }
     user[:like_count] = self.likes.count if self.likes

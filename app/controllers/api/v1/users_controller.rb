@@ -111,7 +111,6 @@ class Api::V1::UsersController < Api::V1::BaseController
      avatar: user.avatar.url,
      user_name: user.user_name,
      pin: user.pin,
-     current_location: user.current_location,
      created_at: user.created_at
     }
     if !current_user.blank?
