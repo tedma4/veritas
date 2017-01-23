@@ -2,7 +2,7 @@
   /* Always set the map height explicitly to define the size of the div
    * element that contains the map. */
   #map {
-    height: 50%;
+    height: 75%;
     margin: 0 0 50px 0;
   }
   /* Optional: Makes the sample page fill the window. */
@@ -16,12 +16,12 @@
 <%= form_for @area, remote: true,  html: {id: "areaForm"} do |f| %>
 <%= f.label :title %>
 <%= f.text_field :title %>
-<%= f.text_field :level %>
+<%= f.select :level, ['L1', 'L2', "L3"] %>
 <%= f.submit %>
 <% end %>
 <script>
   function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 33.481347, lng: -111.9751887},
       zoom: 18
     });
@@ -91,15 +91,19 @@
     });
 
     var levelColor = {
-      l1: {
+      L0: {
         strokeColor: '#00eebc',
         fillColor: '#00eebc',
       },
-      l2: {
+      L1: {
+        strokeColor: '#00eebc',
+        fillColor: '#00eebc',
+      },
+      L2: {
         strokeColor: '#BFBFBF',
         fillColor: '#BFBFBF',
       },
-      l3: {
+      L3: {
         strokeColor: '#622662',
         fillColor: '#622662',
       }
@@ -115,7 +119,8 @@
       strokeOpacity: 0.8,
       strokeWeight: 3,
       fillColor: levelColor[feature.level].fillColor,
-      fillOpacity: 0.35,
+      fillOpacity: 0.1,
+      editable: false,
       map: map
     });
     google.maps.event.addListener(area, "click", function(event) {

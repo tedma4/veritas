@@ -5,7 +5,7 @@ class Area
 
   field :area_profile, type: Polygon, sphere: true
 
-  field :title, type: String, default: "public"
+  field :title, type: String, default: "Name of Area"
   field :level, type: String, default: "l3"
 
   private
