@@ -110,52 +110,13 @@ class UsersController < ApplicationController
       redirect_to "/"
     end
   end
-
-  def get_document(location)
-    point = NoBrainer.run {|r| r.point(location[1], location[0])}
-    NoBrainer.run {|r| r.table('users').get_nearest(point, {index: 'current_location', max_results: 25, unit: 'mi', max_dist: 100} )}
-  end
-
+  
   def search
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
     else
       @search = User.all.to_a.sample 50
     end
-  end
-
-  def send_request
-    current_user.send_friend_request(params['user'])
-    current_user.send_friend_request_notification(params['user'])
-  end
-
-  def approve_request
-    current_user.accept_friend_request(params['user'])
-    current_user.accept_friend_request_notification(params['user'])
-  end
-
-  def remove_friend
-    current_user.unfriend_user(params['user'])
-  end
-
-  def decline_request
-    current_user.decline_friend_request(params['user'])
-  end
-
-  def accept_requests
-    user = User.find(params[:id])
-    @users = User.where(:id.in => user.pending_friends)
-  end
-
-  def friends_posts
-    user = User.find(params[:id])
-    posts = User.where(:id.in => user.followed_users.flatten).map {|user| user.posts.to_a }
-    @posts = posts.flatten.sort {|a, b| b['created_at'] <=> a['created_at']}
-  end
-
-  def friend_list
-    user = User.find(params[:id])
-    @users = User.where(:id.in => user.followed_users)
   end
 
   private

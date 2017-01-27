@@ -242,6 +242,73 @@ class User
     loc.save(validate: false)
   end
 
+  def self.set_location_data(coords)
+    if session[:location_data] && !session[:location_data].nil?
+      if still_in_area?(coords.coords)
+        session[:location_data][:not_in_area_count] = 0
+      elsif session[:location_data][:not_in_area_count] == 3
+        AreaMailer.send_farewell(coords.user, Area.find(session[:location_data][:area_id]))
+        # time = coords.time_stamp - session[:location_data][:first_coord_time_stamp]
+        area_observer = AreaObserver.new
+        area_observer.user_id = coords.user_id 
+        area_observer.area_id = session[:location_data][:area_id]
+        # area_observer.time = time
+        area_observer.first_coord_time_stamp = session[:location_data][:first_coord_time_stamp]
+        area_observer.last_coord_time_stamp = coord.time_stamp
+        area_observer.save
+        session[:location_data] = nil 
+      else
+        session[:location_data][:not_in_area_count] += 1
+      end
+      return true 
+    else
+      check = inside_an_area?(coords.coords)
+      if check.first == true
+        session[:location_data] = {
+          # first_coord_id: coords.id,
+          first_coord_time_stamp: coords.time_stamp,
+          not_in_area_count: 0,
+          area_profile: check.last.area_profile[:coordinates][0],
+          user_id: coords.user_id,
+          area_id: check.last.id
+        }
+        AreaMailer.send_hello(coords.user, check.last)
+      end
+      return true
+    end
+  end
+
+  def still_in_area?(coords)
+    rgeo = RGeo.Geography.simple_mercator_factory
+    user_point = rgeo.point(coords.first, coords.last)
+    area_point = session[:location_data][:area_profile]
+    area_profile = area_point.map {|point| 
+      rgeo.point(point.first, point.last)
+    }
+    area = rgeo.line_string(area_profile)
+    area.contains? user_point
+  end
+
+  def inside_an_area?(coords)
+    area = Area.where(
+      area_profile: {
+        "$geoIntersects" => {
+          "$geometry"=> {
+            type: "Point",
+            coordinates: coords
+          }
+        }
+      },
+      :level.nin => ["L0"],
+      :level.in => ["L2", "L3"]
+      )
+    # area = Area.where(title: "Arcadia on 49th")
+    if area.any?
+      return true, area.first
+    else
+      return false, "Besause true has two :P"
+    end
+  end
   private
 
     def avatar_size_validation

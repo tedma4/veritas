@@ -185,7 +185,9 @@ class Api::V1::UsersController < Api::V1::BaseController
     # binding.pry
     if params[:user_id]
       User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.area_info
+      # User.set_location_data(coords)
       render json: {status: 200}
     else
       render json: {errors: 400}
@@ -199,11 +201,14 @@ class Api::V1::UsersController < Api::V1::BaseController
       user = User.includes(:likes).where(:id => params[:user_id]).first
       @docs = user.get_followers_and_posts(params[:location].split(","))
       User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      # User.set_location_data(coords)      
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])
     end
     respond_with(@docs)
   end
+
 
   def feed
     @user = User.includes(:likes).where(id: params[:id]).first
