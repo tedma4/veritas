@@ -47,6 +47,8 @@ class User
   has_many :posts, dependent: :destroy
   # has_one :location, dependent: :destroy
   has_many :notifications, dependent: :destroy  
+  has_many :user_locations, dependent: :destroy  
+  has_many :area_observers, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
