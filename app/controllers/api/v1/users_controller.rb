@@ -185,10 +185,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     # binding.pry
     if params[:user_id]
       User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
-      # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.area_info
       # token = User.set_location_data(coords)
+      # if token is the same dont do anything
+      # else
       # encoded_token = JsonWebToken.encode(token)
+      # end
       render json: {status: 200} #, auth_token: encoded_token}
     else
       render json: {errors: 400}

@@ -256,8 +256,8 @@ class User
         area_observer.user_id = coords.user_id 
         area_observer.area_id = token[:data][:location_data][:area_id]
         # area_observer.time = time
-        area_observer.first_coord_time_stamp = token[:data][:location_data][:first_coord_time_stamp]
-        area_observer.last_coord_time_stamp = coord.time_stamp
+        area_observer.first_coord_time_stamp = DateTime.parse(token[:data][:location_data][:first_coord_time_stamp])
+        area_observer.last_coord_time_stamp = DateTime.parse(coord.time_stamp)
         area_observer.save
         token[:data][:location_data] = nil 
       else
@@ -272,8 +272,8 @@ class User
           first_coord_time_stamp: coords.time_stamp,
           not_in_area_count: 0,
           area_profile: check.last.area_profile[:coordinates][0],
-          user_id: coords.user_id,
-          area_id: check.last.id
+          user_id: coords.user_id.to_s,
+          area_id: check.last.id.to_s
         }
         AreaMailer.send_hello(coords.user, check.last)
       end
