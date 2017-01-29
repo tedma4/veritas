@@ -6,7 +6,7 @@ class Api::V1::SessionsController < Api::V1::BaseController
     @user = User.find_for_database_authentication(email: user_params[:email])
     return invalid_login_attempt unless @user
     return invalid_login_attempt unless @user.valid_password?(user_params[:password])
-    @auth_token = jwt_token(@user)
+    @auth_token = jwt_token({email: @user.email})
     render json: {
       auth_token: @auth_token, 
       user: @user.build_user_hash,

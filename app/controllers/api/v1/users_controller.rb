@@ -187,8 +187,9 @@ class Api::V1::UsersController < Api::V1::BaseController
       User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.area_info
-      # User.set_location_data(coords)
-      render json: {status: 200}
+      # token = User.set_location_data(coords)
+      # encoded_token = JsonWebToken.encode(token)
+      render json: {status: 200} #, auth_token: encoded_token}
     else
       render json: {errors: 400}
     end

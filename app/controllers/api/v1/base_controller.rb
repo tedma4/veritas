@@ -5,15 +5,16 @@ class Api::V1::BaseController < ApplicationController
   require 'json_web_token'
 
   def authenticate_user_from_token!
-    if claims and user = User.find_by(email: claims[0]['user'])
+    if claims and user = User.find_by(email: claims[:data][:email])
       @current_user = user
     else
-      return render_unauthorized errors: { unauthorized: ["You are not authorized perform this action."] }
+      return render_unauthorized errors: { unauthorized: ["You are not authorized to perform this action."] }
     end
   end
 
   def jwt_token(user)
-    JsonWebToken.encode(user.email)
+    # ex: {data: {email: "tedma4@email.com"}}
+    JsonWebToken.encode(user)
   end
 
   protected
