@@ -324,7 +324,7 @@ class User
 
     def still_in_area?(coords, last_thingy)
       rgeo = RGeo::Geographic.simple_mercator_factory
-      user_point = rgeo.point(coords.first, coords.last)
+      user_point = rgeo.point(coords.x, coords.y)
       # area_point = token[:location_data][:area_profile]
       area_points = last_thingy.area.area_profile[:coordinates][0]
       area_profile = area_points.map {|point| 
@@ -340,7 +340,7 @@ class User
           "$geoIntersects" => {
             "$geometry"=> {
               type: "Point",
-              coordinates: coords
+              coordinates: [coords.x, coords.y]
             }
           }
         },
