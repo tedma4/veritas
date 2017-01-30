@@ -85,10 +85,9 @@ class Api::V1::UsersController < Api::V1::BaseController
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
       if @current_user
-        current_user = User.find(@current_user.id)
         respond_with @search.map {|user| 
           user = User.find(user["id"])
-          build_search_hash(user, current_user)
+          build_search_hash(user, @current_user)
         }
       else
         respond_with @search.map {|user| 
@@ -156,8 +155,6 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def memories
     # "http://localhost:3000/v1/memories?user_id=user_id"
-    # Gettting the users the current user selected
-    # current_user = User.find(params[:user_id])
     user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: @current_user.id).to_a.pluck(:selected_users).flatten.uniq
     # Getting the users that selected the current user
 
