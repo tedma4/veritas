@@ -286,7 +286,7 @@ class User
 
   def shitty_location_thing(coords)
     in_an_area = self.inside_an_area?(coords.coords)
-    binding.pry
+    # binding.pry
     if self.area_thingies.any?
       if self.area_thingies.last.done != true
         last_thingy = self.area_thingies.last
@@ -294,7 +294,7 @@ class User
           return true
         else
           location_checker = UserLocation.where(user_id: self.id).order_by("created_at: desc").limit(3).pluck(:coords)
-          if over_the_limit?(location_checker, last_thingy)
+          if !self.over_the_limit?(location_checker, last_thingy)
             last_thingy.update_attributes(last_coord_time_stamp: coords.time_stamp, done: true)
             AreaMailer.send_farewell(coords.user, Area.find(token[:data][:location_data][:area_id]))
           else
@@ -369,7 +369,7 @@ class User
         rgeo.point(coords.first, coords.last)
       }
       area_profile = rgeo.polygon(rgeo.line_string(area_points))
-      points_to_check.any? {|point| area_profile.contain?(point)}
+      points_to_check.any? {|point| area_profile.contain?(point) }
     end
 
   private
