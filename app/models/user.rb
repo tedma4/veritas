@@ -244,6 +244,7 @@ class User
     loc.coords = coords.split(",")
     loc.time_stamp = time_stamp
     loc.save(validate: false)
+    return loc
   end
 
   def self.set_location_data(coords)
