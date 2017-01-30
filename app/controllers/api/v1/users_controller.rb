@@ -186,7 +186,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       coords = User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       # User.area_info
       # binding.pry 
-      @current_user.shitty_location_thing(coords)
+      # @current_user.shitty_location_thing(coords)
       # token = User.set_location_data(coords)
 
       render json: {status: 200} #, auth_token: encoded_token}
@@ -203,7 +203,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @docs = @current_user.get_followers_and_posts(params[:location].split(","))
 
       coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
-      @current_user.shitty_location_thing(coords)
+      # @current_user.shitty_location_thing(coords)
       # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.set_location_data(coords)      
     else
