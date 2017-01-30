@@ -324,6 +324,8 @@ class User
   end
 
     def still_in_area?(coords, last_thingy)
+      # coords = Mongoid::Point object
+      # last_thingy =  AreaThingy Object
       rgeo = RGeo::Geographic.simple_mercator_factory
       user_point = rgeo.point(coords.x, coords.y)
       # area_point = token[:location_data][:area_profile]
@@ -336,6 +338,7 @@ class User
     end
 
     def inside_an_area?(coords)
+      # coords = Mongoid::Point object
       area = Area.where(
         area_profile: {
           "$geoIntersects" => {
@@ -361,11 +364,14 @@ class User
     end
 
     def over_the_limit?(locs, last_area_thingy)
+      # examples
+      # locs = [[-111.982115, 33.6410209], [-111.9821047, 33.6410391], [-111.9821979, 33.6410217]]
+      # last_area_thingy = AreaThingy object
       rgeo = RGeo::Geographic.simple_mercator_factory
       points_to_check = locs.map {|coords|
         rgeo.point(coords.first, coords.last)
       }
-      area_points = last_thingy.area_profile[:coordinates][0].map {|coords|
+      area_points = last_area_thingy.area.area_profile[:coordinates][0].map {|coords|
         rgeo.point(coords.first, coords.last)
       }
       area_profile = rgeo.polygon(rgeo.line_string(area_points))
