@@ -295,7 +295,7 @@ class User
           location_checker = UserLocation.where(user_id: self.id).order_by("created_at: desc").limit(3).pluck(:coords)
           if !self.over_the_limit?(location_checker, last_thingy)
             last_thingy.update_attributes(last_coord_time_stamp: coords.time_stamp, done: true)
-            AreaMailer.send_farewell(coords.user, last_thingy.area))
+            AreaMailer.send_farewell(coords.user, last_thingy.area).deliver_now
           else
             return true
           end
@@ -306,7 +306,7 @@ class User
         a.area_id = in_an_area.last.id
         a.first_coord_time_stamp = coords.time_stamp
         a.save
-        AreaMailer.send_hello(coords.user, in_an_area.last)
+        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
       else
         return true
       end
@@ -316,7 +316,7 @@ class User
       a.area_id = in_an_area.last.id
       a.first_coord_time_stamp = coords.time_stamp
       a.save
-      AreaMailer.send_hello(coords.user, in_an_area.last)
+      AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
       return true
     end
