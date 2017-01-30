@@ -375,7 +375,7 @@ class User
         rgeo.point(coords.first, coords.last)
       }
       area_profile = rgeo.polygon(rgeo.line_string(area_points))
-      points_to_check.any? {|point| area_profile.contain?(point) }
+      points_to_check.any? {|point| area_profile.contains?(point) }
     end
 
   private
