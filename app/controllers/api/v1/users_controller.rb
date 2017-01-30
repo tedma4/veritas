@@ -183,11 +183,11 @@ class Api::V1::UsersController < Api::V1::BaseController
     # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    
     # binding.pry
     if @current_user
-      User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
+      coords = User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       # User.area_info
       User.shitty_location_thing(coords)
       # token = User.set_location_data(coords)
-      
+
       render json: {status: 200} #, auth_token: encoded_token}
     else
       render json: {errors: 400}
@@ -201,7 +201,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       # user = User.includes(:likes).where(:id => @current_user).first
       @docs = @current_user.includes(:likes).get_followers_and_posts(params[:location].split(","))
 
-      User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      User.shitty_location_thing(coords)
       # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.set_location_data(coords)      
     else
