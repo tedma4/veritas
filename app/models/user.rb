@@ -286,13 +286,13 @@ class User
 
   def self.shitty_location_thing(coords)
     in_an_area = User.inside_an_area?(coords.coords)
-    if @current_user.area_thingies.any?
-      if @current_user.area_thingies.last.done != true
-        last_thingy = @current_user.area_thingies.last
+    if self.area_thingies.any?
+      if self.area_thingies.last.done != true
+        last_thingy = self.area_thingies.last
         if still_in_area?(coords.coords, last_thingy)
           return true
         else
-          location_checker = UserLocation.where(user_id: @current_user.id).order_by("created_at: desc").limit(3).pluck(:coords)
+          location_checker = UserLocation.where(user_id: self.id).order_by("created_at: desc").limit(3).pluck(:coords)
           if over_the_limit?(location_checker, last_thingy)
             last_thingy.update_attributes(last_coord_time_stamp: coords.time_stamp, done: true)
             AreaMailer.send_farewell(coords.user, Area.find(token[:data][:location_data][:area_id]))
@@ -302,7 +302,7 @@ class User
         end
       elsif in_an_area.first == true
         a = AreaThingy.new
-        a.user_id = @current_user.id
+        a.user_id = self.id
         a.area_id = in_an_area.last.id
         a.first_coord_time_stamp = coords.time_stamp
         a.save
@@ -312,7 +312,7 @@ class User
       end
     elsif in_an_area.first == true
       a = AreaThingy.new
-      a.user_id = @current_user.id
+      a.user_id = self.id
       a.area_id = in_an_area.last.id
       a.first_coord_time_stamp = coords.time_stamp
       a.save
