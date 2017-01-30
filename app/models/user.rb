@@ -289,7 +289,7 @@ class User
     if self.area_thingies.any?
       if self.area_thingies.last.done != true
         last_thingy = self.area_thingies.last
-        if still_in_area?(coords.coords, last_thingy)
+        if User.still_in_area?(coords.coords, last_thingy)
           return true
         else
           location_checker = UserLocation.where(user_id: self.id).order_by("created_at: desc").limit(3).pluck(:coords)
@@ -322,7 +322,7 @@ class User
     end
   end
 
-    def still_in_area?(coords, last_thingy)
+    def self.still_in_area?(coords, last_thingy)
       rgeo = RGeo::Geographic.simple_mercator_factory
       user_point = rgeo.point(coords.x, coords.y)
       # area_point = token[:location_data][:area_profile]
