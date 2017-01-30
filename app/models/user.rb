@@ -288,7 +288,7 @@ class User
     if @current_user.area_thingies.any?
       if @current_user.area_thingies.last.done != true
         last_thingy = @current_user.area_thingies.last
-        if still_in_area?(coords, last_thingy)
+        if still_in_area?(coords.coords, last_thingy)
           return true
         else
           location_checker = UserLocation.where(user_id: @current_user.id).order_by("created_at: desc").limit(3).pluck(:coords)
