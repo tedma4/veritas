@@ -181,11 +181,9 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def user_location
     # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    
-    # binding.pry
     if @current_user
       coords = User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       # User.area_info
-      # binding.pry 
       # @current_user.shitty_location_thing(coords)
       # token = User.set_location_data(coords)
 

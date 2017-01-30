@@ -286,7 +286,6 @@ class User
 
   def shitty_location_thing(coords)
     in_an_area = self.inside_an_area?(coords.coords)
-    # binding.pry
     if self.area_thingies.any?
       if self.area_thingies.last.done != true
         last_thingy = self.area_thingies.last

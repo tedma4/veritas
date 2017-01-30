@@ -18,7 +18,6 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def valid_session?(claims)
-    # binding.pry
     session = Session.find(claims[:data][:session_id])
     if session
       return session
@@ -30,7 +29,6 @@ class Api::V1::BaseController < ApplicationController
   protected
 
   def claims
-    # binding.pry
     auth_header = request.headers['HTTP_AUTHORIZATION'] and ::JsonWebToken.decode(auth_header)
   rescue
     nil
