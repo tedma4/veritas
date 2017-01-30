@@ -1,3 +1,4 @@
+require 'rgeo'
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -360,7 +361,7 @@ class User
     end
 
     def over_the_limit?(locs, last_area_thingy)
-      rgeo = RGeo::Geometric.simple_mercator_factory
+      rgeo = RGeo::Geographic.simple_mercator_factory
       points_to_check = locs.map {|coords|
         rgeo.point(coords.first, coords.last)
       }
