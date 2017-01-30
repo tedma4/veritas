@@ -321,31 +321,6 @@ class User
     end
   end
 
-  private
-
-    def avatar_size_validation
-      errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
-    end
-
-    def pin_exists#(pin)
-      errors.add(:pin, "#{self[:pin]} is Not a GoPost User Pin") unless User.where(pin: self[:pin]).any?
-    end
-
-    def friend_from_pin
-      unless self.pin.nil?
-        user_from_pin = User.where(pin: self[:pin]).first
-        self.update_attributes(followed_users: [user_from_pin.id.to_s])
-        if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
-          user_from_pin.update_attributes(followed_users: [self.id.to_s])
-        else
-          user_from_pin.followed_users << self.id.to_s
-          user_from_pin.save
-        end
-      else
-        return true
-      end
-    end
-
     def still_in_area?(coords, last_thingy)
       rgeo = RGeo::Geographic.simple_mercator_factory
       user_point = rgeo.point(coords.first, coords.last)
@@ -393,6 +368,31 @@ class User
       }
       area_profile = rgeo.polygon(rgeo.line_string(area_points))
       points_to_check.any? {|point| area_profile.contain?(point)}
+    end
+
+  private
+
+    def avatar_size_validation
+      errors[:avatar] << "should be less than 500KB" if avatar.size > 100.5.megabytes
+    end
+
+    def pin_exists#(pin)
+      errors.add(:pin, "#{self[:pin]} is Not a GoPost User Pin") unless User.where(pin: self[:pin]).any?
+    end
+
+    def friend_from_pin
+      unless self.pin.nil?
+        user_from_pin = User.where(pin: self[:pin]).first
+        self.update_attributes(followed_users: [user_from_pin.id.to_s])
+        if user_from_pin.followed_users.nil? || user_from_pin.followed_users.empty?
+          user_from_pin.update_attributes(followed_users: [self.id.to_s])
+        else
+          user_from_pin.followed_users << self.id.to_s
+          user_from_pin.save
+        end
+      else
+        return true
+      end
     end
 
 
