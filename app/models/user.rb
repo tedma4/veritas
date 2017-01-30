@@ -347,7 +347,7 @@ class User
     end
 
     def still_in_area?(coords, last_thingy)
-      rgeo = RGeo::Geography.simple_mercator_factory
+      rgeo = RGeo::Geographic.simple_mercator_factory
       user_point = rgeo.point(coords.first, coords.last)
       # area_point = token[:location_data][:area_profile]
       area_points = last_thingy.area.area_profile[:coordinates][0]
@@ -384,7 +384,7 @@ class User
     end
 
     def over_the_limit?(locs, last_area_thingy)
-      rgeo = RGeo::Geoometry.simple_mercator_factory
+      rgeo = RGeo::Geoometric.simple_mercator_factory
       points_to_check = locs.map {|coords|
         rgeo.point(coords.first, coords.last)
       }
