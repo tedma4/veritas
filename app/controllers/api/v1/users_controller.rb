@@ -185,6 +185,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if @current_user
       coords = User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       # User.area_info
+      # binding.pry 
       @current_user.shitty_location_thing(coords)
       # token = User.set_location_data(coords)
 

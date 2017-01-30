@@ -4,7 +4,7 @@ class AreasController < ApplicationController
 	def new
 		if signed_in?
 			@area = Area.new
-			@areas = Area.pluck(:area_profile, :level, :title, :id).map { |area| 
+			@areas = Area.where(:level.nin => ["L0"]).pluck(:area_profile, :level, :title, :id).map { |area| 
 				{ 
 					coords: area[0][:coordinates][0].map {|points| {lat: points.last, lng: points.first} }, 
 					level: area[1],

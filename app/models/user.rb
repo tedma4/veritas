@@ -284,12 +284,13 @@ class User
     end
   end
 
-  def self.shitty_location_thing(coords)
-    in_an_area = User.inside_an_area?(coords.coords)
+  def shitty_location_thing(coords)
+    in_an_area = self.inside_an_area?(coords.coords)
+    binding.pry
     if self.area_thingies.any?
       if self.area_thingies.last.done != true
         last_thingy = self.area_thingies.last
-        if User.still_in_area?(coords.coords, last_thingy)
+        if self.still_in_area?(coords.coords, last_thingy)
           return true
         else
           location_checker = UserLocation.where(user_id: self.id).order_by("created_at: desc").limit(3).pluck(:coords)
@@ -322,7 +323,7 @@ class User
     end
   end
 
-    def self.still_in_area?(coords, last_thingy)
+    def still_in_area?(coords, last_thingy)
       rgeo = RGeo::Geographic.simple_mercator_factory
       user_point = rgeo.point(coords.x, coords.y)
       # area_point = token[:location_data][:area_profile]
@@ -334,7 +335,7 @@ class User
       area.contains? user_point
     end
 
-    def self.inside_an_area?(coords)
+    def inside_an_area?(coords)
       area = Area.where(
         area_profile: {
           "$geoIntersects" => {
@@ -360,7 +361,7 @@ class User
     end
 
     def over_the_limit?(locs, last_area_thingy)
-      rgeo = RGeo::Geoometric.simple_mercator_factory
+      rgeo = RGeo::Geometric.simple_mercator_factory
       points_to_check = locs.map {|coords|
         rgeo.point(coords.first, coords.last)
       }
