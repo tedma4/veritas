@@ -284,7 +284,7 @@ class User
   end
 
   def self.shitty_location_thing(coords)
-    in_an_area = inside_an_area?(coords.coords)
+    in_an_area = User.inside_an_area?(coords.coords)
     if @current_user.area_thingies.any?
       if @current_user.area_thingies.last.done != true
         last_thingy = @current_user.area_thingies.last
@@ -333,7 +333,7 @@ class User
       area.contains? user_point
     end
 
-    def inside_an_area?(coords)
+    def self.inside_an_area?(coords)
       area = Area.where(
         area_profile: {
           "$geoIntersects" => {
