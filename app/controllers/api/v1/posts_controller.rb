@@ -1,5 +1,5 @@
 class Api::V1::PostsController < Api::V1::BaseController
-  skip_before_action :authenticate_user_from_token!
+  # skip_before_action :authenticate_user_from_token!
   before_action :set_post, only: [:show, :destroy]
 
   def index

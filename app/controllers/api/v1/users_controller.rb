@@ -1,6 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  skip_before_action :authenticate_user_from_token!
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  # skip_before_action :authenticate_user_from_token!
   after_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
 
   # GET /users
@@ -44,7 +43,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update_attributes(user_params.to_h)
+      if @current_user.update_attributes(user_params.to_h)
         format.json { render json: @user.build_user_hash, status: :ok }
       else
         format.json { render json: @user.errors, status: :unprocessable_entity }
@@ -55,7 +54,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user.destroy
+    @current_user.destroy
     respond_to do |format|
       format.json { head :no_content }
     end
@@ -76,8 +75,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def friend_list
-    user = User.find(params[:id])
-    list = User.where(:id.in => user.followed_users)
+    # user = User.find(params[:id])
+    list = User.where(:id.in => @current_user.followed_users)
     @users = list.map &:build_user_hash
     respond_with(@users)
   end
@@ -85,8 +84,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   def search
     if params[:search] && !params[:search].blank?
       @search = User.search(params[:search])
-      if params["user_id"]
-        current_user = User.find(params["user_id"])
+      if @current_user
+        current_user = User.find(@current_user.id)
         respond_with @search.map {|user| 
           user = User.find(user["id"])
           build_search_hash(user, current_user)
@@ -123,46 +122,46 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def send_request
-    user = User.find(params["user_id"])
-    user.send_friend_request(params["friend_id"]) unless user.followed_users.include?(params["friend_id"])
+    # user = User.find(params["user_id"])
+    @current_user.send_friend_request(params["friend_id"]) unless @current_user.followed_users.include?(params["friend_id"])
     friended_user = User.find(params["friend_id"])
-    if friended_user.pending_friends.include?(user.id.to_s)
+    if friended_user.pending_friends.include?(@current_user.id.to_s)
       render json: {status: :ok}
     else
       render json: {status: :unprocessable_entity}
     end
-    user.send_friend_request_notification(params['friend_id'])
+    @current_user.send_friend_request_notification(params['friend_id'])
   end
 
   def approve_friend_request
-    user = User.find(params["user_id"])
-    user.accept_friend_request(params['friend_id'])
-    user.accept_friend_request_notification(params['friend_id'])
+    # user = User.find(params["user_id"])
+    @current_user.accept_friend_request(params['friend_id'])
+    @current_user.accept_friend_request_notification(params['friend_id'])
   end
 
   def remove_friend
-    user = User.find(params["user_id"])
-    user.unfriend_user(params['friend_id'])
+    # user = User.find(params["user_id"])
+    @current_user.unfriend_user(params['friend_id'])
   end
 
   def decline_friend_request
-    user = User.find(params["user_id"])
-    user.remove_user_from_pending_friends(params['friend_id'])
+    # user = User.find(params["user_id"])
+    @current_user.remove_user_from_pending_friends(params['friend_id'])
   end
 
   def accept_requests
-    user = User.find(params[:id])
-    @users = User.where(:id.in => user.pending_friends)
+    # user = User.find(params[:id])
+    @users = User.where(:id.in => @current_user.pending_friends)
   end
 
   def memories
     # "http://localhost:3000/v1/memories?user_id=user_id"
     # Gettting the users the current user selected
-    current_user = User.find(params[:user_id])
-    user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: current_user.id).to_a.pluck(:selected_users).flatten.uniq
+    # current_user = User.find(params[:user_id])
+    user_ids_the_current_user_selected = Post.where(post_type: "memory", user_id: @current_user.id).to_a.pluck(:selected_users).flatten.uniq
     # Getting the users that selected the current user
 
-    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.in => [current_user.id.to_s]).to_a.pluck(:user_id)
+    users_that_selected_the_current_user = Post.where(post_type: "memory", :selected_users.in => [@current_user.id.to_s]).to_a.pluck(:user_id)
     all = user_ids_the_current_user_selected  << users_that_selected_the_current_user
     list = all.flatten.uniq
     people = User.where(:id.in => list)
@@ -172,8 +171,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def get_memories
     # http://localhost:3000/get_memories?user_id=user_id&friend_id=friend_id
-    current_user_posts = Post.where(post_type: "memory", user_id: params[:user_id], :selected_users.in => [params[:friend_id]]).to_a.pluck(:id).map(&:to_s)
-    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.in => [params[:user_id]]).to_a.pluck(:id).map(&:to_s)
+    current_user_posts = Post.where(post_type: "memory", user_id: @current_user.id, :selected_users.in => [params[:friend_id]]).to_a.pluck(:id).map(&:to_s)
+    friend_posts = Post.where(post_type: "memory", user_id: params[:friend_id], :selected_users.in => [@current_user.id]).to_a.pluck(:id).map(&:to_s)
     all_posts = current_user_posts << friend_posts
     posts = Post.where(:id.in => all_posts.flatten)
     @posts = posts.flatten.map &:build_post_hash
@@ -183,14 +182,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   def user_location
     # http://localhost:3000/v1/user_location?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00    
     # binding.pry
-    if params[:user_id]
-      User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+    if @current_user
+      User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       # User.area_info
+      User.shitty_location_thing(coords)
       # token = User.set_location_data(coords)
-      # if token is the same dont do anything
-      # else
-      # encoded_token = JsonWebToken.encode(token)
-      # end
+      
       render json: {status: 200} #, auth_token: encoded_token}
     else
       render json: {errors: 400}
@@ -200,9 +197,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   def map
     # Earth Radius in miles = 3959
     # http://localhost:3000/v1/map?user_id=5856d773c2382f415081e8cd&location=-111.97798311710358,33.481907631522525&time_stamp=2017-01-15T18:01:24.734-07:00 
-    if params[:user_id]
-      user = User.includes(:likes).where(:id => params[:user_id]).first
-      @docs = user.get_followers_and_posts(params[:location].split(","))
+    if @current_user
+      # user = User.includes(:likes).where(:id => @current_user).first
+      @docs = @current_user.includes(:likes).get_followers_and_posts(params[:location].split(","))
+
       User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
       # User.set_location_data(coords)      
@@ -214,8 +212,9 @@ class Api::V1::UsersController < Api::V1::BaseController
 
 
   def feed
-    @user = User.includes(:likes).where(id: params[:id]).first
-    @feed = @user.get_followers_and_posts
+    binding.pry
+    # @user = User.includes(:likes).where(id: params[:id]).first
+    @feed = @current_user.get_followers_and_posts
     respond_with @feed
   end
 
@@ -223,10 +222,6 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def delete_notification
     Notification.find(params["notification_id"]).destroy
-  end
-
-  def set_user
-    @user = User.find(params[:id])
   end
   
   def user_params

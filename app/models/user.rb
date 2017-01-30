@@ -49,6 +49,8 @@ class User
   has_many :notifications, dependent: :destroy  
   has_many :user_locations, dependent: :destroy  
   has_many :area_observers, dependent: :destroy  
+  has_many :area_thingies, dependent: :destroy  
+  has_one :session, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
@@ -281,6 +283,44 @@ class User
     end
   end
 
+  def self.shitty_location_thing(coords)
+    in_an_area = inside_an_area?(coords)
+    if @current_user.area_thingies.any?
+      if @current_user.area_thingies.last.done != true
+        last_thingy = @current_user.area_thingies.last
+        if still_in_area?(coords, last_thingy)
+          return true
+        else
+          location_checker = UserLocation.where(user_id: @current_user.id).order_by("created_at: desc").limit(3).pluck(:coords)
+          if over_the_limit?(location_checker, last_thingy)
+            last_thingy.update_attributes(last_coord_time_stamp: coords.time_stamp, done: true)
+            AreaMailer.send_farewell(coords.user, Area.find(token[:data][:location_data][:area_id]))
+          else
+            return true
+          end
+        end
+      elsif in_an_area.first == true
+        a = AreaThingy.new
+        a.user_id = @current_user.id
+        a.area_id = in_an_area.last.id
+        a.first_coord_time_stamp = coords.time_stamp
+        a.save
+        AreaMailer.send_hello(coords.user, in_an_area.last)
+      else
+        return true
+      end
+    elsif in_an_area.first == true
+      a = AreaThingy.new
+      a.user_id = @current_user.id
+      a.area_id = in_an_area.last.id
+      a.first_coord_time_stamp = coords.time_stamp
+      a.save
+      AreaMailer.send_hello(coords.user, in_an_area.last)
+    else
+      return true
+    end
+  end
+
   private
 
     def avatar_size_validation
@@ -306,11 +346,12 @@ class User
       end
     end
 
-    def still_in_area?(coords)
-      rgeo = RGeo.Geography.simple_mercator_factory
+    def still_in_area?(coords, last_thingy)
+      rgeo = RGeo::Geography.simple_mercator_factory
       user_point = rgeo.point(coords.first, coords.last)
-      area_point = token[:location_data][:area_profile]
-      area_profile = area_point.map {|point| 
+      # area_point = token[:location_data][:area_profile]
+      area_points = last_thingy.area.area_profile[:coordinates][0]
+      area_profile = area_points.map {|point| 
         rgeo.point(point.first, point.last)
       }
       area = rgeo.line_string(area_profile)
@@ -339,8 +380,23 @@ class User
     end
 
     def decoded_token
-      JsonWebToken.decode(request.header['Authorization'])
+      JsonWebToken.decode(request.header['HTTP_AUTHORIZATION'])
     end
+
+    def over_the_limit?(locs, last_area_thingy)
+      rgeo = RGeo::Geoometry.simple_mercator_factory
+      points_to_check = locs.map {|coords|
+        rgeo.point(coords.first, coords.last)
+      }
+      area_points = last_thingy.area_profile[:coordinates][0].map {|coords|
+        rgeo.point(coords.first, coords.last)
+      }
+      area_profile = rgeo.polygon(rgeo.line_string(area_points))
+      points_to_check.any? {|point| area_profile.contain?(point)}
+    end
+
+
+
 end
 
 

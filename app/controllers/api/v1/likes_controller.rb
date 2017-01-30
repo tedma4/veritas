@@ -1,12 +1,12 @@
 class  Api::V1::LikesController < Api::V1::BaseController
-  skip_before_action :authenticate_user_from_token!
+  # skip_before_action :authenticate_user_from_token!
 
 	def like
-	  @user = User.find(params[:user_id])
+	  # @current_user = User.find(params[:user_id])
 	  @post = Post.find(params[:post_id])
-	  like = Like.new(post_id: @post.id.to_s, user_id: @user.id.to_s)
+	  like = Like.new(post_id: @post.id.to_s, user_id: @current_user.id.to_s)
 	  if like.save
-		  like_post_notification(@post, @user)
+		  like_post_notification(@post, @current_user)
 		  render json: {status: 200}
 	  else
 	  	render json: {error: like.errors}
@@ -14,8 +14,8 @@ class  Api::V1::LikesController < Api::V1::BaseController
 	end
 
 	def unlike
-	  @user = User.find(params[:user_id])
-	  @like = @user.likes.find_by_post_id(params[:post_id])
+	  # @current_user = User.find(params[:user_id])
+	  @like = @current_user.likes.find_by_post_id(params[:post_id])
 	  @post = Post.find(params[:post_id])
 	  @like.destroy!
 	end

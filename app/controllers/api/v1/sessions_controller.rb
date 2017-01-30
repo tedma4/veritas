@@ -6,16 +6,24 @@ class Api::V1::SessionsController < Api::V1::BaseController
     @user = User.find_for_database_authentication(email: user_params[:email])
     return invalid_login_attempt unless @user
     return invalid_login_attempt unless @user.valid_password?(user_params[:password])
-    @auth_token = jwt_token({email: @user.email})
+    if Session.where(user_id: @user.id).any?
+      session = Session.where(user_id: @user.id).first
+    else
+      session = Session.new(user_id: @user.id)
+      session.save
+    end
+    jwt_user_hash = {session_id: session.id.to_s}
+    auth_token = jwt_token(jwt_user_hash)
     render json: {
-      auth_token: @auth_token, 
+      auth_token: auth_token, 
       user: @user.build_user_hash,
       created_at: Time.now
     }
   end
 
   def destroy
-    session[:user_id] = nil
+    session = JsonWebToken.decode(request.header["HTTP_AUTHORIZATION"])[:session_id]
+    Session.find(session).destroy
   end
 
   private

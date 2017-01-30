@@ -8,6 +8,7 @@ class Area
   field :title, type: String, default: "Name of Area"
   field :level, type: String, default: "l3"
   has_many :area_observers
+  has_many :area_thingies
   private
 
   def self.profile_maker(area_profile)

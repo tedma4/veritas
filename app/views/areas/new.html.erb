@@ -16,7 +16,7 @@
 <%= form_for @area, remote: true,  html: {id: "areaForm"} do |f| %>
 <%= f.label :title %>
 <%= f.text_field :title %>
-<%= f.select :level, ['L1', 'L2', "L3"] %>
+<%= f.select :level, ['L0', 'L1', 'L2', "L3"] %>
 <%= f.submit %>
 <% end %>
 <script>
