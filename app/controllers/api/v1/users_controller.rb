@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   # skip_before_action :authenticate_user_from_token!
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
   after_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
 
   # GET /users
@@ -227,6 +228,10 @@ class Api::V1::UsersController < Api::V1::BaseController
     the_params[:avatar] = parse_user_data(the_params[:avatar]) if the_params[:avatar]
     the_params.delete_if {|k, v| v == nil}
     return the_params
+  end
+
+  def set_user
+    @user = @current_user
   end
 
   def parse_user_data(base64_user)
