@@ -9,6 +9,44 @@ class Area
   field :level, type: String, default: "l3"
   has_many :area_observers
   has_many :area_thingies
+
+  def has_coords?(coords)
+    rgeo = RGeo::Geographic.simple_mercator_factory
+    if coords.is_a? Array
+      if !coords.first.is_a? Float
+        points = coords.map {|point|
+          if point.is_a? Mongoid::Geospatial::Point
+            rgeo.point(point.x, point.y)
+          elsif point.is_a? UserLocation
+            rgeo.point(point.coords.x, point.coords.y)
+          else
+            rgeo.point(point.first, point.last)
+          end
+        }
+      else
+        points = rgeo.point(coords.first, coords.last)
+        points = [points]
+      end
+      area_profile_points = self.area_profile[:coordinates][0].map {|point| 
+        rgeo.point(point.first, point.last)
+      }
+      area_polygon = rgeo.polygon rgeo.line_string(area_profile_points)
+      points.any? {|point| area_polygon.contains? point }
+    else
+      if coords.is_a? Mongoid::Geospatial::Point
+        point = rgeo.point(coords.x, coords.y)
+      elsif coords.is_a? UserLocation
+        point = rgeo.point(coords.coords.x, coords.coords.y)
+      else
+        point = rgeo.point(coords.first, coords.last)
+      end
+      area_profile_points = self.area_profile[:coordinates][0].map {|point| 
+        rgeo.point(point.first, point.last)
+      }
+      area_polygon = rgeo.polygon rgeo.line_string(area_profile_points)
+      area_polygon.contains? point
+    end
+  end
   private
 
   def self.profile_maker(area_profile)
@@ -40,3 +78,18 @@ class Area
     return saved_hash
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

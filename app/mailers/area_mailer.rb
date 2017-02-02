@@ -1,8 +1,9 @@
 class AreaMailer < ApplicationMailer
 
-	def send_farewell(user, area)
+	def send_farewell(user, area, area_thingy)
     @user = user
-		@area = area
+    @area = area
+    @area_thingy = area_thingy
     mail(to: @user.email, subject: "GoodBye from #{area.title}")
   end 
    
