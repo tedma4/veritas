@@ -194,7 +194,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if @current_user
       # user = User.includes(:likes).where(:id => @current_user).first
       @docs = @current_user.get_followers_and_posts(params[:location].split(","))
-      coords = User.add_location_data(params[:user_id], params[:location], params[:time_stamp])
+      coords = User.add_location_data(@current_user.id, params[:location], params[:time_stamp])
       @current_user.area_watcher(coords)
     else
       @docs = get_document([Faker::Address.latitude.to_f, Faker::Address.longitude.to_f])

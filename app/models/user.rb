@@ -270,7 +270,7 @@ class User
             updated_area_thingy = last_thingy.update_attributes(
               last_coord_time_stamp: coords.time_stamp, 
               done: true)
-            AreaMailer.send_farewell(coords.user, last_thingy.area, updated_area_thingy).deliver_now
+            AreaMailer.send_farewell(coords.user, last_thingy.area, last_thingy).deliver_now
           else
             # if any of the locs are in the area, keep trying
             return true
