@@ -3,32 +3,48 @@
 <head>
   <title>Veritas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="stylesheet" media="all" href="/assets/application-0723cb9a2dd5a514d954f70e0fe0b89f6f9f1ae3a375c182f43b5f2b57e9c869.css" data-turbolinks-track="true" /> -->
-  <!-- <script src="/assets/application-db133875237de20b2833dd6eba78434527ca94606209bcd255a075693494ff51.js" data-turbolinks-track="true"></script> -->
 
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-<%= content_tag(:div, flash[:error], :id => "flash_error") if flash[:error] %>
-<%= content_tag(:div, flash[:notice], :id => "flash_notice") if flash[:notice] %>
-<%= content_tag(:div, flash[:alert], :id => "flash_alert") if flash[:alert] %>
-<% if user_signed_in? %>
-	<%= link_to 'Post List', "/" %>
-	<%= link_to 'User List', "/users" %>
-	<%= link_to 'Edit profile', edit_user_registration_path %>
-	<%= link_to 'map', "/map" %>
-	<%= link_to 'new areas', "/areas/new" %>
-	<%= link_to 'area list', "/areas" %>
-	<%= link_to 'signout', destroy_user_session_path(current_user), method: :delete %>
-	<%= form_tag search_path, method: 'get' do %>
-	  <button type="submit" style="color: #00eebc;">Go</button>
-	  <%= text_field_tag :search, params[:search], placeholder: "Users" %>
-	<% end %>
-<% end %>
+	<% if user_signed_in? %>
+<nav class="navbar navbar-toggleable-md fixed-top navbar-inverse bg-inverse">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">Navbar</a>
 
-<%= yield %>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+	<% end %>
+
+	<%= yield %>
 
 </body>
 </html>
