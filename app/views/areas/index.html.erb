@@ -19,6 +19,7 @@
         <td><%= area[:level] %></td>
         <td><%= area[:dot_count] %></td>
         <td><%= link_to 'Show', area_path(area[:id]) %></td>
+        <td><%= link_to 'Feed', "areas/feed/#{area[:id]}" %></td>
       </tr>
     <% end %>
   </tbody>

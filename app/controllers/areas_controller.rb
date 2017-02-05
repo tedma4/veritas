@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-	before_action :set_area, only: [:update, :delete, :show]
+	before_action :set_area, only: [:update, :delete, :show, :feed]
 
 	def new
 		if signed_in?
@@ -17,6 +17,14 @@ class AreasController < ApplicationController
 				format.html
 				format.js
 			end
+		else
+			redirect_to "/"
+		end
+	end
+
+	def feed
+		if signed_in?
+			@area = Area.includes(:area_thingies, {area_thingies: :user}).find(params[:id])
 		else
 			redirect_to "/"
 		end

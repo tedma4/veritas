@@ -25,7 +25,6 @@
       center: {lat: 33.481347, lng: -111.9751887},
       zoom: 18
     });
-
     var drawingManager = new google.maps.drawing.DrawingManager({
       // drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
@@ -53,10 +52,8 @@
     });
     drawingManager.setMap(map);
     google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-
       if (event.type == 'rectangle') {
         var bounds = event.overlay.getBounds();
-
         var polygon_bounds = [
           [
             bounds.getNorthEast().lat(), 
@@ -73,14 +70,12 @@
           var latlng = [event.lat(), event.lng()]
           return latlng
         });
-
       }
       var thing = document.getElementById("areaForm")
       // loop to add the input elements after an overlay is created
       for (var i = 0; i < polygon_bounds.length; i++) {
         var lat = polygon_bounds[i][0];
         var lng = polygon_bounds[i][1];
-
         var point_input = document.createElement("input");
         point_input.setAttribute("type", "text")
         point_input.setAttribute("name", "area[area_profile][]")
@@ -89,7 +84,6 @@
       }
       // infowindow.open(map, event.overlay);
     });
-
     var levelColor = {
       L0: {
         strokeColor: '#00eebc',
@@ -109,10 +103,8 @@
       }
     };
   var features = <%= @areas.to_json.html_safe %>
-
   // Construct the polygon.
   function addPolygon(feature) {
-
     var area = new google.maps.Polygon({
       paths: feature.coords,
       strokeColor: levelColor[feature.level].strokeColor,
@@ -137,11 +129,9 @@
       // Replace the info window's content and position.
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
-
       infoWindow.open(map);
     });
   }
-
   for (var i = 0, feature; feature = features[i]; i++) {
     // console.log(feature);
     addPolygon(feature);

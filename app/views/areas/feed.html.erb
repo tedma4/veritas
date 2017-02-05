@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @area.title %>
+</p>
+
+<p>
+  <strong>Area Level:</strong>
+  <%= @area.level %>
+</p>
+
+<p>
+  <strong>Users Visitied:</strong>
+  <% @area.area_thingies.each do |thingy| %>
+    <% if thingy.done %>
+      <p><%= thingy.user.first_name %></p>
+      <p>Visited:</p>
+      <p>From: <%= thingy.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <p>Till: <%= thingy.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <%= time = thingy.last_coord_time_stamp.to_i - thingy.first_coord_time_stamp.to_i %>
+      <p><%= Time.at(time).utc.strftime "%H:%M:%S" %></p>
+      <br>
+    <% end %>
+  <% end %>
+</p>
+
+
+<%# time = 270921 %>
+<%# mm, ss = t.divmod(60) %>
+<%# hh, mm = mm.divmod(60) %>
+<%# dd, hh = hh.divmod(24)  %>
+<%#  %>
+
+
+
+
+<!-- puts "%d days, %d hours, %d minutes and %d seconds" % [dd, hh, mm, ss] -->

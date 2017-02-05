@@ -6,8 +6,9 @@ Rails.application.routes.draw do
   resources :users
   resources :areas
   root to: 'posts#index'
-  get '/map',                       to: 'users#map'
-  get '/search',                    to: 'users#search'
+  get '/map',      to: 'users#map'
+  get '/search',   to: 'users#search'
+  get 'areas/feed/:id', to: 'areas#feed'
   
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do
