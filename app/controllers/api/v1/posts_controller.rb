@@ -23,6 +23,7 @@ class Api::V1::PostsController < Api::V1::BaseController
         render json: {errors: @post.errors}
       end
     when "reply"
+      binding.pry
       if @post.save
         reply_post_notification(@post, params[:user_repling_to], params[:post_replying_to])
         render json: {status: 200}
@@ -73,6 +74,8 @@ class Api::V1::PostsController < Api::V1::BaseController
     the_params[:post_type] = params[:post_type] if params[:post_type]
     the_params[:selected_users] = params[:selected_users] if params[:selected_users]
     the_params[:caption] = params[:caption] if params[:caption]
+    the_params[:user_repling_to] = params[:user_repling_to] if params[:user_repling_to]
+    the_params[:post_replying_to] = params[:post_replying_to] if params[:post_replying_to]
     the_params[:attachment] = parse_post_data(the_params[:attachment]) if the_params[:attachment]
     the_params.delete_if {|k, v| v == nil}
     return the_params
