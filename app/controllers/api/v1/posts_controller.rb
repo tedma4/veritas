@@ -15,7 +15,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   
   def create
     @post = Post.new(post_params.to_h)
-    case params[:post_type]
+    case params[:post][:post_type]
     when "public"
       if @post.save
         render json: {status: 200}
@@ -23,7 +23,6 @@ class Api::V1::PostsController < Api::V1::BaseController
         render json: {errors: @post.errors}
       end
     when "reply"
-      binding.pry
       if @post.save
         reply_post_notification(@post, params[:user_repling_to], params[:post_replying_to])
         render json: {status: 200}
