@@ -32,7 +32,7 @@ class Notification
     if self.post
       post = self.post
       note[:post] = {}
-      note[:post][:id] = post.id
+      note[:post][:id] = post.id.to_s
       note[:post][:created_at] = post.created_at
       note[:post][:image] = post.attachment.url
       note[:post][:location] = {latitude: post.location.y, longitude: post.location.x }
