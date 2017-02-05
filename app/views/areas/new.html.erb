@@ -5,97 +5,26 @@
     height: 75%;
     margin: 0 0 50px 0;
   }
-  body {
-    padding-top: 70px;
-  }
   /* Optional: Makes the sample page fill the window. */
-/*  html, body {
+  html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-  }*/
+  }
 </style>
-
-<div class="container">
-
-      <div class="row row-offcanvas row-offcanvas-right">
-
-        <div class="col-12 col-md-9">
-          <p class="float-right hidden-md-up">
-            <button type="button" class="btn btn-primary btn-sm" data-toggle="offcanvas">Toggle nav</button>
-          </p>
-          <div class="jumbotron">
-            <h1>Hello, world!</h1>
-            <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p>
-          </div>
-          <div class="row">
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-            <div class="col-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
-        </div><!--/span-->
-
-        <div class="col-6 col-md-3 sidebar-offcanvas" id="sidebar">
-          <div class="list-group">
-            <a href="#" class="list-group-item active">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-            <a href="#" class="list-group-item">Link</a>
-          </div>
-        </div><!--/span-->
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>© Company 2017</p>
-      </footer>
-
-    </div>
-
 <div id="map"></div>
-
-
+<%= form_for @area, remote: true,  html: {id: "areaForm"} do |f| %>
+<%= f.label :title %>
+<%= f.text_field :title %>
+<%= f.select :level, ['L0', 'L1', 'L2', "L3"] %>
+<%= f.submit %>
+<% end %>
 <script>
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 33.481347, lng: -111.9751887},
       zoom: 18
     });
-
     var drawingManager = new google.maps.drawing.DrawingManager({
       // drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
@@ -123,10 +52,8 @@
     });
     drawingManager.setMap(map);
     google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-
       if (event.type == 'rectangle') {
         var bounds = event.overlay.getBounds();
-
         var polygon_bounds = [
           [
             bounds.getNorthEast().lat(), 
@@ -143,14 +70,12 @@
           var latlng = [event.lat(), event.lng()]
           return latlng
         });
-
       }
       var thing = document.getElementById("areaForm")
       // loop to add the input elements after an overlay is created
       for (var i = 0; i < polygon_bounds.length; i++) {
         var lat = polygon_bounds[i][0];
         var lng = polygon_bounds[i][1];
-
         var point_input = document.createElement("input");
         point_input.setAttribute("type", "text")
         point_input.setAttribute("name", "area[area_profile][]")
@@ -159,7 +84,6 @@
       }
       // infowindow.open(map, event.overlay);
     });
-
     var levelColor = {
       L0: {
         strokeColor: '#00eebc',
@@ -179,10 +103,8 @@
       }
     };
   var features = <%= @areas.to_json.html_safe %>
-
   // Construct the polygon.
   function addPolygon(feature) {
-
     var area = new google.maps.Polygon({
       paths: feature.coords,
       strokeColor: levelColor[feature.level].strokeColor,
@@ -207,11 +129,9 @@
       // Replace the info window's content and position.
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
-
       infoWindow.open(map);
     });
   }
-
   for (var i = 0, feature; feature = features[i]; i++) {
     // console.log(feature);
     addPolygon(feature);
@@ -219,4 +139,5 @@
   infoWindow = new google.maps.InfoWindow;
   }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAU7vv1IU0p7UKr8YiKASuKXKn7ptBrcUk&libraries=drawing&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAU7vv1IU0p7UKr8YiKASuKXKn7ptBrcUk&libraries=drawing&callback=initMap"
+     async defer></script>
