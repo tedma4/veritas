@@ -2,9 +2,7 @@ class Notification
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :user_id, 			 type: String
   field :notified_by_id, type: String
-  field :post_id, 		   type: String
   field :identifier, 		 type: String
   field :notice_type, 	 type: String
   field :read, 					 type: Boolean, default: false
@@ -31,6 +29,16 @@ class Notification
       }
     }
     note[:identifier] = self.identifier if self.identifier
+    if self.post
+      post = self.post
+      note[:post] = {}
+      note[:post][:id] = post.id
+      note[:post][:created_at] = post.created_at
+      note[:post][:image] = post.attachment.url
+      note[:post][:location] = {latitude: post.location.y, longitude: post.location.x }
+      note[:post][:caption] = post.caption if post.caption
+      note[:post][:post_type] = post.post_type
+    end
     return note
   end
 

@@ -24,7 +24,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       end
     when "reply"
       if @post.save
-        reply_post_notification(@post, params[:user_repling_to], params[:post_replying_to])
+        reply_post_notification(@post, params[:post][:user_repling_to], params[:post][:post_replying_to])
         render json: {status: 200}
       else
         render json: {errors: @post.errors}
@@ -130,7 +130,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     Notification.create(user_id: user_id,
                         notified_by_id: post.user_id.to_s,
                         post_id: post.id.to_s,
-                        identifier: post_id,
+                        identifier: post_id.to_s,
                         notice_type: 'reply post')
   end
 end
