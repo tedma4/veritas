@@ -49,6 +49,7 @@ gem 'faker'
 gem 'figaro'
 gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'sprockets-rails', '2.3.0'
+gem 'font-awesome-rails', '4.6.2'
 # gem 'omniauth-facebook'
 # gem 'gmaps4rails'
 # gem "mongoid-tree", :require => "mongoid/tree"

@@ -8,9 +8,13 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<% if !user_signed_in? %>
+	<body class="app flex-row align-items-center">
+<% else %>
+	<body class="">
+<% end %>
 	<% if user_signed_in? %>
-		<%= link_to 'Post List', "/" %>
+	<%= link_to 'Post List', "/" %>
 		<%= link_to 'User List', "/users" %>
 		<%= link_to 'Edit profile', edit_user_registration_path %>
 		<%= link_to 'map', "/map" %>
@@ -21,10 +25,9 @@
 		  <button type="submit" style="color: #00eebc;">Go</button>
 		  <%= text_field_tag :search, params[:search], placeholder: "Users" %>
 		<% end %>
-
 	<% end %>
 
 	<%= yield %>
-
+	
 </body>
 </html>

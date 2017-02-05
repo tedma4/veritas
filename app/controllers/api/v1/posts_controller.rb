@@ -129,6 +129,7 @@ class Api::V1::PostsController < Api::V1::BaseController
 
   def reply_post_notification(post, user_id, post_id)
     return if post.post_type != "reply"
+    return if post.user_id == user_id
     Notification.create(user_id: user_id,
                         notified_by_id: post.user_id.to_s,
                         post_id: post.id.to_s,

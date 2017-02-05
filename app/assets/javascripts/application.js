@@ -15,3 +15,6 @@
 //= require jquery_ujs
 //= turbolinks
 //= require bootstrap-sprockets
+
+
+
