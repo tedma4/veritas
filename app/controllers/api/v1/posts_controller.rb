@@ -24,7 +24,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       end
     when "reply"
       if @post.save
-        reply_post_notification(@post, params[:post][:user_repling_to], params[:post][:post_replying_to])
+        reply_post_notification(@post, params[:user_repling_to], params[:post_replying_to])
         render json: {status: 200}
       else
         render json: {errors: @post.errors}
@@ -67,7 +67,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   private
   
   def post_params
-    the_params = params.require(:post).permit(:location, :user_id, :post_type, {:selected_users => []}, :attachment, :caption)
+    the_params = params.require(:post).permit(:location, :user_id, :post_type, {:selected_users => []}, :attachment, :caption, :user_repling_to, :post_replying_to)
     the_params[:location] = params[:location] if params[:location]
     the_params[:user_id] = @current_user.id if @current_user
     the_params[:post_type] = params[:post_type] if params[:post_type]
