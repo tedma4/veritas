@@ -257,23 +257,52 @@ class User
       #User has area_thingies
       if !self.area_thingies.order_by(created_at: :desc).first.done
         # The last area_thingy is not done
-        last_thingy = self.area_thingies.order_by(created_at: :desc).first
-        if last_thingy.area.has_coords? coords
+        last_watcher = self.area_thingies.order_by(created_at: :desc).first
+        if last_watcher.area.has_coords? coords
           # The user is still in the area
-          return true
+          if last_watcher.updated_at > 5.minutes.ago
+            last_watcher.update_attributes(
+              last_coord_time_stamp: last_watcher.updated_at, 
+              done: true)
+            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+            if in_an_area.first == true
+              a = AreaThingy.new
+              a.user_id = self.id
+              a.area_id = in_an_area.last.id
+              a.first_coord_time_stamp = coords.time_stamp
+              a.save
+              AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+            end
+          else
+            last_watcher.touch(:updated_at)
+          end
+          # Update current area thingy to add coord time_stamp
         else
           # The user is not in the area
           locs = self.user_locations.order_by(time_stamp: :desc).take 3
           # Take the last three locations for the user
-          if !last_thingy.area.has_coords? locs 
+          if last_watcher.updated_at > 5.minutes.ago
+            last_watcher.update_attributes(
+              last_coord_time_stamp: last_watcher.updated_at, 
+              done: true)
+            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+            if in_an_area.first == true
+              a = AreaThingy.new
+              a.user_id = self.id
+              a.area_id = in_an_area.last.id
+              a.first_coord_time_stamp = coords.time_stamp
+              a.save
+              AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+            end
+          elsif !last_watcher.area.has_coords? locs 
             # check the last area_thingy to see if it doecn't have any of the locs
-            updated_area_thingy = last_thingy.update_attributes(
+            last_watcher.update_attributes(
               last_coord_time_stamp: coords.time_stamp, 
               done: true)
-            AreaMailer.send_farewell(coords.user, last_thingy.area, last_thingy).deliver_now
+            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
           else
             # if any of the locs are in the area, keep trying
-            return true
+            last_watcher.touch(:updated_at)
           end
         end
       # the last area thingy is done
