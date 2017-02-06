@@ -345,7 +345,7 @@ class User
         }
       },
       :level.nin => ["L0"],
-      :level.in => ["L2", "L3"]
+      :level.in => ["L1", "L2", "L3"]
       )
     # area = Area.where(title: "Arcadia on 49th")
     if area.any?
