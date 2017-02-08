@@ -31,13 +31,7 @@ class Notification
     note[:identifier] = self.identifier if self.identifier
     if self.post
       post = self.post
-      note[:post] = {}
-      note[:post][:id] = post.id.to_s
-      note[:post][:created_at] = post.created_at
-      note[:post][:image] = post.attachment.url
-      note[:post][:location] = {latitude: post.location.y, longitude: post.location.x }
-      note[:post][:caption] = post.caption if post.caption
-      note[:post][:post_type] = post.post_type
+      note[:post] = post.build_post_hash
     end
     return note
   end
