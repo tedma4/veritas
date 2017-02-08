@@ -36,13 +36,13 @@ class Post
     post_hash = {
       id: self.id.to_s,
       created_at: self.created_at,
-      image: self.attachment.url || "/assets/images/default-image.png",
+      image: self.attachment.url || "res://avatardefault",
       location: {latitude: self.location.y, longitude: self.location.x},
       post_type: self.post_type,
       user: {
         first_name: self.user.first_name,
         last_name: self.user.last_name,
-        avatar: self.user.avatar.url || "/assets/images/default-image.png",
+        avatar: self.user.avatar.url || "res://avatardefault",
         user_name: self.user.user_name,
         id: self.user.id.to_s
       }
