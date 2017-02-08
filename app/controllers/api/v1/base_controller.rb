@@ -8,7 +8,7 @@ class Api::V1::BaseController < ApplicationController
     if claims and session = valid_session?(claims)
       @current_user = session.user
     else
-      return render_unauthorized errors: { unauthorized: ["You are not authorized to perform this action."] }
+      render json: {errors: { unauthorized: ["You can't do that"] }}, status: 401
     end
   end
 
@@ -32,10 +32,6 @@ class Api::V1::BaseController < ApplicationController
     auth_header = request.headers['HTTP_AUTHORIZATION'] and ::JsonWebToken.decode(auth_header)
   rescue
     nil
-  end
-
-  def render_unauthorized(payload)
-    render json: payload.merge(response: { code: 401 })
   end
 
 end
