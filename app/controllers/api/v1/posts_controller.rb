@@ -15,7 +15,7 @@ class Api::V1::PostsController < Api::V1::BaseController
   
   def create
     @post = Post.new(post_params.to_h)
-    case params[:post][:post_type]
+    case params[:post_type]
     when "public"
       if @post.save
         render json: {status: 200}

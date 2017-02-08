@@ -263,7 +263,8 @@ class User
           if last_watcher.updated_at > 5.minutes.ago
             last_watcher.update_attributes(
               last_coord_time_stamp: last_watcher.updated_at, 
-              done: true)
+              done: true,
+              visit: true)
             AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
             if in_an_area.first == true
               a = AreaThingy.new
@@ -284,7 +285,8 @@ class User
           if last_watcher.updated_at > 5.minutes.ago
             last_watcher.update_attributes(
               last_coord_time_stamp: last_watcher.updated_at, 
-              done: true)
+              done: true,
+              visit: true)
             AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
             if in_an_area.first == true
               a = AreaThingy.new
