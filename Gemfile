@@ -1,7 +1,4 @@
 source 'https://rubygems.org'
-source 'http://rails-assets.org' do
-  gem 'rails-assets-tether', '>= 1.3.3'
-end
 ruby "2.4.0"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.1'
@@ -50,6 +47,8 @@ gem 'figaro'
 gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'sprockets-rails', '2.3.0'
 gem 'font-awesome-rails', '4.6.2'
+gem 'tether-rails'
+
 # gem 'omniauth-facebook'
 # gem 'gmaps4rails'
 # gem "mongoid-tree", :require => "mongoid/tree"
