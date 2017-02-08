@@ -204,7 +204,7 @@ class User
         :post_type.nin => ["reply", "memory"]
         )
     else
-      posts = Post.where(:user_id.in => users.to_a.pluck(:id))
+      posts = Post.where(:user_id.in => users.to_a.pluck(:id), :post_type.nin => ["reply", "memory"])
     end
 
     posts.map {|post| 
