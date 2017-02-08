@@ -31,7 +31,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       end
     when "hidden", "memory"
       if @post.save
-        hidden_post_notification(@post) 
+        hidden_or_memory_post_notification(@post) 
         render json: {status: 200}
       else
         render json: {errors: @post.errors}
@@ -102,10 +102,10 @@ class Api::V1::PostsController < Api::V1::BaseController
     filename += ".#{extension}" if extension
 
     ActionDispatch::Http::UploadedFile.new({
-                                               tempfile: @tempfile,
-                                               content_type: content_type,
-                                               filename: filename
-                                           })
+       tempfile: @tempfile,
+       content_type: content_type,
+       filename: filename
+     })
   end
 
   def clean_tempfile
@@ -115,7 +115,7 @@ class Api::V1::PostsController < Api::V1::BaseController
     end
   end
 
-  def hidden_post_notification(post)
+  def hidden_or_memory_post_notification(post)
     return unless ["hidden", "memory"].include?(post.post_type)
     return if post.selected_users.blank?
     users = post.selected_users
@@ -123,7 +123,7 @@ class Api::V1::PostsController < Api::V1::BaseController
       Notification.create(user_id: user_id,
                           notified_by_id: post.user_id.to_s,
                           post_id: post.id.to_s,
-                          notice_type: post.post_type + " post")
+                          notice_type: "Sent you a " + post.post_type + " post")
     end
   end
 
@@ -134,7 +134,7 @@ class Api::V1::PostsController < Api::V1::BaseController
                         notified_by_id: post.user_id.to_s,
                         post_id: post.id.to_s,
                         identifier: post_id.to_s,
-                        notice_type: 'reply post')
+                        notice_type: 'Replied to your post')
   end
 end
 

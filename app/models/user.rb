@@ -260,7 +260,7 @@ class User
         last_watcher = self.area_thingies.order_by(created_at: :desc).first
         if last_watcher.area.has_coords? coords
           # The user is still in the area
-          if last_watcher.updated_at > 5.minutes.ago
+          if last_watcher.updated_at > 90.seconds.ago
             last_watcher.update_attributes(
               last_coord_time_stamp: last_watcher.updated_at, 
               done: true,
@@ -282,7 +282,7 @@ class User
           # The user is not in the area
           locs = self.user_locations.order_by(time_stamp: :desc).take 3
           # Take the last three locations for the user
-          if last_watcher.updated_at > 5.minutes.ago
+          if last_watcher.updated_at > 90.seconds.ago
             last_watcher.update_attributes(
               last_coord_time_stamp: last_watcher.updated_at, 
               done: true,
@@ -382,46 +382,6 @@ class User
       end
     end
 end
-
-
-
-
-  # def self.set_location_data(coords)
-  #   token = decoded_token
-  #   if token[:data][:location_data] && !token[:data][:location_data].nil?
-  #     if still_in_area?(coords.coords)
-  #       token[:data][:location_data][:not_in_area_count] = 0
-  #     elsif token[:data][:location_data][:not_in_area_count] == 3
-  #       AreaMailer.send_farewell(coords.user, Area.find(token[:data][:location_data][:area_id]))
-  #       # time = coords.time_stamp - token[:data][:location_data][:first_coord_time_stamp]
-  #       area_observer = AreaObserver.new
-  #       area_observer.user_id = coords.user_id 
-  #       area_observer.area_id = token[:data][:location_data][:area_id]
-  #       # area_observer.time = time
-  #       area_observer.first_coord_time_stamp = DateTime.parse(token[:data][:location_data][:first_coord_time_stamp])
-  #       area_observer.last_coord_time_stamp = DateTime.parse(coord.time_stamp)
-  #       area_observer.save
-  #       token[:data][:location_data] = nil 
-  #     else
-  #       token[:data][:location_data][:not_in_area_count] += 1
-  #     end
-  #     return token
-  #   else
-  #     check = inside_an_area?(coords.coords)
-  #     if check.first == true
-  #       token[:data][:location_data] = {
-  #         # first_coord_id: coords.id,
-  #         first_coord_time_stamp: coords.time_stamp,
-  #         not_in_area_count: 0,
-  #         area_profile: check.last.area_profile[:coordinates][0],
-  #         user_id: coords.user_id.to_s,
-  #         area_id: check.last.id.to_s
-  #       }
-  #       AreaMailer.send_hello(coords.user, check.last)
-  #     end
-  #     return token
-  #   end
-  # end
 
 
 

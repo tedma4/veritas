@@ -25,7 +25,7 @@ class  Api::V1::LikesController < Api::V1::BaseController
     Notification.create(user_id: post.user_id.to_s,
                         notified_by_id: user.id.to_s,
                         post_id: post.id.to_s,
-                        notice_type: 'liked post')
+                        notice_type: 'Liked your post')
   end
 
 end

@@ -37,7 +37,7 @@ class Post
       id: self.id.to_s,
       created_at: self.created_at,
       image: self.attachment.url || "/assets/images/default-image.png",
-      location: {latitude: self.location[1], longitude: self.location[0]},
+      location: {latitude: self.location.y, longitude: self.location.x},
       post_type: self.post_type,
       user: {
         first_name: self.user.first_name,
