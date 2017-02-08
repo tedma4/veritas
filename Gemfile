@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-source 'https://rails-assets.org' do
+source 'http://rails-assets.org' do
   gem 'rails-assets-tether', '>= 1.3.3'
 end
 ruby "2.4.0"

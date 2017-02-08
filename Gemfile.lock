@@ -15,7 +15,7 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://rails-assets.org/
+  remote: http://rails-assets.org/
   specs:
     actioncable (5.0.1)
       actionpack (= 5.0.1)
