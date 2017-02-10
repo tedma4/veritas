@@ -248,12 +248,13 @@ class User
 
   # ---------- Create and update Area Watcher ----------- Begin
   def area_watcher(coords)
+    binding.pry
     in_an_area = self.inside_an_area?(coords.coords)
     if self.area_watchers.any?
       update_area_watchers(in_an_area, self, coords)
     elsif in_an_area.first == true
-      new_area_watcher(user_id, area_id, time_stamp)
-      AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+      new_area_watcher(self.id, in_an_area.last.id, coords.time_stamp)
+      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
       return true
     end
@@ -269,7 +270,7 @@ class User
       end
     elsif in_an_area.first == true
       new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-      AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
       return true
     end
@@ -303,10 +304,10 @@ class User
   def update_last_watcher_in_area(last_watcher, in_an_area, coords, user)
     if last_watcher.updated_at > 90.seconds.ago
       update_watcher(last_watcher, true)
-      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
       if in_an_area.first == true
         new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+        # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
       end
     else
       last_watcher.touch(:updated_at)
@@ -316,14 +317,14 @@ class User
   def update_last_watcher_not_in_an_area(locs, last_watcher, in_an_area, coords, user)
     if last_watcher.updated_at > 90.seconds.ago
       update_watcher(last_watcher, true)
-      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
       if in_an_area.first == true
         new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+        # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
       end
     elsif !last_watcher.area.has_coords? locs
       update_watcher(last_watcher)
-      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     else
       last_watcher.touch(:updated_at)
     end
@@ -344,7 +345,7 @@ class User
     a.first_coord_time_stamp = time_stamp
     a.save
   end
-  
+
   def inside_an_area?(coords)
    # coords = Mongoid::Geospatial::Point object
    area = Area.where(
