@@ -48,7 +48,6 @@ class User
   # has_one :location, dependent: :destroy
   has_many :notifications, dependent: :destroy  
   has_many :user_locations, dependent: :destroy  
-  has_many :area_observers, dependent: :destroy  
   has_many :area_watchers, dependent: :destroy  
   has_one :session, dependent: :destroy  
 
@@ -344,6 +343,28 @@ class User
     a.area_id = area_id
     a.first_coord_time_stamp = time_stamp
     a.save
+  end
+  
+  def inside_an_area?(coords)
+   # coords = Mongoid::Geospatial::Point object
+   area = Area.where(
+     area_profile: {
+       "$geoIntersects" => {
+         "$geometry"=> {
+           type: "Point",
+           coordinates: [coords.x, coords.y]
+         }
+       }
+     },
+     :level.nin => ["L0"],
+     :level.in => ["L1", "L2", "L3"]
+     )
+   # area = Area.where(title: "Arcadia on 49th")
+   if area.any?
+     return true, area.first     
+   else
+     return false, ""
+   end
   end
   # ---------- Create and update Area Watcher ----------- END
 
