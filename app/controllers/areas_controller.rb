@@ -24,8 +24,7 @@ class AreasController < ApplicationController
 
 	def feed
 		if signed_in?
-			area = Area.includes(:area_watchers, {area_watchers: :user}).find(params[:id])
-			@area = area.order_by(created_at: :desc)
+			@area = Area.includes(:area_watchers, {area_watchers: :user}).find(params[:id])
 		else
 			redirect_to "/"
 		end
