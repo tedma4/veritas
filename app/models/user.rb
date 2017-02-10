@@ -248,7 +248,6 @@ class User
 
   # ---------- Create and update Area Watcher ----------- Begin
   def area_watcher(coords)
-    binding.pry
     in_an_area = self.inside_an_area?(coords.coords)
     if self.area_watchers.any?
       update_area_watchers(in_an_area, self, coords)
