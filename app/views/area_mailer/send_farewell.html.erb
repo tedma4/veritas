@@ -8,9 +8,9 @@
     <p>
       <%= @area.title %> says Goodbye
     </p>
-    <p>You were here from <%= @area_thingy.first_coord_time_stamp %> till <%= @area_thingy.last_coord_time_stamp %> </p>
+    <p>You were here from <%= @area_watcher.first_coord_time_stamp %> till <%= @area_watcher.last_coord_time_stamp %> </p>
     <br>
-    <p>Which is <%= time_ago_in_words(@area_thingy.last_coord_time_stamp - @area_thingy.first_coord_time_stamp) %> </p>
+    <p>Which is <%= time_ago_in_words(@area_watcher.last_coord_time_stamp - @area_watcher.first_coord_time_stamp) %> </p>
     <p>Thanks for comming and have a great day!</p>
   </body>
 </html>

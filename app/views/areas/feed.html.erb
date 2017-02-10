@@ -12,7 +12,7 @@
 
 <p>
   <strong>Users Visitied:</strong>
-  <% @area.area_thingies.each do |thingy| %>
+  <% @area.area_watchers.each do |thingy| %>
     <% if thingy.done %>
       <p><%= thingy.user.first_name %></p>
       <p>Visited:</p>

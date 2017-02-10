@@ -8,7 +8,7 @@ class Area
   field :title, type: String, default: "Name of Area"
   field :level, type: String, default: "l3"
   has_many :area_observers
-  has_many :area_thingies
+  has_many :area_watchers
 
   def has_coords?(coords)
     rgeo = RGeo::Geographic.simple_mercator_factory

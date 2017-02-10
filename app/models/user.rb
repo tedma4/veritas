@@ -1,4 +1,3 @@
-require 'rgeo'
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -50,7 +49,7 @@ class User
   has_many :notifications, dependent: :destroy  
   has_many :user_locations, dependent: :destroy  
   has_many :area_observers, dependent: :destroy  
-  has_many :area_thingies, dependent: :destroy  
+  has_many :area_watchers, dependent: :destroy  
   has_one :session, dependent: :destroy  
 
   field :followed_users, type: Array, default: Array.new
@@ -248,114 +247,105 @@ class User
     return loc
   end
 
+  # ---------- Create and update Area Watcher ----------- Begin
   def area_watcher(coords)
     in_an_area = self.inside_an_area?(coords.coords)
-    # is the user in an area
-    # [true, #<Areatfkytfiytfytf>]
-    # [false, ""]
-    if self.area_thingies.any?
-      #User has area_thingies
-      if !self.area_thingies.order_by(created_at: :desc).first.done
-        # The last area_thingy is not done
-        last_watcher = self.area_thingies.order_by(created_at: :desc).first
-        if last_watcher.area.has_coords? coords
-          # The user is still in the area
-          if last_watcher.updated_at > 90.seconds.ago
-            last_watcher.update_attributes(
-              last_coord_time_stamp: last_watcher.updated_at, 
-              done: true,
-              visit: true)
-            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
-            if in_an_area.first == true
-              a = AreaThingy.new
-              a.user_id = self.id
-              a.area_id = in_an_area.last.id
-              a.first_coord_time_stamp = coords.time_stamp
-              a.save
-              AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
-            end
-          else
-            last_watcher.touch(:updated_at)
-          end
-          # Update current area thingy to add coord time_stamp
-        else
-          # The user is not in the area
-          locs = self.user_locations.order_by(time_stamp: :desc).take 3
-          # Take the last three locations for the user
-          if last_watcher.updated_at > 90.seconds.ago
-            last_watcher.update_attributes(
-              last_coord_time_stamp: last_watcher.updated_at, 
-              done: true,
-              visit: true)
-            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
-            if in_an_area.first == true
-              a = AreaThingy.new
-              a.user_id = self.id
-              a.area_id = in_an_area.last.id
-              a.first_coord_time_stamp = coords.time_stamp
-              a.save
-              AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
-            end
-          elsif !last_watcher.area.has_coords? locs 
-            # check the last area_thingy to see if it doecn't have any of the locs
-            last_watcher.update_attributes(
-              last_coord_time_stamp: coords.time_stamp, 
-              done: true)
-            AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
-          else
-            # if any of the locs are in the area, keep trying
-            last_watcher.touch(:updated_at)
-          end
-        end
-      # the last area thingy is done
-      elsif in_an_area.first == true
-        # the user is inside an area, create an area_thingy
-        a = AreaThingy.new
-        a.user_id = self.id
-        a.area_id = in_an_area.last.id
-        a.first_coord_time_stamp = coords.time_stamp
-        a.save
-        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
-      else
-        # the user is not inside an area, move along
-        return true
-      end
-    # User has no area_things
+    if self.area_watchers.any?
+      update_area_watchers(in_an_area, self, coords)
     elsif in_an_area.first == true
-      # the user is inside an area, create an area_thingy
-      a = AreaThingy.new
-      a.user_id = self.id
-      a.area_id = in_an_area.last.id
-      a.first_coord_time_stamp = coords.time_stamp
-      a.save
+      new_area_watcher(user_id, area_id, time_stamp)
       AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
-      # the user is not inside an area, move along
       return true
     end
   end
 
-  def inside_an_area?(coords)
-    # coords = Mongoid::Geospatial::Point object
-    area = Area.where(
-      area_profile: {
-        "$geoIntersects" => {
-          "$geometry"=> {
-            type: "Point",
-            coordinates: [coords.x, coords.y]
-          }
-        }
-      },
-      :level.nin => ["L0"],
-      :level.in => ["L1", "L2", "L3"]
-      )
-    # area = Area.where(title: "Arcadia on 49th")
-    if area.any?
-      return true, area.first
+  def update_area_watchers(in_an_area, user, coords)
+    if !user.area_watchers.order_by(created_at: :desc).first.done
+      last_watcher = user.area_watchers.order_by(created_at: :desc).first
+      if last_watcher.pre_selection_stage == true
+        update_pre_selected(last_watcher, coords)
+      else
+        inside_last_area_or_not(last_watcher, coords, in_an_area, user)
+      end
+    elsif in_an_area.first == true
+      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+      AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
-      return false, ""
+      return true
     end
   end
+
+  def update_pre_selected(last_watcher, coords)
+    if last_watcher.area.has_coords? coords
+      if last_watcher.updated_at > 60.seconds.ago
+        last_watcher.destroy
+      else
+        last_watcher.pre_selection_count += 1
+        if last_watcher.pre_selection_count == 3
+          last_watcher.pre_selection_stage = false
+        end
+        last_watcher.save
+      end
+    else
+      last_watcher.destroy
+    end
+  end
+
+  def inside_last_area_or_not(last_watcher, coords, in_an_area, user)
+    if last_watcher.area.has_coords? coords
+      update_last_watcher_in_area(last_watcher, in_an_area, coords, user)
+    else
+      locs = user.user_locations.order_by(time_stamp: :desc).take 3
+      update_last_watcher_not_in_an_area(locs, last_watcher, in_an_area, coords, user)
+    end
+  end
+
+  def update_last_watcher_in_area(last_watcher, in_an_area, coords, user)
+    if last_watcher.updated_at > 90.seconds.ago
+      update_watcher(last_watcher, true)
+      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+      if in_an_area.first == true
+        new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+      end
+    else
+      last_watcher.touch(:updated_at)
+    end
+  end
+
+  def update_last_watcher_not_in_an_area(locs, last_watcher, in_an_area, coords, user)
+    if last_watcher.updated_at > 90.seconds.ago
+      update_watcher(last_watcher, true)
+      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+      if in_an_area.first == true
+        new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+        AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
+      end
+    elsif !last_watcher.area.has_coords? locs
+      update_watcher(last_watcher)
+      AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+    else
+      last_watcher.touch(:updated_at)
+    end
+  end
+
+  def update_watcher(last_watcher, visit = false)
+    last_watcher.update_attributes(
+      last_coord_time_stamp: last_watcher.updated_at, 
+      done: true,
+      visit: visit,
+    )
+  end
+
+  def new_area_watcher(user_id, area_id, time_stamp)
+    a = AreaWatcher.new
+    a.user_id = user_id
+    a.area_id = area_id
+    a.first_coord_time_stamp = time_stamp
+    a.save
+  end
+  # ---------- Create and update Area Watcher ----------- END
 
   private
 
