@@ -14,8 +14,8 @@
   <strong>Users Visitied:</strong>
   <% @area.area_watchers.each do |watcher| %>
     <% if watcher.done %>
-      <% if watcher.vist == true %>
-        This was a vist. 
+      <% if watcher.visit == true %>
+        This was a visit. 
       <% end %>
       <p><%= watcher.user.first_name %></p>
       <p>Time:</p>
