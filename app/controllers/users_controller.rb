@@ -15,7 +15,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    if !signed_in?
+    if signed_in?
+      @area_watchers = AreaWatcher.where(user_id: @user.id)
+    else
       redirect_to "/users/sign_in"
     end
   end

@@ -25,9 +25,27 @@
   <%= image_tag @user.try(:avatar) || "/assets/images/default-image.png", size: 50 %>
 </p>
 
-<% unless @user == current_user && user_signed_in? %>
-follow
-<% end %>
+<p>Area Watchers</p>
+
+<p>
+  <strong><%= @user.first_name %> Visitied:</strong>
+  <% @area_watchers.each do |watcher| %>
+    <% if watcher.done %>
+      <% if watcher.visit == true %>
+        <p>This was a visit. </p>
+      <% end %>
+      <p><%= watcher.area.title %></p>
+      <p>From: <%= watcher.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <p>Till: <%= watcher.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <% t = watcher.last_coord_time_stamp.to_i - watcher.first_coord_time_stamp.to_i %>
+      <% mm, ss = t.divmod(60) %>
+      <% hh, mm = mm.divmod(60) %>
+      <% dd, hh = hh.divmod(24) %>
+      <p><%= "%d days, %d hours, %d minutes and %d seconds" % [dd, hh, mm, ss]   %></p>
+      <br>
+    <% end %>
+  <% end %>
+</p>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
