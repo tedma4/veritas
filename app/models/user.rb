@@ -248,8 +248,10 @@ class User
 
   # ---------- Create and update Area Watcher ----------- Begin
   def area_watcher(coords)
+    binding.pry
     in_an_area = self.inside_an_area?(coords.coords)
     if self.area_watchers.any?
+      binding.pry
       update_area_watchers(in_an_area, self, coords)
     elsif in_an_area.first == true
       new_area_watcher(self.id, in_an_area.last.id, coords.time_stamp)
@@ -277,7 +279,7 @@ class User
 
   def update_pre_selected(last_watcher, coords)
     if last_watcher.area.has_coords? coords
-      if last_watcher.updated_at > 60.seconds.ago
+      if last_watcher.updated_at < 60.seconds.ago
         last_watcher.destroy
       else
         last_watcher.pre_selection_count += 1
@@ -301,31 +303,30 @@ class User
   end
 
   def update_last_watcher_in_area(last_watcher, in_an_area, coords, user)
-    if last_watcher.updated_at > 90.seconds.ago
-      update_watcher(last_watcher, true)
-      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
-      if in_an_area.first == true
-        new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-        # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
-      end
+    if last_watcher.updated_at < 90.seconds.ago
+      make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     else
       last_watcher.touch(:updated_at)
     end
   end
 
   def update_last_watcher_not_in_an_area(locs, last_watcher, in_an_area, coords, user)
-    if last_watcher.updated_at > 90.seconds.ago
-      update_watcher(last_watcher, true)
-      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
-      if in_an_area.first == true
-        new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-        # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
-      end
+    if last_watcher.updated_at < 90.seconds.ago
+      make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     elsif !last_watcher.area.has_coords? locs
       update_watcher(last_watcher)
       # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     else
       last_watcher.touch(:updated_at)
+    end
+  end
+
+  def make_watcher_a_visit(last_watcher, in_an_area, user, coords)
+    update_watcher(last_watcher, true)
+    # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
+    if in_an_area.first == true
+      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     end
   end
 
