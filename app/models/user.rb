@@ -312,7 +312,7 @@ class User
     if last_watcher.updated_at < 90.seconds.ago
       make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     elsif !last_watcher.area.has_coords? locs
-      update_watcher(last_watcher)
+      complete_watcher(last_watcher)
       # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     else
       last_watcher.touch(:updated_at)
@@ -320,7 +320,7 @@ class User
   end
 
   def make_watcher_a_visit(last_watcher, in_an_area, user, coords)
-    update_watcher(last_watcher, true)
+    complete_watcher(last_watcher, true)
     # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     if in_an_area.first == true
       new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
@@ -328,7 +328,7 @@ class User
     end
   end
 
-  def update_watcher(last_watcher, visit = false)
+  def complete_watcher(last_watcher, visit = false)
     last_watcher.update_attributes(
       last_coord_time_stamp: last_watcher.updated_at, 
       done: true,

@@ -12,13 +12,16 @@
 
 <p>
   <strong>Users Visitied:</strong>
-  <% @area.area_watchers.each do |thingy| %>
-    <% if thingy.done %>
-      <p><%= thingy.user.first_name %></p>
-      <p>Visited:</p>
-      <p>From: <%= thingy.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
-      <p>Till: <%= thingy.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
-      <% t = thingy.last_coord_time_stamp.to_i - thingy.first_coord_time_stamp.to_i %>
+  <% @area.area_watchers.each do |watcher| %>
+    <% if watcher.done %>
+      <% if watcher.vist == true %>
+        This was a vist. 
+      <% end %>
+      <p><%= watcher.user.first_name %></p>
+      <p>Time:</p>
+      <p>From: <%= watcher.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <p>Till: <%= watcher.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+      <% t = watcher.last_coord_time_stamp.to_i - watcher.first_coord_time_stamp.to_i %>
       <% mm, ss = t.divmod(60) %>
       <% hh, mm = mm.divmod(60) %>
       <% dd, hh = hh.divmod(24) %>
