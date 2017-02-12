@@ -253,7 +253,6 @@ class User
       update_area_watchers(in_an_area, self, coords)
     elsif in_an_area.first == true
       new_area_watcher(self.id, in_an_area.last.id, coords.time_stamp)
-      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
       return true
     end
@@ -269,7 +268,6 @@ class User
       end
     elsif in_an_area.first == true
       new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     else
       return true
     end
@@ -313,7 +311,6 @@ class User
       make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     elsif !last_watcher.area.has_coords? locs
       complete_watcher(last_watcher)
-      # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     else
       last_watcher.touch(:updated_at)
     end
@@ -321,10 +318,8 @@ class User
 
   def make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     complete_watcher(last_watcher, true)
-    # AreaMailer.send_farewell(coords.user, last_watcher.area, last_watcher).deliver_now
     if in_an_area.first == true
       new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
-      # AreaMailer.send_hello(coords.user, in_an_area.last).deliver_now
     end
   end
 
