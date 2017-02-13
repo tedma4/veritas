@@ -106,7 +106,7 @@ class UsersController < ApplicationController
             type: "last",
             user_full_name: user.try(:first_name) + ' ' + user.try(:last_name),
             user_id: user.id.to_s,
-            user_avatar: user.avatar.url || asset_url("smiley.png")
+            user_avatar: user.avatar.url || ActionController::Base.helpers.asset_path('default-smiley.png')
             }}.take 1
         rescue 
           nil
