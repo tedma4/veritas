@@ -117,7 +117,7 @@
     });
     google.maps.event.addListener(area, "click", function(event) {
       var vertices = this.getPath();
-      var contentString = '<b>'+ feature.title +'</b><br>' + '<a href="http://localhost:3000/areas/' + feature.id + '">click me</a><br>' +
+      var contentString = '<b>'+ feature.title +'</b><br>' + '<a href="/areas/' + feature.id + '">click me</a><br>' +
           'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
           '<br>';
       // Iterate over the vertices.

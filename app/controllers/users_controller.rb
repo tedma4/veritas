@@ -98,10 +98,19 @@ class UsersController < ApplicationController
       else
         post = Post.all.limit(250).pluck(:location)
       end
+      # binding.pry
+      user_last_coords = User.all.map {|user| 
+        begin
+          user.user_locations.order_by(created_at: :desc).pluck(:coords).map {|l| {position: {lat: l[1], lng: l[0]}, type: "last"}}.take 1
+        rescue 
+          nil
+        end
+      }.compact
+      # binding.pry
       location = UserLocation.pluck(:coords).map {|l| {position: {lat: l[1], lng: l[0]}, type: "user"} }
       post_hashes_not_nil = post.reject {|post| post == nil}
       post_hashes = post_hashes_not_nil.map {|p| {position: {lat: p[1], lng: p[0] }, type: "post" } }
-      merge = post_hashes << location
+      merge = post_hashes << location << user_last_coords
       @posts = merge.flatten
       # @posts = Location.pluck(:location_details).flatten.map {|l| {position: {lat: l["coords"][1], lng: l["coords"][0]}, type: "user"} }
       respond_to do |format|
