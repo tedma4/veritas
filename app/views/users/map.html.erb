@@ -42,8 +42,15 @@
         icon: icons[feature.type].icon,
         map: map
       });
-      google.maps.event.addListener(marker, "click", function() {
+      google.maps.event.addListener(marker, "click", function(event) {
         console.log(marker.position)
+        if (feature.type == 'last') {
+          var contentString = '<b>'+ '<a href="/users/' + feature.user_id + '">' + feature.user_full_name +'</a><br>' +'</b><br>' + '<br>' + '<IMG BORDER="0" WIDTH=80px HEIGHT=80px ALIGN="Left" SRC="' + feature.user_avatar + '">';
+          // Replace the info window's content and position.
+          infoWindow.setContent(contentString);
+          infoWindow.setPosition(feature.position);
+          infoWindow.open(map);
+        }
       });
       return marker
     }
@@ -72,9 +79,20 @@
       individualCircle.bindTo("center", individualMarker, "position")
       }
     }
+  infoWindow = new google.maps.InfoWindow;
   }
 
 </script>
 <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAU7vv1IU0p7UKr8YiKASuKXKn7ptBrcUk&callback=initMap">
 </script>
+
+
+
+
+
+
+
+
+
+

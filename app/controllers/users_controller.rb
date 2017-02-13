@@ -101,12 +101,17 @@ class UsersController < ApplicationController
       # binding.pry
       user_last_coords = User.all.map {|user| 
         begin
-          user.user_locations.order_by(created_at: :desc).pluck(:coords).map {|l| {position: {lat: l[1], lng: l[0]}, type: "last"}}.take 1
+          user.user_locations.order_by(created_at: :desc).map {|l| {
+            position: {lat: l.coords.y, lng: l.coords.x}, 
+            type: "last",
+            user_full_name: user.try(:first_name) + ' ' + user.try(:last_name),
+            user_id: user.id.to_s,
+            user_avatar: user.avatar.url || asset_url("smiley.png")
+            }}.take 1
         rescue 
           nil
         end
       }.compact
-      # binding.pry
       location = UserLocation.pluck(:coords).map {|l| {position: {lat: l[1], lng: l[0]}, type: "user"} }
       post_hashes_not_nil = post.reject {|post| post == nil}
       post_hashes = post_hashes_not_nil.map {|p| {position: {lat: p[1], lng: p[0] }, type: "post" } }
