@@ -10,6 +10,30 @@
   <%= @area.level %>
 </p>
 
+<% if ["L1", "L0"].include? @area.level  %>
+  <p>
+    <strong>Child Areas:</strong>
+  </p>
+    <% if @inner_areas.any? %>
+    <% @inner_areas.each do |area| %>
+      <p> <%= area.title %> </p>
+      <p> <%= area.level %> </p>
+      <p> <%= link_to "Go to #{area.title}", "/areas/feed/#{area.id.to_s}" %> </p>
+    <% end %>
+  <% end %>
+<% elsif @area.level == "L2" %>
+  <p>
+    <strong>Parent Areas:</strong>
+  </p>
+  <% if @outer_areas.any? %>
+    <% @outer_areas.each do |area| %>
+      <p> <%= area.title %> </p>
+      <p> <%= area.level %> </p>
+      <p> <%= link_to "Go to #{area.title}", "/areas/feed/#{area.id.to_s}" %> </p>
+    <% end %>
+  <% end %>
+<% end %>
+
 <p>
   <strong>Users Visitied:</strong>
   <% @area.area_watchers.each do |watcher| %>

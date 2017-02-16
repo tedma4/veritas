@@ -4,13 +4,15 @@ class AreasController < ApplicationController
 	def new
 		if signed_in?
 			@area = Area.new
-			@areas = Area.where(:level.nin => ["L0"]).pluck(:area_profile, :level, :title, :id).map { |area| 
-				{ 
-					coords: area[0][:coordinates][0].map {|points| {lat: points.last, lng: points.first} }, 
-					level: area[1],
-					title: area[2],
-					id: area[3].to_s
+			@areas = Area.where(:level.nin => ["L0"]).map { |area| 
+				map = { 
+					coords: area.area_profile[:coordinates][0].map {|points| {lat: points.last, lng: points.first} }, 
+					level: area.level,
+					title: area.title,
+					id: area.id.to_s
 			  }
+			  map[:attachment] = area.attachment.url if area.attachment
+			  map
 			}
 
 			respond_to do |format|
@@ -25,6 +27,27 @@ class AreasController < ApplicationController
 	def feed
 		if signed_in?
 			@area = Area.includes(:area_watchers, {area_watchers: :user}).find(params[:id])
+			if ["L1", "L0"].include? @area.level 
+				@inner_areas = Area.where(
+		      area_profile: {
+		        "$geoWithin" => {
+		          "$geometry"=> {
+		            type: "Polygon",
+		            coordinates: @area.area_profile[:coordinates]
+		      }}},
+		      :id.nin => [@area.id]
+		    )
+			elsif @area.level == "L2"
+				@outer_areas = Area.where(
+		      area_profile: {
+		        "$geoIntersects" => {
+		          "$geometry"=> {
+		            type: "Polygon",
+		            coordinates: @area.area_profile[:coordinates]
+		      }}},
+		      :id.nin => [@area.id]
+		    )
+			end
 		else
 			redirect_to "/"
 		end

@@ -2,7 +2,10 @@ class Area
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Geospatial
-
+  mount_uploader :attachment, AttachmentUploader
+  delegate :url, :size, :path, to: :attachment
+  field :attachment, type: String#, null: false
+  
   field :area_profile, type: Polygon, sphere: true
 
   field :title, type: String, default: "Name of Area"

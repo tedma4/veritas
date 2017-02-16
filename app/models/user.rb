@@ -355,7 +355,12 @@ class User
      )
    # area = Area.where(title: "Arcadia on 49th")
    if area.any?
-     return true, area.first     
+      if area.count > 1
+        l1 = area.to_a.find {|a| a.level == 'L2'}
+        return true, l1
+      else
+        return true, area.first     
+      end
    else
      return false, ""
    end
