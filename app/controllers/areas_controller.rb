@@ -124,7 +124,7 @@ class AreasController < ApplicationController
 	end
 
 	def area_params
-		the_params = params.require(:area).permit(:title, :area_profile, :level)
+		the_params = params.require(:area).permit(:title, :area_profile, :level, :attachment)
 		the_params[:area_profile] = Area.profile_maker(params[:area][:area_profile])
 		return the_params
 	end

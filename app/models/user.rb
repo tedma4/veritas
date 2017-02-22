@@ -259,15 +259,16 @@ class User
   end
 
   def update_area_watchers(in_an_area, user, coords)
+    last_watcher = user.area_watchers.order_by(created_at: :desc).first
     if !user.area_watchers.order_by(created_at: :desc).first.done
-      last_watcher = user.area_watchers.order_by(created_at: :desc).first
       if last_watcher.pre_selection_stage == true
         update_pre_selected(last_watcher, coords)
       else
         inside_last_area_or_not(last_watcher, coords, in_an_area, user)
       end
     elsif in_an_area.first == true
-      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+      next_area_watcher_setup(last_watcher, coords, user.id, in_an_area )
+      # new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
     else
       return true
     end
@@ -310,7 +311,11 @@ class User
     if last_watcher.updated_at < 90.seconds.ago
       make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     elsif !last_watcher.area.has_coords? locs
-      complete_watcher(last_watcher)
+      if last_watcher.visit == true
+        complete_watcher(last_watcher, true)
+      else
+        complete_watcher(last_watcher)
+      end
     else
       last_watcher.touch(:updated_at)
     end
@@ -319,7 +324,8 @@ class User
   def make_watcher_a_visit(last_watcher, in_an_area, user, coords)
     complete_watcher(last_watcher, true)
     if in_an_area.first == true
-      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+      next_area_watcher_setup(last_watcher, coords, user, in_an_area )
+      # new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
     end
   end
 
@@ -331,12 +337,49 @@ class User
     )
   end
 
-  def new_area_watcher(user_id, area_id, time_stamp)
+  def new_area_watcher(user_id, area_id, time_stamp, visit = false, continued_stay = false)
     a = AreaWatcher.new
     a.user_id = user_id
     a.area_id = area_id
     a.first_coord_time_stamp = time_stamp
+    a.visit = visit
+    a.continued_stay = continued_stay
     a.save
+  end
+
+  def next_area_watcher_setup(last_watcher, coords, user, in_an_area )
+    if is_a_continued_visit?(last_watcher, coords, in_an_area, user)
+      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp, true, true)
+    elsif is_a_visit?(last_watcher, coords, in_an_area, user)
+      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp, true, false)
+    else
+      new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
+    end
+  end
+
+  def is_a_continued_visit?(last_watcher, coords, in_an_area, user)
+    (last_watcher.visit == true || last_watcher.continued_visit == true) && 
+    last_watcher.updated_at < 4.hours.ago && 
+    in_an_area.last.id == last_watcher.area_id && 
+    in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
+  end
+
+  def is_a_visit?(last_watcher, coords, in_an_area, user)
+    if last_watcher.continued_visit == true
+      last_watcher.updated_at < 6.hours.ago && 
+      in_an_area.last.id == last_watcher.area_id && 
+      in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
+    elsif last_watcher.visit == true
+      last_watcher.updated_at < 12.hours.ago && 
+      in_an_area.last.id == last_watcher.area_id && 
+      in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
+    else
+      false
+    end
+  end
+
+  def previous_user_coord(user, offset = 1, take = 1)
+    user.user_locations.order_by(timne_stamp: :desc).offset(offset).limit(take)
   end
 
   def inside_an_area?(coords)

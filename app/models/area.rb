@@ -11,6 +11,7 @@ class Area
   field :title, type: String, default: "Name of Area"
   field :level, type: String, default: "l3"
   has_many :area_watchers
+  # embeds_one :area_details
 
   def has_coords?(coords)
     rgeo = RGeo::Geographic.simple_mercator_factory
