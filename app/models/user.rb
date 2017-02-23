@@ -379,7 +379,7 @@ class User
   end
 
   def previous_user_coord(user, offset = 1, take = 1)
-    user.user_locations.order_by(timne_stamp: :desc).offset(offset).limit(take)
+    user.user_locations.order_by(time_stamp: :desc).offset(offset).limit(take)
   end
 
   def inside_an_area?(coords)
