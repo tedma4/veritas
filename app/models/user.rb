@@ -359,18 +359,18 @@ class User
 
   def is_a_continued_visit?(last_watcher, coords, in_an_area, user)
     (last_watcher.visit == true || last_watcher.continued_visit == true) && 
-    last_watcher.updated_at < 4.hours.ago && 
+    last_watcher.updated_at > 4.hours.ago && 
     in_an_area.last.id == last_watcher.area_id && 
     in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
   end
 
   def is_a_visit?(last_watcher, coords, in_an_area, user)
     if last_watcher.continued_visit == true
-      last_watcher.updated_at < 6.hours.ago && 
+      last_watcher.updated_at > 6.hours.ago && 
       in_an_area.last.id == last_watcher.area_id && 
       in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
     elsif last_watcher.visit == true
-      last_watcher.updated_at < 12.hours.ago && 
+      last_watcher.updated_at > 12.hours.ago && 
       in_an_area.last.id == last_watcher.area_id && 
       in_an_area.last.has_coords?(previous_user_coord(user, 0, 2))
     else
