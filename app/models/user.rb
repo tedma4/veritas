@@ -260,7 +260,7 @@ class User
 
   def update_area_watchers(in_an_area, user, coords)
     last_watcher = user.area_watchers.order_by(created_at: :desc).first
-    if !user.area_watchers.order_by(created_at: :desc).first.done
+    if !last_watcher.first.done
       if last_watcher.pre_selection_stage == true
         update_pre_selected(last_watcher, coords)
       else
@@ -337,13 +337,13 @@ class User
     )
   end
 
-  def new_area_watcher(user_id, area_id, time_stamp, visit = false, continued_stay = false)
+  def new_area_watcher(user_id, area_id, time_stamp, visit = false, continued_visit = false)
     a = AreaWatcher.new
     a.user_id = user_id
     a.area_id = area_id
     a.first_coord_time_stamp = time_stamp
     a.visit = visit
-    a.continued_stay = continued_stay
+    a.continued_visit = continued_visit
     a.save
   end
 
@@ -379,7 +379,7 @@ class User
   end
 
   def previous_user_coord(user, offset = 1, take = 1)
-    user.user_locations.order_by(time_stamp: :desc).offset(offset).limit(take)
+    user.user_locations.order_by(time_stamp: :desc).offset(offset).limit(take).to_a
   end
 
   def inside_an_area?(coords)
