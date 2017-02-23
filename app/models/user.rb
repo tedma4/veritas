@@ -267,7 +267,7 @@ class User
         inside_last_area_or_not(last_watcher, coords, in_an_area, user)
       end
     elsif in_an_area.first == true
-      next_area_watcher_setup(last_watcher, coords, user.id, in_an_area )
+      next_area_watcher_setup(last_watcher, coords, user, in_an_area )
       # new_area_watcher(user.id, in_an_area.last.id, coords.time_stamp)
     else
       return true

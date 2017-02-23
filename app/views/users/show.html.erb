@@ -31,17 +31,36 @@
   <strong><%= @user.first_name %> Visitied:</strong>
   <% @area_watchers.each do |watcher| %>
     <% if watcher.done %>
-      <% if watcher.visit == true %>
+      <% if watcher.continued_visit == true %>
+        <p>This was a continued stay. </p>
+        <p><%= watcher.user.first_name %></p>
+        <p>
+          <%= watcher.created_at %>
+          <!-- <script>
+            var createdAt = new Date('<%= watcher.created_at %>');
+            document.write(createdAt.toString());
+          </script> -->
+        </p>
+      <% elsif watcher.visit == true %>
         <p>This was a visit. </p>
+        <p><%= watcher.user.first_name %></p>
+        <p>
+          <%= watcher.created_at %>
+          <!-- <script>
+            var createdAt = new Date('<%= watcher.created_at %>');
+            document.write(createdAt.toString());
+          </script> -->
+        </p>
+      <% else %>
+        <p><%= watcher.user.first_name %></p>
+        <p>From: <%= watcher.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+        <p>Till: <%= watcher.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
+        <% t = watcher.last_coord_time_stamp.to_i - watcher.first_coord_time_stamp.to_i %>
+        <% mm, ss = t.divmod(60) %>
+        <% hh, mm = mm.divmod(60) %>
+        <% dd, hh = hh.divmod(24) %>
+        <p><%= "%d days, %d hours, %d minutes and %d seconds" % [dd, hh, mm, ss] %></p>
       <% end %>
-      <p><%= watcher.area.title %></p>
-      <p>From: <%= watcher.first_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
-      <p>Till: <%= watcher.last_coord_time_stamp.strftime "%m-%d-%Y %I:%M:%S" %></p>
-      <% t = watcher.last_coord_time_stamp.to_i - watcher.first_coord_time_stamp.to_i %>
-      <% mm, ss = t.divmod(60) %>
-      <% hh, mm = mm.divmod(60) %>
-      <% dd, hh = hh.divmod(24) %>
-      <p><%= "%d days, %d hours, %d minutes and %d seconds" % [dd, hh, mm, ss]   %></p>
       <br>
     <% end %>
   <% end %>
