@@ -260,7 +260,7 @@ class User
 
   def update_area_watchers(in_an_area, user, coords)
     last_watcher = user.area_watchers.order_by(created_at: :desc).first
-    if !last_watcher.first.done
+    if !last_watcher.done
       if last_watcher.pre_selection_stage == true
         update_pre_selected(last_watcher, coords)
       else
