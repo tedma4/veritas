@@ -43,7 +43,7 @@
         map: map
       });
       google.maps.event.addListener(marker, "click", function(event) {
-        console.log(marker.position)
+        console.log(marker.position.toString())
         if (feature.type == 'last') {
           var contentString = '<b>'+ '<a href="/users/' + feature.user_id + '">' + feature.user_full_name +'</a><br>' +'</b><br>' + '<br>' + '<IMG BORDER="0" WIDTH=80px HEIGHT=80px ALIGN="Left" SRC="' + feature.user_avatar + '">';
           // Replace the info window's content and position.

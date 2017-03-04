@@ -30,8 +30,8 @@
 <p>
   <strong><%= @user.first_name %> Visitied:</strong>
   <% @area_watchers.each do |watcher| %>
-    <% if watcher.done %>
-      <% if watcher.continued_visit == true %>
+    <% if watcher.finished %>
+      <% if watcher.visit_type == "continued_visit" %>
         <p>This was a continued stay. </p>
         <p><%= watcher.user.first_name %></p>
         <p>
@@ -41,7 +41,7 @@
             document.write(createdAt.toString());
           </script> -->
         </p>
-      <% elsif watcher.visit == true %>
+      <% elsif watcher.visit_type == "single_visit" %>
         <p>This was a visit. </p>
         <p><%= watcher.user.first_name %></p>
         <p>

@@ -48,6 +48,7 @@ gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'sprockets-rails', '2.3.0'
 gem 'font-awesome-rails', '4.6.2'
 gem 'tether-rails'
+gem 'google_places'
 
 # gem 'omniauth-facebook'
 # gem 'gmaps4rails'
