@@ -260,7 +260,6 @@ class User
   end
 
   def update_or_create_area_watcher(in_an_area, user, coords)
-    binding.pry
     last_watcher = user.area_watchers.order_by(created_at: :desc).first
     if !last_watcher.finished
       if last_watcher.pre_selection_stage == true
