@@ -1,0 +1,63 @@
+<%= form_for(@area) do |f| %>
+  <% if @area.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@area.errors.count, "error") %> prohibited this area from being saved:</h2>
+
+      <ul>
+      <% @area.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.file_field :attachment %>
+  </div>
+
+  <%= f.fields_for :area_detail, @area.area_detail do |ff| %>
+    <div class="field">
+      <%= ff.label :description %><br />
+      <%= ff.text_field :description %>
+    </div>
+    <div class="field">
+      <%= ff.label :address %><br />
+      <%= ff.text_field :address %>
+    </div>
+    <div class="field">
+      <%= ff.label :website %><br />
+      <%= ff.text_field :website %>
+    </div>
+    <div class="field">
+      <%= ff.label :phone_number %><br />
+      <%= ff.text_field :phone_number %>
+    </div>
+    <div class="field">
+      <%= ff.label :email %><br />
+      <%= ff.text_field :email %>
+    </div>
+
+
+  <% end %>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<!--   field :description, type: String
+  
+  
+  field :place_detail, type: Hash, default: Hash.new
+  
+  field :address, type: String
+  
+  field :website, type: String
+  
+  field :phone_number, type: String
+  
+  field :email, type: String -->

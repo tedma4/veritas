@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-	before_action :set_area, only: [:update, :delete, :show, :feed]
+	before_action :set_area, only: [:update, :delete, :show, :feed, :edit]
 
 	def new
 		if signed_in?
@@ -84,13 +84,17 @@ class AreasController < ApplicationController
 		end
 	end
 
+	def edit
+
+	end
+
 	def update
 		respond_to do |format|
 			if @area.update(area_params)
 				## After an area is successfully saved add it to the corresponding 
 				## location details
 				# @area.update_other_things
-				format.json {render json: {status: 200}}
+				format.html {redirect_to @area, notice: 'Area was successfully Updated.'}
 			else
 				format.json {render json: @area.errors, status: :unprocessable_entity }
 			end				
@@ -124,8 +128,8 @@ class AreasController < ApplicationController
 	end
 
 	def area_params
-		the_params = params.require(:area).permit(:title, :area_profile, :level, :attachment)
-		the_params[:area_profile] = Area.profile_maker(params[:area][:area_profile])
+		the_params = params.require(:area).permit(:title, :area_profile, :level, :attachment, {area_detail: [:description]})
+		the_params[:area_profile] = Area.profile_maker(params[:area][:area_profile]) if params[:area][:area_profile]
 		return the_params
 	end
 end
