@@ -6,6 +6,7 @@ class AreaDetail
 	# Place type (Restaurant, Shopping Center, Convenience Store, Etc ), Etc - PlaceDetail(AreaDetail)
 	# Place detail will be a category and the corresponding labels to that category
 	field :place_detail, type: Hash, default: Hash.new
+	field :place_type, type: String
 	# Address - Address(AreaDetail)
 	field :address, type: String
 	# Link to website - Website(AreaDetail)

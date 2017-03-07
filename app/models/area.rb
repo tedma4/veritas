@@ -9,7 +9,7 @@ class Area
   field :area_profile, type: Polygon, sphere: true
 
   field :title, type: String, default: "Name of Area"
-  field :level, type: String, default: "l3"
+  field :level, type: String, default: "l2"
   has_many :area_watchers
   embeds_one :area_detail
 

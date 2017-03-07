@@ -41,7 +41,18 @@
       <%= ff.label :email %><br />
       <%= ff.text_field :email %>
     </div>
-
+    <div class="field">
+      <%= ff.label :place_type %><br />
+      <%= ff.text_field :place_type %>
+    </div>
+    <div class="field">
+      <% @area.area_detail.place_detail.each do |key, value| %>
+        <%= ff.fields_for :place_detail, @area.area_detail.place_detail[key] do |fff| %>
+          <%= fff.label key %><br />
+          <%= fff.text_field key, :value => value %><br>
+        <% end %>
+      <% end %>
+    </div>
 
   <% end %>
   <div class="actions">
