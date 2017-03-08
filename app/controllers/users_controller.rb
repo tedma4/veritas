@@ -17,6 +17,28 @@ class UsersController < ApplicationController
   def show
     if signed_in?
       @area_watchers = AreaWatcher.where(user_id: @user.id)
+      locs = @user.user_locations
+      areas = Area.where(level: "L2")
+      @label_count = {}
+      areas.map {|area|
+        locs.map {|loc|
+          if area.has_coords? loc 
+            keys = area.area_detail.place_detail.values.join(",").gsub(" ", "").split(",") if area.area_detail
+            unless keys.blank?
+              # @label_count[area.id.to_s] = {title: area.title} unless @label_count.has_key?(area.id.to_s)
+              keys.each {|key| 
+                # @label_count[area.id.to_s].has_key?(key) ? 
+                # @label_count[area.id.to_s][key] += 1 : 
+                # @label_count[area.id.to_s][key] = 1
+                @label_count.has_key?(key) ? 
+                @label_count[key] += 1 : 
+                @label_count[key] = 1
+              }
+              @label_count
+            end
+          end
+        }
+      }
     else
       redirect_to "/users/sign_in"
     end

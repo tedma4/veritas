@@ -72,6 +72,7 @@ class AreasController < ApplicationController
 
 	def create
 		@area = Area.new(area_params)
+		@area.area_detail = AreaDetail.new 
 		respond_to do |format|
 			if @area.save
 				## After an area is successfully saved add it to the corresponding 
@@ -128,7 +129,7 @@ class AreasController < ApplicationController
 	end
 
 	def area_params
-		category_keys = params[:area][:area_detail][:place_detail].try(:keys)
+		category_keys = params[:area][:area_detail][:place_detail].try(:keys) if params[:area][:area_detail]
 		the_params = params.require(:area).permit(:title, :area_profile, :level, :attachment, {area_detail: [:description, :address, :website, :phone_number, :email, :place_type, {place_detail: category_keys } ]})
 		the_params[:area_profile] = Area.profile_maker(params[:area][:area_profile]) if params[:area][:area_profile]
 		return the_params
