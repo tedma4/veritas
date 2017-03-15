@@ -10,7 +10,8 @@ class Area
 
   field :title, type: String, default: "Name of Area"
   field :level, type: String, default: "l2"
-  has_many :area_watchers
+  has_many :area_watchers, dependent: :destroy
+  has_many :chats, dependent: :destroy
   embeds_one :area_detail
 
   def has_coords?(coords)

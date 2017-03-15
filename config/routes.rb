@@ -15,6 +15,9 @@ Rails.application.routes.draw do
 
       resources :users
       resources :posts
+      resources :chats, only: [:create] do 
+        resources :messages, only: [:create]
+      end
  
       devise_scope :user do
         match '/sessions' => 'sessions#create', via: :post

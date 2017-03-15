@@ -10,6 +10,7 @@ class User
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable,# :omniauthable, 
          :rememberable, :trackable, :validatable
+  # TODO: Remove Pins
   field :pin, type: String
   validates :pin, presence: true
 
@@ -50,7 +51,12 @@ class User
   has_many :user_locations, dependent: :destroy  
   has_many :area_watchers, dependent: :destroy  
   has_one :session, dependent: :destroy  
+  # chat
+  has_and_belongs_to_many :chats #, index: true
+  has_many :user_chats, class_name: "Chat", inverse_of: :creator
+  has_many :messages
 
+  # TODO: Update these so they reflect the new chat setup 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
 
@@ -75,7 +81,7 @@ class User
   # field :current_location, type: Point, sphere: true
 
   def build_user_hash
-    user = {id: self.id.to_s.to_s,
+    user = {id: self.id.to_s,
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,

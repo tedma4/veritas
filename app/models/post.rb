@@ -2,9 +2,10 @@ class Post
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Geospatial
-  include Mongoid::Attributes::Dynamic
+  include Mongoid::Attributes::Dynamic # What is this for???? Need to test deleting and see what happens
 	mount_uploader :attachment, AttachmentUploader
-	belongs_to :user, index: true, counter_cache: true
+  belongs_to :user, index: true, counter_cache: true
+  belongs_to :message, index: true
   has_many :notifications, dependent: :destroy  
   has_many :likes, dependent: :destroy
 
