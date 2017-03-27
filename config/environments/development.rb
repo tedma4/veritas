@@ -56,7 +56,9 @@ Rails.application.configure do
       :password        => ENV['gmail_password']
 
   }
-
+  config.web_console.whitelisted_ips = '192.168.0.0/16'
+  config.action_cable.allowed_request_origins = [
+    'activecable://0000000000' ]
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

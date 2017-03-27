@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: {sessions: "sessions"}
+  # mount ActionCable.server => '/cable'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
   resources :posts
@@ -12,6 +13,7 @@ Rails.application.routes.draw do
   
   scope module: :api, defaults: {format: 'json'} do
     namespace :v1 do
+      mount ActionCable.server => '/cable'
 
       resources :users
       resources :posts

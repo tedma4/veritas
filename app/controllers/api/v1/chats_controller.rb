@@ -36,6 +36,6 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	private
 
 	def chat_params
-		params.require(:chat).permit(:area, {users: []}, :creator, :title, :chat_type)
+		params.require(:chat).permit(:area, { users: [] }, :creator, :title, :chat_type)
 	end
 end

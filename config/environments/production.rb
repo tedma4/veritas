@@ -92,6 +92,11 @@ Rails.application.configure do
 
   }
 
+  config.action_cable.url = 'wss://veritas-go.herokuapp.com/v1/cable'
+  config.action_cable.allowed_request_origins = [
+    'https://veritas-go.herokuapp.com' ]
+
+
   # Do not dump schema after migrations.
   # config.active_record.dump_schema_after_migration = false
 end
