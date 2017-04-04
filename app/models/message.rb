@@ -7,7 +7,7 @@ class Message
 	has_one :notification
 	field :message_type, type: String, default: "text" # "notification", "post", 
 	field :text, type: String
-	after_create_commit { MessageJob.perform_later(self) }
+	after_create { MessageJob.perform_later(self) }
 	# Future fields, idk what they are yet
 	# field :url, type: String
 	# field :other, type: String
