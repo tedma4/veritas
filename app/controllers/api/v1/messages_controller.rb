@@ -10,7 +10,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 		@message = Message.create(message_params)
 		@chat.messages << @message
 		@chat.save
-		ChatChannel.send_message(@message)
+		# ChatChannel.send_message(@message)
 	end
 
 	private
