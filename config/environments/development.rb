@@ -57,7 +57,7 @@ Rails.application.configure do
 
   }
   # config.web_console.whitelisted_ips = '192.168.1.8'
-  config.action_cable.url = "ws://192.168.1.3:3000/v1/cable"  
+#   config.action_cable.url = "ws://192.168.1.3:3000/v1/cable"  
   config.action_cable.disable_request_forgery_protection = true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
