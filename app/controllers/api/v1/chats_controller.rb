@@ -14,6 +14,8 @@ class Api::V1::ChatsController < Api::V1::BaseController
 			@chat.save
 		when "public"
 			@chat.save
+		else 
+			@chat.save
 		end
 	end
 
@@ -36,6 +38,6 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	private
 
 	def chat_params
-		params.require(:chat).permit(:area, { users: [] }, :creator, :title, :chat_type)
+		params.require(:chat).permit(:area, :creator, :title, :chat_type, :location)# , { users: [] }
 	end
 end
