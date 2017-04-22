@@ -2,6 +2,7 @@ class Chat
 	include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Geospatial
+	# mount_uploader :attachment, AttachmentUploader
   # associations
 	belongs_to :area, index: true, optional: true
 	# has_and_belongs_to_many :users#, index: true
@@ -11,7 +12,12 @@ class Chat
 	field :chat_type, type: String, default: "private" # "private", "geo", "user"
 	field :location, type: Point, sphere: true
 	# Chat statues are for finding out with chats to archive/destroy
-	field :status, type: String, default: "active" # "active", "stale", "pending", nil, "delete this bitch"
+	field :status, type: String, default: "active" # "active", "stale", "pending", nil, "delete soon"
+
+  # validates_presence_of :attachment
+  # delegate :url, :size, :path, to: :attachment
+  # field :attachment, type: String#, null: false
+
 	# Favorites are a future thing
 	# Users can have many favorite Chats
 	# Many Users can favorite the same chat
@@ -37,3 +43,5 @@ class Chat
 	# 	chat
 	# end
 end
+
+
