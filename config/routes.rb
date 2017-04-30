@@ -17,9 +17,8 @@ Rails.application.routes.draw do
 
       resources :users
       resources :posts
-      resources :chats, only: [:create] do 
-        resources :messages, only: [:create]
-      end
+      resources :chats, only: [:create]
+      resources :messages, only: [:create, :index]
  
       devise_scope :user do
         match '/sessions' => 'sessions#create', via: :post
@@ -41,7 +40,7 @@ Rails.application.routes.draw do
       get 'memories', to: 'users#memories'
       get 'get_memories', to: 'users#get_memories'
       post 'user_location', to: 'users#user_location'
-
+      get 'list_local_chats', to: 'chats#list_local_chats'
     end
   end
 end

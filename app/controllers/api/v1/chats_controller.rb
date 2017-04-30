@@ -1,4 +1,5 @@
 class Api::V1::ChatsController < Api::V1::BaseController
+  require 'string_image_uploader'
 	
 	def new
 		@chat = Chat.new
@@ -7,18 +8,20 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	def create
 		@chat = Chat.create(chat_params)
 		@chat.save
-		$redis.lpush "users:#{@chat.id.to_s}", @chat.creator_id.to_s
+		respond_with @chat.build_chat_hash
+		# $redis.lpush "users:#{@chat.id.to_s}", @chat.creator_id.to_s
 
 	end
 
 	def list_local_chats
-		chats = Chat.where(location: {
+		@chats = Chat.where(location: {
 				"$geoWithin" => {
 					"$centerSphere": [params[:location], 15/3963.2]
 				}
 			})
 
-		respond_with chats
+		respond_with @chats.map(&:build_chat_hash)
+
 		# $redis.smembers "users:#{chats.first.id}"
 		# @area = Area.where(
 		# 	area_profil: {
@@ -38,6 +41,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	private
 
 	def chat_params
-		params.require(:chat).permit(:area, :creator, :title, :chat_type, :location)# , { users: [] }
+		the_params = params.require(:chat).permit(:area, :creator, :title, :chat_type, :location, :cover)# , { users: [] }
+		the_params[:cover] = StringImageUploader.new(the_params[:cover], 'chat') if the_params[:cover]
 	end
 end

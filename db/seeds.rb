@@ -50,6 +50,30 @@ require 'image_string'
   note.save
 end
 
+def faker_title
+ pick =[
+  [Faker::Beer.name, Faker::TwinPeaks.quote],
+  [Faker::Book.title, Faker::TwinPeaks.quote],
+  [Faker::Cat.breed, Faker::TwinPeaks.quote],
+  ["Chuck Norris", Faker::ChuckNorris.fact]].sample
+
+ return {title: pick.first, message: pick.last}
+end
+
+
+
+
+chat = Chat.new
+# THe coordinates of a box drawn inside AZ 
+lat = Random.rand(32.26855544621476..36.98500309285596)
+long = Random.rand(-114.0380859375..-109.05029296875)
+chat.location = [long, lat]
+user_id = ["5856d773c2382f415081e8cd", "585716f4c29163000406ff86", "58574fd110ded40004c956dc"].sample
+chat.creator = user_id
+fake_stuff = faker_title
+chat.title = fake_stuff[:title]
+chat.save
+$redis.sadd "messages:#{chat.id.to_s}", {user_id: user_id}
 
 
 

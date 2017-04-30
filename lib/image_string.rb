@@ -14,12 +14,13 @@ class ImageString
 	end
 
 	def self.base64_image
-		Base64.encode64(open(Faker::Avatar.image(Faker::Name.first_name, 
+		faker_image = Faker::Avatar.image(Faker::Name.first_name, 
 		"300x300",
 		"jpg", 
 		"set#{%w(1 2 3).sample}",
 		"bg#{%w(1 2).sample}"
-		),
+		)
+		Base64.encode64(open(faker_image,
 		{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read)
 	end
 end

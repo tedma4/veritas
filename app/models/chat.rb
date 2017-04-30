@@ -2,11 +2,11 @@ class Chat
 	include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Geospatial
-	# mount_uploader :attachment, AttachmentUploader
+	mount_uploader :cover, AttachmentUploader
   # associations
 	belongs_to :area, index: true, optional: true
-	# has_and_belongs_to_many :users#, index: true
 	belongs_to :creator, class_name: "User", inverse_of: :user_chats, index: true, optional: true
+	has_many :messages, dependent: :destroy
 	# chat fields
 	field :title, type: String
 	field :chat_type, type: String, default: "private" # "private", "geo", "user"
@@ -14,9 +14,9 @@ class Chat
 	# Chat statues are for finding out with chats to archive/destroy
 	field :status, type: String, default: "active" # "active", "stale", "pending", nil, "delete soon"
 
-  # validates_presence_of :attachment
-  # delegate :url, :size, :path, to: :attachment
-  # field :attachment, type: String#, null: false
+  # validates_presence_of :cover
+  delegate :url, :size, :path, to: :cover
+  field :cover, type: String#, null: false
 
 	# Favorites are a future thing
 	# Users can have many favorite Chats
@@ -25,23 +25,24 @@ class Chat
 
 	# messages 
 	# embeds_many :messages
-	# def build_chat_hash
-	# 	chat = {
-	# 		id: self.id.to_s,
-	# 		users: self.user_ids.map(&:to_s),
-	# 		chat_type: self.chat_type,
-	# 		status: self.status
-	# 	}
-	# 	chat[:title] = self.title if self.title
-	# 	chat[:area] = self.area_id.to_s if self.area_id
-	# 	chat[:creator] = self.creator.id.to_s if self.creator
-	# 	unless self.messages.blank?
-	# 		chat[:messages] = self.messages.map(&:build_message_hash)
-	# 	else
-	# 		chat[:messages] = self.messages
-	# 	end
-	# 	chat
-	# end
+	def build_chat_hash
+		user = self.creator
+		chat = {
+			id: self.id.to_s,
+			# users: self.user_ids.map(&:to_s),
+			# chat_type: self.chat_type,
+			# status: self.status
+		}
+		chat[:title] = self.title if self.title
+		# chat[:area] = self.area_id.to_s if self.area_id
+		chat[:user] = {id: user.id.to_s, user_name: user.user_name, avatar: user.avatar.url } if self.creator
+		unless self.messages.blank?
+			chat[:messages] = self.messages.count
+		else
+			chat[:messages] = self.messages.count
+		end
+		chat
+	end
 end
 
 

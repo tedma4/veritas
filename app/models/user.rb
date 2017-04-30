@@ -54,7 +54,7 @@ class User
   # chat
   # has_and_belongs_to_many :chats #, index: true
   has_many :user_chats, class_name: "Chat", inverse_of: :creator
-  # has_many :messages
+  has_many :messages
 
   # TODO: Update these so they reflect the new chat setup 
   field :followed_users, type: Array, default: Array.new

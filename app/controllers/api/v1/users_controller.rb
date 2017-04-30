@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   # skip_before_action :authenticate_user_from_token!
+  require 'string_image_uploader'
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   after_action :delete_notification, only: [:approve_friend_request, :decline_friend_request]
 
@@ -225,44 +226,13 @@ class Api::V1::UsersController < Api::V1::BaseController
     the_params[:current_location] = params[:user][:current_location]
     the_params[:email] = params[:user][:email]
     the_params[:pin] = params[:user][:pin]
-    the_params[:avatar] = parse_user_data(the_params[:avatar]) if the_params[:avatar]
+    the_params[:avatar] = StringImageUploader.new(the_params[:avatar], "User") if the_params[:avatar]
     the_params.delete_if {|k, v| v == nil}
     return the_params
   end
 
   def set_user
     @user = @current_user
-  end
-
-  def parse_user_data(base64_user)
-    filename = "upload-user"
-    # in_content_type, encoding, string = base64_user.split(/[:;,]/)[0..3]
-
-    @tempfile = Tempfile.new(filename)
-    @tempfile.binmode
-    @tempfile.write Base64.decode64(base64_user)
-    @tempfile.rewind
-
-    # for security we want the actual content type, not just what was passed in
-    content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
-
-    # we will also add the extension ourselves based on the above
-    # if it's not gif/jpeg/png, it will fail the validation in the upload model
-    extension = content_type.match(/gif|jpeg|png/).to_s
-    filename += ".#{extension}" if extension
-
-    ActionDispatch::Http::UploadedFile.new({
-                                               tempfile: @tempfile,
-                                               content_type: content_type,
-                                               filename: filename
-                                           })
-  end
-
-  def clean_tempfile
-    if @tempfile
-      @tempfile.close
-      @tempfile.unlink
-    end
   end
 end
 
