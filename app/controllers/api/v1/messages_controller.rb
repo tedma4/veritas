@@ -8,6 +8,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 	def create
 		@message = Message.create(message_params)
 		@message.save
+		render json: @message.build_message_hash
 	end
 
 	def index
@@ -20,7 +21,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 
 	def message_params
 		the_params = params.require(:message).permit(:user_id, :chat_id, :message_type, :text, :content, :location, :timestamp)
-		the_params[:content] = StringImageUploader.new(the_params[:content], 'message') if the_params[:content]
+		the_params[:content] = StringImageUploader.new(the_params[:content], 'message').parse_image_data if the_params[:content]
 		the_params
 	end
 

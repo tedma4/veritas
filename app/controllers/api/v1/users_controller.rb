@@ -226,7 +226,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     the_params[:current_location] = params[:user][:current_location]
     the_params[:email] = params[:user][:email]
     the_params[:pin] = params[:user][:pin]
-    the_params[:avatar] = StringImageUploader.new(the_params[:avatar], "User") if the_params[:avatar]
+    the_params[:avatar] = StringImageUploader.new(the_params[:avatar], "User").parse_image_data if the_params[:avatar]
     the_params.delete_if {|k, v| v == nil}
     return the_params
   end

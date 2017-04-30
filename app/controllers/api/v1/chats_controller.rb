@@ -8,9 +8,18 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	def create
 		@chat = Chat.create(chat_params)
 		@chat.save
-		respond_with @chat.build_chat_hash
+		render json: @chat.build_chat_hash
 		# $redis.lpush "users:#{@chat.id.to_s}", @chat.creator_id.to_s
 
+	end
+
+	def index
+		if params[:chat_list]
+			@chats = Chat.where(:id.in => params[:chat_list])
+		else
+			@chats = Chat.all 
+		end
+		render json: @chats.map(&:build_chat_hash)
 	end
 
 	def list_local_chats
@@ -42,6 +51,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 
 	def chat_params
 		the_params = params.require(:chat).permit(:area, :creator, :title, :chat_type, :location, :cover)# , { users: [] }
-		the_params[:cover] = StringImageUploader.new(the_params[:cover], 'chat') if the_params[:cover]
+		the_params[:cover] = StringImageUploader.new(the_params[:cover], 'chat').parse_image_data if the_params[:cover]
+		the_params
 	end
 end
