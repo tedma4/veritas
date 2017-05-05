@@ -34,8 +34,9 @@ class Chat
 			# status: self.status
 		}
 		chat[:title] = self.title if self.title
+		chat[:cover] = self.cover.url if self.title
 		# chat[:area] = self.area_id.to_s if self.area_id
-		chat[:user] = {id: user.id.to_s, user_name: user.user_name, avatar: user.avatar.url } if self.creator
+		chat[:creator] = {id: user.id.to_s, user_name: user.user_name, avatar: user.avatar.url } if self.creator
 		unless self.messages.blank?
 			chat[:messages] = self.messages.count
 		else

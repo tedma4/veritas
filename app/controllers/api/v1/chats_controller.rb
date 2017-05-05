@@ -6,6 +6,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	end
 
 	def create
+		params[:chat][:creator_id] = @current_user.id
 		@chat = Chat.create(chat_params)
 		@chat.save
 		render json: @chat.build_chat_hash
@@ -50,8 +51,10 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	private
 
 	def chat_params
-		the_params = params.require(:chat).permit(:area, :creator, :title, :chat_type, :location, :cover)# , { users: [] }
+		the_params = params.require(:chat).permit(:area_id, :creator_id, :title, :chat_type, :location, :cover)# , { users: [] }
 		the_params[:cover] = StringImageUploader.new(the_params[:cover], 'chat').parse_image_data if the_params[:cover]
+		the_params[:location] = params[:chat][:location] if params[:chat][:location]
+		the_params[:creator_id] = params[:chat][:creator_id] if params[:chat][:creator_id]
 		the_params
 	end
 end
