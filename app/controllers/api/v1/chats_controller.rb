@@ -24,11 +24,14 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	end
 
 	def list_local_chats
-		@chats = Chat.where(location: {
+		@chats = Chat.where(
+			location: {
 				"$geoWithin" => {
 					"$centerSphere": [params[:location], 15/3963.2]
 				}
-			})
+			},
+			:creator_id.nin => @current_user.id
+		)
 
 		respond_with @chats.map(&:build_chat_hash)
 
