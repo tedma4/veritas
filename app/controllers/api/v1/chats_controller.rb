@@ -27,7 +27,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 		@chats = Chat.where(
 			location: {
 				"$geoWithin" => {
-					"$centerSphere": [params[:location], 15/3963.2]
+					"$centerSphere": [params[:location].split(","), 15/3963.2]
 				}
 			},
 			:creator_id.nin => @current_user.id
