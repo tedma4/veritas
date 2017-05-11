@@ -30,7 +30,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 					"$centerSphere": [params[:location].split(",").map(&:to_f), 15/3963.2]
 				}
 			},
-			:creator_id.nin => @current_user.id
+			:creator_id.nin => [@current_user.id]
 		)
 
 		respond_with @chats.map(&:build_chat_hash)
