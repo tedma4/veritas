@@ -22,7 +22,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 
 	def index
 		@chat = Chat.find(params[:chat_id])
-		@messages = @chat.messages
+		@messages = @chat.messages.limit(10)
 		respond_with @messages.map(&:build_message_hash	)
 	end
 

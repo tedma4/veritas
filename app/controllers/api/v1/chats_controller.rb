@@ -16,7 +16,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 
 	def index
 		if params[:chat_list]
-			@chats = Chat.where(:id.in => params[:chat_list])
+			@chats = Chat.includes(:messages).where(:id.in => params[:chat_list])
 		else
 			@chats = Chat.all 
 		end
@@ -24,7 +24,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	end
 
 	def list_local_chats
-		@chats = Chat.where(
+		@chats = Chat.includes(:messages).where(
 			location: {
 				"$geoWithin" => {
 					"$centerSphere": [params[:location].split(",").map(&:to_f), 15/3963.2]
