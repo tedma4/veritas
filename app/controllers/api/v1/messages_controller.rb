@@ -7,8 +7,17 @@ class Api::V1::MessagesController < Api::V1::BaseController
 
 	def create
 		@message = Message.create(message_params)
-		@message.save
-		render json: @message.build_message_hash
+		if @message.save
+			if @message.content && !@message.content.blank?
+				chat = @message.chat 
+				chat.cover = @message.content
+				chat.save
+			end
+			render json: @message.build_message_hash
+		else
+			render json: @message.errors, status: :unprocessable_entity
+		end
+
 	end
 
 	def index

@@ -38,9 +38,9 @@ class Chat
 		# chat[:area] = self.area_id.to_s if self.area_id
 		chat[:creator] = {id: user.id.to_s, user_name: user.user_name, avatar: user.avatar.url } if self.creator
 		unless self.messages.blank?
-			chat[:messages] = self.messages.count
+			chat[:last_message] = self.messages.last.build_message_hash[:text]
 		else
-			chat[:messages] = self.messages.count
+			chat[:last_message] = ""
 		end
 		chat
 	end
