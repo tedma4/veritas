@@ -203,6 +203,18 @@ class Api::V1::UsersController < Api::V1::BaseController
     respond_with(@docs)
   end
 
+  def joined_chats_list
+
+  end
+
+  def join_chat
+
+  end
+
+  def leave_chat
+
+  end
+
 
   def feed
     # @user = User.includes(:likes).where(id: params[:id]).first

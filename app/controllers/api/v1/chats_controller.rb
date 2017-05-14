@@ -1,4 +1,4 @@
-class Api::V1::ChatsController < Api::V1::BaseController
+ class Api::V1::ChatsController < Api::V1::BaseController
   require 'string_image_uploader'
 	
 	def new
@@ -8,6 +8,11 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	def create
 		params[:chat][:creator_id] = @current_user.id
 		@chat = Chat.create(chat_params)
+		area = @chat.inside_area?('L2')
+		if area.any?
+			@chat.area_id = area.first.id
+			@chat.chat_type = "AreaChat"
+		end
 		@chat.save
 		render json: @chat.build_chat_hash
 		# $redis.lpush "users:#{@chat.id.to_s}", @chat.creator_id.to_s
@@ -24,16 +29,21 @@ class Api::V1::ChatsController < Api::V1::BaseController
 	end
 
 	def list_local_chats
-		@chats = Chat.includes(:messages).where(
-			location: {
-				"$geoWithin" => {
-					"$centerSphere": [params[:location].split(",").map(&:to_f), 15/3963.2]
-				}
-			},
-			:creator_id.nin => [@current_user.id]
-		)
-
-		respond_with @chats.map(&:build_chat_hash)
+		area_chats = @current_user.inside_an_area?(params[:location].split(",").map(&:to_f))
+		@chats = []
+		if area_chats.first && area_chats.last.level == "L2"
+			@chats << area_chats.last.chats
+		end
+			@chats << Chat.includes(:messages).where(
+				location: {
+					"$geoWithin" => {
+						"$centerSphere": [params[:location].split(",").map(&:to_f), 15/3963.2]
+					}
+				},
+				:creator_id.nin => [@current_user.id],
+				:area => nil
+			).to_a
+		respond_with @chats.flatten.map(&:build_chat_hash) if @chats
 
 		# $redis.smembers "users:#{chats.first.id}"
 		# @area = Area.where(

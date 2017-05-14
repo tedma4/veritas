@@ -391,18 +391,33 @@ class User
 
   def inside_an_area?(coords)
    # coords = Mongoid::Geospatial::Point object
-   area = Area.where(
-     area_profile: {
-       "$geoIntersects" => {
-         "$geometry"=> {
-           type: "Point",
-           coordinates: [coords.x, coords.y]
+   if coords.is_a? Array
+     area = Area.where(
+       area_profile: {
+         "$geoIntersects" => {
+           "$geometry"=> {
+             type: "Point",
+             coordinates: [coords.first, coords.last]
+           }
          }
-       }
-     },
-     :level.nin => ["L0"],
-     :level.in => ["L1", "L2"]
-     )
+       },
+       :level.nin => ["L0"],
+       :level.in => ["L1", "L2"]
+       )
+   else
+     area = Area.where(
+       area_profile: {
+         "$geoIntersects" => {
+           "$geometry"=> {
+             type: "Point",
+             coordinates: [coords.x, coords.y]
+           }
+         }
+       },
+       :level.nin => ["L0"],
+       :level.in => ["L1", "L2"]
+       )
+   end
    # area = Area.where(title: "Arcadia on 49th")
    if area.any?
       if area.count > 1

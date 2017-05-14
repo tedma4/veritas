@@ -30,7 +30,7 @@ class Chat
 		chat = {
 			id: self.id.to_s,
 			# users: self.user_ids.map(&:to_s),
-			# chat_type: self.chat_type,
+			chat_type: self.chat_type
 			# status: self.status
 		}
 		chat[:title] = self.title if self.title
@@ -43,6 +43,14 @@ class Chat
 			chat[:last_message] = ""
 		end
 		chat
+	end
+
+	def inside_area?(level)
+		area = Area.where(
+		  area_profile: {"$geoIntersects" => {"$geometry"=> {type: "Point",coordinates: [self.location.x, self.location.y] }}},
+		  level: level
+		)
+    area
 	end
 end
 
