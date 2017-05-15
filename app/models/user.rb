@@ -59,7 +59,7 @@ class User
   # TODO: Update these so they reflect the new chat setup 
   field :followed_users, type: Array, default: Array.new
   field :pending_friends, type: Array, default: Array.new
-
+  field :joined_chats, type: Array, default: Array.new
   validates_integrity_of  :avatar
   validates_processing_of :avatar
   validate :pin_exists, on: :create

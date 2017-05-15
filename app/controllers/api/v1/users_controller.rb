@@ -203,16 +203,25 @@ class Api::V1::UsersController < Api::V1::BaseController
     respond_with(@docs)
   end
 
-  def joined_chats_list
-
+  def get_joined_chats
+    @chats = Chat.where(:id.in => @current_user.joined_chats)
+    if @chats.any?
+      respond_with(@chats.map(&:build_chat_hash) ) 
+    else
+      respond_with([])
+    end
   end
 
   def join_chat
-
+    user = @current_user 
+    user.joined_chats << params[:chat_id]
+    user.save
   end
 
   def leave_chat
-
+    user = @current_user
+    user.joined_chats.delete(params[:chat_id])
+    user.save
   end
 
 

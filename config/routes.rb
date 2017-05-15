@@ -41,6 +41,9 @@ Rails.application.routes.draw do
       get 'get_memories', to: 'users#get_memories'
       post 'user_location', to: 'users#user_location'
       get 'list_local_chats', to: 'chats#list_local_chats'
+      get 'get_joined_chats', to: 'users#get_joined_chats'
+      post 'join_chat', to: 'users#join_chat'
+      delete 'leave_chat', to: 'users#leave_chat'
     end
   end
 end
