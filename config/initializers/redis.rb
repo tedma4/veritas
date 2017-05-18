@@ -1,5 +1,5 @@
 if Rails.env == "development"
-	$redis = Redis.new(host: '192.168.1.3')
+	$redis = Redis.new
 else
 	uri = URI.parse(ENV['REDISTOGO_URL'])
 	$redis = Redis.new(url: uri)

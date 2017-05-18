@@ -214,14 +214,22 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def join_chat
     user = @current_user 
-    user.joined_chats << params[:chat_id]
-    user.save
+    user.joined_chats << params[:chat_id] unless user.joined_chats.include?(params[:chat_id])
+    if user.save
+      render json: {status: 200}
+    else
+      render json: {error: "User already joined"}
+    end
   end
 
   def leave_chat
     user = @current_user
-    user.joined_chats.delete(params[:chat_id])
-    user.save
+    user.joined_chats.delete(params[:chat_id]) if user.joined_chats.include?(params[:chat_id])
+    if user.save
+      render json: {status: 200}
+    else
+      render json: {error: "User already joined"}
+    end
   end
 
 
