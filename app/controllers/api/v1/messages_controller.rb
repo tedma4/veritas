@@ -31,7 +31,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 	def message_params
 		the_params = params.require(:message).permit(:user_id, :chat_id, :message_type, :text, :content, :location, :timestamp)
 		the_params[:content] = StringImageUploader.new(the_params[:content], 'message').parse_image_data if the_params[:content]
-		the_params[:location] = params[:message][:location] if params[:chat][:location]
+		the_params[:location] = params[:message][:location] if params[:message][:location]
 		the_params
 	end
 
