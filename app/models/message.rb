@@ -37,7 +37,8 @@ class Message
 				last_name: user.last_name
 				} if user
 			message[:text] = self.text || ''
-			message[:content] = self.content.url || ''
+			message[:normal_content] = self.content.url || ''
+			message[:thumb_content] = self.content.thumb.url || ''
 			# self.content if self.content
 			# message[:notification_id] = self.notification.id.to_s if self.notification
 			message

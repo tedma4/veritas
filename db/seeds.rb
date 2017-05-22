@@ -73,7 +73,7 @@ chat.creator = user_id
 fake_stuff = faker_title
 chat.title = fake_stuff[:title]
 chat.save
-$redis.sadd "messages:#{chat.id.to_s}", {user_id: user_id}
+# $redis.sadd "messages:#{chat.id.to_s}", {user_id: user_id}
 
 
 

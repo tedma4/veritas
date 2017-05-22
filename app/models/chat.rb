@@ -34,7 +34,8 @@ class Chat
 			# status: self.status
 		}
 		chat[:title] = self.title if self.title
-		chat[:cover] = self.cover.url if self.title
+		chat[:normal_cover] = self.cover.url if self.cover
+		chat[:thumb_cover] = self.cover.thumb.url if self.cover
 		# chat[:area] = self.area_id.to_s if self.area_id
 		chat[:creator] = {id: user.id.to_s, user_name: user.user_name, avatar: user.avatar.url } if self.creator
 		unless self.messages.blank?

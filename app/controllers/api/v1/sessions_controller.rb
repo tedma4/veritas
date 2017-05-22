@@ -12,7 +12,7 @@ class Api::V1::SessionsController < Api::V1::BaseController
       session = Session.new(user_id: @user.id)
       session.save
     end
-    jwt_user_hash = {session_id: session.id.to_s}
+    jwt_user_hash = {user_id: @user.id.to_s}
     auth_token = jwt_token(jwt_user_hash)
     render json: {
       auth_token: auth_token, 
@@ -22,8 +22,8 @@ class Api::V1::SessionsController < Api::V1::BaseController
   end
 
   def destroy
-    session = JsonWebToken.decode(request.header["HTTP_AUTHORIZATION"])[:session_id]
-    Session.find(session).destroy
+    session = JsonWebToken.decode(request.header["HTTP_AUTHORIZATION"])[:data][:user_id]
+    Session.where(user_id: session).first.destroy
   end
 
   private

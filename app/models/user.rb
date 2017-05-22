@@ -85,11 +85,12 @@ class User
      first_name: self.first_name,
      last_name: self.last_name,
      email: self.email,
-     avatar: self.avatar.url || "res://avatardefault",
      user_name: self.user_name,
      pin: self.pin,
      created_at: self.created_at
     }
+    user[:normal_avatar] = self.avatar.url || "res://avatardefault"
+    user[:thumb_avatar] = self.avatar.thumb.url || "res://avatardefault"
     user[:like_count] = self.likes.count if self.likes
     return user
   end

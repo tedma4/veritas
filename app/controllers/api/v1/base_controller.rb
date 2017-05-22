@@ -6,7 +6,7 @@ class Api::V1::BaseController < ApplicationController
 
   def authenticate_user_from_token!
     if claims and session = valid_session?(claims)
-      @current_user = session.user
+      @current_user = session.first.user
     else
       render json: {errors: { unauthorized: ["You can't do that"] }}, status: 401
     end
@@ -18,7 +18,7 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def valid_session?(claims)
-    session = Session.find(claims[:data][:session_id])
+    session = Session.where(user_id: claims[:data][:user_id])
     if session
       return session
     else
@@ -33,5 +33,10 @@ class Api::V1::BaseController < ApplicationController
   rescue
     nil
   end
+
+  # def super_special_request
+  #   if request.header['X-AUTHORIZATION']
+  #     JsonWebToken.decode
+  # end
 
 end
