@@ -5,22 +5,26 @@ class Api::V1::BaseController < ApplicationController
   require 'json_web_token'
 
   def authenticate_user_from_token!
-    if claims and session = valid_session?(claims)
-      @current_user = session.first.user
+    if claims and session = valid_session?(claims) and !session.blank?
+      @current_user = session.first.user 
     else
       render json: {errors: { unauthorized: ["You can't do that"] }}, status: 401
     end
   end
 
   def jwt_token(user)
-    # ex: {data: {id: "tedma4@email.com"}}
+    # ex: {data: {id: "123456"}}
     JsonWebToken.encode(user)
   end
 
   def valid_session?(claims)
-    session = Session.where(user_id: claims[:data][:user_id])
-    if session
-      return session
+    if claims[:data].is_a? Hash
+      session = Session.where(user_id: claims[:data][:user_id])
+      if session
+        return session
+      else
+        return false
+      end
     else
       return false
     end
