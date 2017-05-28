@@ -6,7 +6,11 @@ class Api::V1::MessagesController < Api::V1::BaseController
 	end
 
 	def create
+		params[:message][:user_id] = @current_user.id
 		@message = Message.create(message_params)
+		if @message.content && !@message.content.blank?
+			@message.message_type = "image"
+		end
 		if @message.save
 			if @message.content && !@message.content.blank?
 				chat = @message.chat 

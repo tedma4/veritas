@@ -28,14 +28,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST /users.json
   def create
     @user = User.new(user_params.to_h)
-    @auth_token = jwt_token(@user)
+    @auth_token = jwt_token({user_id: @user.id.to_s})
     respond_to do |format|
       if @user.save
         @user.create_pin
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: { auth_token: @auth_token, user: @user.build_user_hash, created_at: @user.created_at } }
       else
-        format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
